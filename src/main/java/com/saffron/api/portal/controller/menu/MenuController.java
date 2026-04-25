@@ -1,5 +1,6 @@
 package com.saffron.api.portal.controller.menu;
 
+import com.saffron.api.portal.dto.common.ApiResponse;
 import com.saffron.api.portal.dto.menu.MenuListDto;
 import com.saffron.api.portal.dto.menu.MenuTreeDto;
 import com.saffron.api.portal.service.menu.MenuService;
@@ -36,19 +37,29 @@ public class MenuController {
         return ResponseEntity.ok(Map.of("menuId", menuId));
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody Map<String, Object> body) {
         return ResponseEntity.ok(Map.of("result", "ok"));
     }
 
-    @PutMapping("/{menuId}")
+    @PostMapping("/update/{menuId}")
     public ResponseEntity<?> update(@PathVariable String menuId,
                                     @RequestBody Map<String, Object> body) {
         return ResponseEntity.ok(Map.of("result", "ok"));
     }
 
-    @DeleteMapping("/{menuId}")
-    public ResponseEntity<?> delete(@PathVariable String menuId) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    @PostMapping("/delete/{menuId}")
+    public ResponseEntity<ApiResponse> delete(@PathVariable String menuId) {
+        return ResponseEntity.ok(menuService.deleteMenu(menuId));
+    }
+
+    @GetMapping("/parent-menus")
+    public ResponseEntity<List<MenuListDto>> parentMenus() {
+        return ResponseEntity.ok(menuService.getParentMenus());
+    }
+
+    @GetMapping("/next-id")
+    public ResponseEntity<Map<String, String>> nextId() {
+        return ResponseEntity.ok(Map.of("menuId", menuService.getNextMenuId()));
     }
 }

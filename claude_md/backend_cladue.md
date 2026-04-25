@@ -234,4 +234,23 @@ API 응답 (POST /portal/menus/list):
    - IP,Port : localhost,3306
    - userid/pw : now009/2799
 2. mybatis를 이용해 munu를 조회해서 front로 전달할수 있도록 구현
+-------------------------------------------------------------------------------
+
+http://localhost:8080/portal/menus/delete/를 호출했을때 
+1. menu_info table을 조회했을때 삭제하려는 menuId의 하위 menu가 존재하면 
+ - {"messageCode":"fail","message":"하위 메뉴가 존재합니다"} 
+2. 삭제되었으면 
+ - {"messageCode":"fail","message":"하위 메뉴가 존재합니다"} 
+3. 메뉴아디가 없으면 
+ - {"messageCode":"fail","message":"메뉴가 존재하지 않습니다"}
+이렇게 리턴하는 코드를 만들어줘
+
+MenuController에 새로운 MenuId값을 조회해 리턴하는 코드를 추가해줘
+- 새로운 menuId는 기존 menuId를 조회해 뒷자리를 sequence하게 생성할수 있도록 구현
+- ex) MENU011 
+그리고 생성된 URI도 알려줘
+- 
+  상위메뉴 ID는 depth 0 ~ 1 까지 조회한는 기능을 구현해줘 그리고 생성된 URI도 알려줘
+
+
 

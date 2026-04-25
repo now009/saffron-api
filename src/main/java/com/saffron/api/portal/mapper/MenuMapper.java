@@ -13,4 +13,14 @@ public interface MenuMapper {
     List<MenuListDto> selectMenuList(@Param("menuId") String menuId, @Param("menuName") String menuName);
 
     List<MenuTreeDto> selectMenu();
+
+    int countMenu(@Param("menuId") String menuId);
+
+    int countChildMenus(@Param("menuId") String menuId);
+
+    int deleteMenu(@Param("menuId") String menuId);
+
+    List<MenuListDto> selectParentMenus();
+
+    String selectNextMenuId();
 }

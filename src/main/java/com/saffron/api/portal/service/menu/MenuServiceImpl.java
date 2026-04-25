@@ -1,5 +1,6 @@
 package com.saffron.api.portal.service.menu;
 
+import com.saffron.api.portal.dto.common.ApiResponse;
 import com.saffron.api.portal.dto.menu.MenuListDto;
 import com.saffron.api.portal.dto.menu.MenuTreeDto;
 import com.saffron.api.portal.mapper.MenuMapper;
@@ -46,5 +47,27 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuListDto> getMenus(String menuId, String menuName) {
         return menuMapper.selectMenuList(menuId, menuName);
+    }
+
+    @Override
+    public ApiResponse deleteMenu(String menuId) {
+        if (menuMapper.countMenu(menuId) == 0) {
+            return ApiResponse.fail("메뉴가 존재하지 않습니다");
+        }
+        if (menuMapper.countChildMenus(menuId) > 0) {
+            return ApiResponse.fail("하위 메뉴가 존재합니다");
+        }
+        menuMapper.deleteMenu(menuId);
+        return ApiResponse.success("삭제되었습니다");
+    }
+
+    @Override
+    public List<MenuListDto> getParentMenus() {
+        return menuMapper.selectParentMenus();
+    }
+
+    @Override
+    public String getNextMenuId() {
+        return menuMapper.selectNextMenuId();
     }
 }
