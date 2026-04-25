@@ -252,5 +252,35 @@ MenuController에 새로운 MenuId값을 조회해 리턴하는 코드를 추가
 - 
   상위메뉴 ID는 depth 0 ~ 1 까지 조회한는 기능을 구현해줘 그리고 생성된 URI도 알려줘
 
+-- 메뉴추가시 front에서
+{
+"menuId": "MENU006",
+"parentMenuId": "MENU001",
+"menuName": "테스트메뉴",
+"menuLevel": 1,
+"programId": "PRG001",
+"sortOrder": 3,
+"useYn": "Y"
+}
+이런 포맷으로 전달되는데 /portal/menus/save에 구현해줘
+저장실행후
+- {"messageCode":"fail","message":""} <- 에러메세지 Exception 
+- {"messageCode":"success","message":"저장되었습니다"}
+
+실행후 list redirect
+ 
+-- 메뉴수정시
+{
+"menuId": "MENU001",
+"menuName": "시스템관리",
+"programId": "PRG001",
+"useYn": "Y"
+}
+이런 포맷으로 전달되는데 /portal/menus/update에 구현해줘
+저장실행후
+- {"messageCode":"fail","message":""} <- 에러메세지 Exception
+- {"messageCode":"success","message":"저장되었습니다"}
+실행후 list redirect
+
 
 

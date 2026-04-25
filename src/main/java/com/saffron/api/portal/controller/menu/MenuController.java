@@ -1,6 +1,7 @@
 package com.saffron.api.portal.controller.menu;
 
 import com.saffron.api.portal.dto.common.ApiResponse;
+import com.saffron.api.portal.dto.menu.MenuDto;
 import com.saffron.api.portal.dto.menu.MenuListDto;
 import com.saffron.api.portal.dto.menu.MenuTreeDto;
 import com.saffron.api.portal.service.menu.MenuService;
@@ -38,14 +39,21 @@ public class MenuController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Map<String, Object> body) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    public ResponseEntity<?> save(@RequestBody MenuDto menuDto) {
+        ApiResponse result = menuService.saveMenu(menuDto);
+        if ("fail".equals(result.getMessageCode())) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.ok(menuService.getMenus(null, null));
     }
 
-    @PostMapping("/update/{menuId}")
-    public ResponseEntity<?> update(@PathVariable String menuId,
-                                    @RequestBody Map<String, Object> body) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    @PostMapping("/update")
+    public ResponseEntity<?> update(@RequestBody MenuDto menuDto) {
+        ApiResponse result = menuService.updateMenu(menuDto);
+        if ("fail".equals(result.getMessageCode())) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.ok(menuService.getMenus(null, null));
     }
 
     @PostMapping("/delete/{menuId}")

@@ -1,6 +1,7 @@
 package com.saffron.api.portal.service.menu;
 
 import com.saffron.api.portal.dto.common.ApiResponse;
+import com.saffron.api.portal.dto.menu.MenuDto;
 import com.saffron.api.portal.dto.menu.MenuListDto;
 import com.saffron.api.portal.dto.menu.MenuTreeDto;
 import com.saffron.api.portal.mapper.MenuMapper;
@@ -18,6 +19,32 @@ public class MenuServiceImpl implements MenuService {
 
     public MenuServiceImpl(MenuMapper menuMapper) {
         this.menuMapper = menuMapper;
+    }
+
+    @Override
+    public ApiResponse updateMenu(MenuDto menuDto) {
+        if (menuMapper.countMenu(menuDto.getMenuId()) == 0) {
+            return ApiResponse.fail("메뉴가 존재하지 않습니다");
+        }
+        try {
+            menuMapper.updateMenu(menuDto);
+            return ApiResponse.success("저장되었습니다");
+        } catch (Exception e) {
+            return ApiResponse.fail(e.getMessage());
+        }
+    }
+
+    @Override
+    public ApiResponse saveMenu(MenuDto menuDto) {
+        if (menuMapper.countMenu(menuDto.getMenuId()) > 0) {
+            return ApiResponse.fail("이미 존재하는 메뉴ID입니다");
+        }
+        try {
+            menuMapper.insertMenu(menuDto);
+            return ApiResponse.success("저장되었습니다");
+        } catch (Exception e) {
+            return ApiResponse.fail(e.getMessage());
+        }
     }
 
     @Override

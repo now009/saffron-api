@@ -89,6 +89,20 @@
         DELETE FROM menu_info WHERE menuId = #{menuId}
     </delete>
 
+    <update id="updateMenu" parameterType="com.saffron.api.portal.dto.menu.MenuDto">
+        UPDATE menu_info
+        SET    menuName    = #{menuName},
+               programId   = #{programId},
+               useYn       = #{useYn},
+               updatedDate = NOW()
+        WHERE  menuId = #{menuId}
+    </update>
+
+    <insert id="insertMenu" parameterType="com.saffron.api.portal.dto.menu.MenuDto">
+        INSERT INTO menu_info (menuId, parentMenuId, menuName, menuLevel, menuIcon, programId, sortOrder, useYn)
+        VALUES (#{menuId}, #{parentMenuId}, #{menuName}, #{menuLevel}, #{menuIcon}, #{programId}, #{sortOrder}, #{useYn})
+    </insert>
+
     <select id="selectParentMenus" resultType="com.saffron.api.portal.dto.menu.MenuListDto">
         WITH RECURSIVE menu_tree AS (
             SELECT m.menuId,
