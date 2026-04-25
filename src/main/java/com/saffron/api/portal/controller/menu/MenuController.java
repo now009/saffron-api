@@ -1,6 +1,6 @@
 package com.saffron.api.portal.controller.menu;
 
-import com.saffron.api.portal.dto.menu.MenuGroupDto;
+import com.saffron.api.portal.dto.menu.MenuListDto;
 import com.saffron.api.portal.dto.menu.MenuTreeDto;
 import com.saffron.api.portal.service.menu.MenuService;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,10 @@ public class MenuController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<List<MenuGroupDto>> list() {
-        return ResponseEntity.ok(menuService.getMenus());
+    public ResponseEntity<List<MenuListDto>> list(
+            @RequestParam(required = false) String menuId,
+            @RequestParam(required = false) String menuName) {
+        return ResponseEntity.ok(menuService.getMenus(menuId, menuName));
     }
 
     @GetMapping("/tree")

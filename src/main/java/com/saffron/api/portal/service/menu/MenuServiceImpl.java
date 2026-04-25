@@ -1,8 +1,7 @@
 package com.saffron.api.portal.service.menu;
 
-import com.saffron.api.portal.dto.menu.MenuGroupDto;
+import com.saffron.api.portal.dto.menu.MenuListDto;
 import com.saffron.api.portal.dto.menu.MenuTreeDto;
-import com.saffron.api.portal.dto.menu.SubMenuDto;
 import com.saffron.api.portal.mapper.MenuMapper;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -46,15 +44,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuGroupDto> getMenus() {
-        return getMenuTree().stream()
-                .map(group -> new MenuGroupDto(
-                        group.getMenuName(),
-                        group.getMenuId(),
-                        group.getChildren().stream()
-                                .map(sub -> new SubMenuDto(sub.getMenuName(), sub.getMenuId()))
-                                .collect(Collectors.toList())
-                ))
-                .collect(Collectors.toList());
+    public List<MenuListDto> getMenus(String menuId, String menuName) {
+        return menuMapper.selectMenuList(menuId, menuName);
     }
 }
