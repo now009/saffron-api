@@ -11,6 +11,12 @@ spring:
     activate:
       on-profile: local
 
+  datasource:
+    url: jdbc:mariadb://localhost:3306/saffron?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: now009
+    password: 2799
+    driver-class-name: org.mariadb.jdbc.Driver
+
   security:
     oauth2:
       resourceserver:
@@ -20,9 +26,16 @@ spring:
 server:
   port: 8080
 
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
 auth:
   server:
     url: http://localhost:8090
+  check:
+    enabled: false   # true: JWT 검증 활성화 / false: 인증 없이 전체 허용 (테스트용)
 
 app:
   redirect:
@@ -53,6 +66,12 @@ spring:
     activate:
       on-profile: prod
 
+  datasource:
+    url: jdbc:mariadb://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:saffron}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+
   security:
     oauth2:
       resourceserver:
@@ -62,9 +81,16 @@ spring:
 server:
   port: ${API_PORT:8080}
 
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
 auth:
   server:
     url: ${AUTH_SERVER_URL}
+  check:
+    enabled: true   # prod 환경에서는 항상 JWT 검증 활성화
 
 app:
   redirect:
