@@ -53,7 +53,7 @@
               AND p.useYn = 'Y'
         <where>
             <if test="menuId != null and menuId != ''">
-                AND mt.menuId = #{menuId}
+                AND mt.menuId LIKE CONCAT('%', #{menuId}, '%')
             </if>
             <if test="menuName != null and menuName != ''">
                 AND mt.menuName LIKE CONCAT('%', #{menuName}, '%')
