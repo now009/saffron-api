@@ -39,6 +39,7 @@
         SELECT mt.depth,
                CONCAT(REPEAT('　', mt.depth), mt.menuName) AS menuNameTree,
                mt.menuId,
+               mt.menuName,
                mt.parentMenuId,
                mt.menuLevel,
                mt.menuIcon,
