@@ -60,16 +60,31 @@
             MAX(rm.canUpdate) AS canUpdate,
             MAX(rm.canDelete) AS canDelete
         FROM user_info u
-        LEFT JOIN user_role ur ON u.userId  = ur.userId
-        LEFT JOIN dept_role dr ON u.deptId  = dr.deptId
-        JOIN  role_menu rm     ON rm.roleCode IN (ur.roleCode, dr.roleCode)
-        JOIN  menu_info m      ON rm.menuId   = m.menuId
+        LEFT JOIN user_role ur
+            ON  u.userId = ur.userId
+        LEFT JOIN dept_role dr
+            ON  u.deptId = dr.deptId
+        JOIN role_menu rm
+            ON  rm.roleCode = ur.roleCode
+            OR  rm.roleCode = dr.roleCode
+        JOIN menu_info m
+            ON  rm.menuId = m.menuId
+            AND m.useYn   = 'Y'
+        JOIN role_info r
+            ON  rm.roleCode = r.roleCode
+            AND r.useYn     = 'Y'
         WHERE u.userId = #{userId}
-          AND m.useYn  = 'Y'
+          AND u.useYn  = 'Y'
         GROUP BY
-            m.menuId, m.parentMenuId, m.menuName,
-            m.menuLevel, m.menuIcon, m.sortOrder
-        ORDER BY m.menuLevel, m.sortOrder
+            m.menuId,
+            m.parentMenuId,
+            m.menuName,
+            m.menuLevel,
+            m.menuIcon,
+            m.sortOrder
+        ORDER BY
+            m.menuLevel,
+            m.sortOrder
     </select>
 
     <select id="selectNextRoleCode" resultType="string">
