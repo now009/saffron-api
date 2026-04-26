@@ -1,12 +1,18 @@
 package com.saffron.api.portal.service.role;
 
 import com.saffron.api.portal.dto.common.ApiResponse;
+import com.saffron.api.portal.dto.role.RoleDeptDto;
 import com.saffron.api.portal.dto.role.RoleDto;
+import com.saffron.api.portal.dto.role.RoleMenuDto;
+import com.saffron.api.portal.dto.role.RoleMenuRequest;
+import com.saffron.api.portal.dto.role.RoleUserDto;
 import com.saffron.api.portal.dto.role.UserMenuPermDto;
 import com.saffron.api.portal.mapper.RoleMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -23,8 +29,46 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public List<RoleDto> getActiveRoles() {
+        return roleMapper.selectActiveRoles();
+    }
+
+    @Override
+    public boolean existsRole(String roleCode) {
+        return roleMapper.countRole(roleCode) > 0;
+    }
+
+    @Override
     public List<UserMenuPermDto> getUserMenuPermissions(String userId) {
         return roleMapper.selectUserMenuPermissions(userId);
+    }
+
+    @Override
+    public List<RoleMenuDto> getRoleMenus(String roleCode) {
+        return roleMapper.selectRoleMenus(roleCode);
+    }
+
+    @Override
+    @Transactional
+    public void saveRoleMenus(String roleCode, List<RoleMenuRequest> requests) {
+        roleMapper.deleteRoleMenus(roleCode);
+        List<String> menuIds = requests.stream()
+                .filter(r -> "Y".equals(r.getUseYn()))
+                .map(RoleMenuRequest::getMenuId)
+                .collect(Collectors.toList());
+        if (!menuIds.isEmpty()) {
+            roleMapper.insertRoleMenus(roleCode, menuIds);
+        }
+    }
+
+    @Override
+    public List<RoleUserDto> getRoleUsers(String roleCode) {
+        return roleMapper.selectRoleUsers(roleCode);
+    }
+
+    @Override
+    public List<RoleDeptDto> getRoleDepts(String roleCode) {
+        return roleMapper.selectRoleDepts(roleCode);
     }
 
     @Override

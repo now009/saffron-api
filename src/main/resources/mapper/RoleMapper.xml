@@ -87,6 +87,80 @@
             m.sortOrder
     </select>
 
+    <select id="selectActiveRoles" resultType="com.saffron.api.portal.dto.role.RoleDto">
+        SELECT roleCode,
+               roleName,
+               description,
+               useYn
+        FROM   role_info
+        WHERE  useYn = 'Y'
+        ORDER  BY roleCode
+    </select>
+
+    <select id="selectRoleMenus" resultType="com.saffron.api.portal.dto.role.RoleMenuDto">
+        SELECT m.menuId,
+               m.parentMenuId,
+               m.menuName,
+               m.menuLevel,
+               m.menuIcon,
+               m.sortOrder,
+               CASE WHEN rm.menuId IS NOT NULL THEN 'Y' ELSE 'N' END AS useYn
+        FROM   menu_info m
+        LEFT JOIN role_menu rm
+               ON  m.menuId   = rm.menuId
+               AND rm.roleCode = #{roleCode}
+        WHERE  m.useYn = 'Y'
+        ORDER  BY m.menuLevel, m.sortOrder
+    </select>
+
+    <delete id="deleteRoleMenus">
+        DELETE FROM role_menu WHERE roleCode = #{roleCode}
+    </delete>
+
+    <insert id="insertRoleMenus">
+        INSERT INTO role_menu (roleCode, menuId, canRead, canWrite, canUpdate, canDelete)
+        VALUES
+        <foreach collection="menuIds" item="menuId" separator=",">
+            (#{roleCode}, #{menuId}, 'Y', 'Y', 'Y', 'Y')
+        </foreach>
+    </insert>
+
+    <select id="selectRoleUsers" resultType="com.saffron.api.portal.dto.role.RoleUserDto">
+        SELECT u.userId,
+               u.userName,
+               d.deptName,
+               u.position,
+               'USER' AS assignType
+        FROM   user_role ur
+        JOIN   user_info  u ON ur.userId = u.userId
+        LEFT JOIN dept_info d ON u.deptId = d.deptId
+        WHERE  ur.roleCode = #{roleCode}
+
+        UNION
+
+        SELECT u.userId,
+               u.userName,
+               d.deptName,
+               u.position,
+               'DEPT' AS assignType
+        FROM   dept_role dr
+        JOIN   dept_info  d ON dr.deptId = d.deptId
+        JOIN   user_info  u ON u.deptId  = d.deptId AND u.useYn = 'Y'
+        WHERE  dr.roleCode = #{roleCode}
+
+        ORDER  BY userId
+    </select>
+
+    <select id="selectRoleDepts" resultType="com.saffron.api.portal.dto.role.RoleDeptDto">
+        SELECT d.deptId,
+               d.deptName,
+               d.deptLevel
+        FROM   dept_role dr
+        JOIN   dept_info d ON dr.deptId = d.deptId
+        WHERE  dr.roleCode = #{roleCode}
+        ORDER  BY d.deptLevel, d.deptId
+    </select>
+
     <select id="selectNextRoleCode" resultType="string">
         SELECT CONCAT('ROLE', LPAD(COALESCE(MAX(CAST(SUBSTRING(roleCode, 5) AS UNSIGNED)), 0) + 1, 3, '0'))
         FROM   role_info

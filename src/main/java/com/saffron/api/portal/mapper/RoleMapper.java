@@ -1,6 +1,9 @@
 package com.saffron.api.portal.mapper;
 
+import com.saffron.api.portal.dto.role.RoleDeptDto;
 import com.saffron.api.portal.dto.role.RoleDto;
+import com.saffron.api.portal.dto.role.RoleMenuDto;
+import com.saffron.api.portal.dto.role.RoleUserDto;
 import com.saffron.api.portal.dto.role.UserMenuPermDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,7 +16,20 @@ public interface RoleMapper {
     List<RoleDto> selectRoleList(@Param("roleCode") String roleCode,
                                  @Param("roleName") String roleName);
 
+    List<RoleDto> selectActiveRoles();
+
     List<UserMenuPermDto> selectUserMenuPermissions(@Param("userId") String userId);
+
+    List<RoleMenuDto> selectRoleMenus(@Param("roleCode") String roleCode);
+
+    void deleteRoleMenus(@Param("roleCode") String roleCode);
+
+    void insertRoleMenus(@Param("roleCode") String roleCode,
+                         @Param("menuIds") List<String> menuIds);
+
+    List<RoleUserDto> selectRoleUsers(@Param("roleCode") String roleCode);
+
+    List<RoleDeptDto> selectRoleDepts(@Param("roleCode") String roleCode);
 
     int insertRole(RoleDto roleDto);
 
