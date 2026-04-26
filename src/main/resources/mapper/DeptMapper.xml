@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.api.portal.mapper.DeptMapper">
+
+    <select id="selectDeptList" resultType="com.saffron.api.portal.dto.user.DeptDto">
+        WITH RECURSIVE dept_tree AS (
+            SELECT d.deptId,
+                   d.parentDeptId,
+                   d.deptCode,
+                   d.deptName,
+                   d.deptLevel,
+                   d.sortOrder,
+                   d.useYn,
+                   CAST(d.deptId   AS CHAR(1000)) AS treePath,
+                   CAST(d.deptName AS CHAR(1000)) AS treeName,
+                   0                              AS depth
+            FROM   dept_info d
+            WHERE  d.parentDeptId IS NULL
+            UNION ALL
+            SELECT d.deptId,
+                   d.parentDeptId,
+                   d.deptCode,
+                   d.deptName,
+                   d.deptLevel,
+                   d.sortOrder,
+                   d.useYn,
+                   CONCAT(dt.treePath, ' > ', d.deptId)   AS treePath,
+                   CONCAT(dt.treeName, ' > ', d.deptName) AS treeName,
+                   dt.depth + 1                           AS depth
+            FROM   dept_info d
+            INNER JOIN dept_tree dt ON d.parentDeptId = dt.deptId
+        )
+        SELECT dt.deptId,
+               dt.parentDeptId,
+               dt.deptCode,
+               dt.deptName,
+               dt.deptLevel,
+               dt.sortOrder,
+               dt.useYn,
+               dt.treePath,
+               dt.treeName,
+               dt.depth
+        FROM   dept_tree dt
+        <where>
+            <if test="deptId != null and deptId != ''">
+                AND dt.deptId LIKE CONCAT('%', #{deptId}, '%')
+            </if>
+            <if test="deptName != null and deptName != ''">
+                AND dt.deptName LIKE CONCAT('%', #{deptName}, '%')
+            </if>
+            <if test="deptCode != null and deptCode != ''">
+                AND dt.deptCode LIKE CONCAT('%', #{deptCode}, '%')
+            </if>
+        </where>
+        ORDER BY dt.treePath, dt.sortOrder
+    </select>
+
+    <insert id="insertDept" parameterType="com.saffron.api.portal.dto.user.DeptDto">
+        INSERT INTO dept_info (deptId, parentDeptId, deptCode, deptName, deptLevel, sortOrder, useYn)
+        VALUES (#{deptId}, #{parentDeptId}, #{deptCode}, #{deptName}, #{deptLevel}, #{sortOrder}, #{useYn})
+    </insert>
+
+    <update id="updateDept" parameterType="com.saffron.api.portal.dto.user.DeptDto">
+        UPDATE dept_info
+        SET    parentDeptId = #{parentDeptId},
+               deptCode     = #{deptCode},
+               deptName     = #{deptName},
+               deptLevel    = #{deptLevel},
+               sortOrder    = #{sortOrder},
+               useYn        = #{useYn},
+               updatedDate  = NOW()
+        WHERE  deptId = #{deptId}
+    </update>
+
+    <select id="countDept" resultType="int">
+        SELECT COUNT(*) FROM dept_info WHERE deptId = #{deptId}
+    </select>
+
+    <select id="countChildDepts" resultType="int">
+        SELECT COUNT(*) FROM dept_info WHERE parentDeptId = #{deptId}
+    </select>
+
+    <select id="countUsersInDept" resultType="int">
+        SELECT COUNT(*) FROM user_info WHERE deptId = #{deptId}
+    </select>
+
+    <delete id="deleteDept">
+        DELETE FROM dept_info WHERE deptId = #{deptId}
+    </delete>
+
+    <select id="selectNextDeptId" resultType="string">
+        SELECT CONCAT('DEPT', LPAD(COALESCE(MAX(CAST(SUBSTRING(deptId, 5) AS UNSIGNED)), 0) + 1, 3, '0'))
+        FROM   dept_info
+        WHERE  deptId REGEXP '^DEPT[0-9]+$'
+    </select>
+
+</mapper>

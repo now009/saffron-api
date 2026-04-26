@@ -11,6 +11,9 @@ public class DeptDto {
     private Integer deptLevel;
     private Integer sortOrder;
     private String useYn;
+    private String treePath;
+    private String treeName;
+    private Integer depth;
     private String createdUser;
     private LocalDateTime createdDate;
     private String updateUser;
@@ -38,6 +41,15 @@ public class DeptDto {
 
     public String getUseYn() { return useYn; }
     public void setUseYn(String useYn) { this.useYn = useYn; }
+
+    public String getTreePath() { return treePath; }
+    public void setTreePath(String treePath) { this.treePath = treePath; }
+
+    public String getTreeName() { return treeName; }
+    public void setTreeName(String treeName) { this.treeName = treeName; }
+
+    public Integer getDepth() { return depth; }
+    public void setDepth(Integer depth) { this.depth = depth; }
 
     public String getCreatedUser() { return createdUser; }
     public void setCreatedUser(String createdUser) { this.createdUser = createdUser; }

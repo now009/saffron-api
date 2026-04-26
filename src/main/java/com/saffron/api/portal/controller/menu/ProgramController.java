@@ -1,5 +1,6 @@
 package com.saffron.api.portal.controller.menu;
 
+import com.saffron.api.portal.dto.common.ApiResponse;
 import com.saffron.api.portal.dto.menu.ProgramDto;
 import com.saffron.api.portal.service.program.ProgramService;
 import org.springframework.http.ResponseEntity;
@@ -27,17 +28,30 @@ public class ProgramController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Map<String, Object> body) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    public ResponseEntity<?> save(@RequestBody ProgramDto programDto) {
+        ApiResponse result = programService.saveProgram(programDto);
+        if ("fail".equals(result.getMessageCode())) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.ok(programService.getPrograms(null, null, null));
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> update(@RequestBody Map<String, Object> body) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    public ResponseEntity<?> update(@RequestBody ProgramDto programDto) {
+        ApiResponse result = programService.updateProgram(programDto);
+        if ("fail".equals(result.getMessageCode())) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.ok(programService.getPrograms(null, null, null));
     }
 
     @PostMapping("/delete/{programId}")
-    public ResponseEntity<?> delete(@PathVariable String programId) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    public ResponseEntity<ApiResponse> delete(@PathVariable String programId) {
+        return ResponseEntity.ok(programService.deleteProgram(programId));
+    }
+
+    @GetMapping("/next-id")
+    public ResponseEntity<Map<String, String>> nextId() {
+        return ResponseEntity.ok(Map.of("programId", programService.getNextProgramId()));
     }
 }
