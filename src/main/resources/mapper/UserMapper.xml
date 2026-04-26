@@ -39,15 +39,20 @@
 
     <update id="updateUser" parameterType="com.saffron.api.portal.dto.user.UserDto">
         UPDATE user_info
-        SET    deptId      = #{deptId},
-               userName    = #{userName},
-               email       = #{email},
-               phone       = #{phone},
-               position    = #{position},
-               jobGrade    = #{jobGrade},
-               useYn       = #{useYn},
-               managerYn   = #{managerYn},
-               updatedDate = NOW()
+        <set>
+            deptId      = #{deptId},
+            userName    = #{userName},
+            <if test="password != null">
+            password    = SHA2(#{password}, 256),
+            </if>
+            email       = #{email},
+            phone       = #{phone},
+            position    = #{position},
+            jobGrade    = #{jobGrade},
+            useYn       = #{useYn},
+            managerYn   = #{managerYn},
+            updatedDate = NOW()
+        </set>
         WHERE  userId = #{userId}
     </update>
 
