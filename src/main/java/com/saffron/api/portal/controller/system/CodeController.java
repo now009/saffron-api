@@ -1,6 +1,7 @@
 package com.saffron.api.portal.controller.system;
 
 import com.saffron.api.portal.dto.code.CodeDto;
+import com.saffron.api.portal.dto.code.CodeTreeDto;
 import com.saffron.api.portal.dto.common.ApiResponse;
 import com.saffron.api.portal.service.code.CodeService;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,9 @@ public class CodeController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<List<CodeDto>> list(@RequestBody(required = false) Map<String, String> params) {
+    public ResponseEntity<List<CodeTreeDto>> list(@RequestBody(required = false) Map<String, String> params) {
         String parentCode = params != null ? params.get("parentCode") : null;
-        String code      = params != null ? params.get("code") : null;
-        String codeName  = params != null ? params.get("codeName") : null;
-        return ResponseEntity.ok(codeService.getCodes(parentCode, code, codeName));
+        return ResponseEntity.ok(codeService.getCodes(parentCode));
     }
 
     @PostMapping("/save")
@@ -33,7 +32,7 @@ public class CodeController {
         if ("fail".equals(result.getMessageCode())) {
             return ResponseEntity.ok(result);
         }
-        return ResponseEntity.ok(codeService.getCodes(null, null, null));
+        return ResponseEntity.ok(codeService.getCodes(null));
     }
 
     @PostMapping("/update")
@@ -42,7 +41,7 @@ public class CodeController {
         if ("fail".equals(result.getMessageCode())) {
             return ResponseEntity.ok(result);
         }
-        return ResponseEntity.ok(codeService.getCodes(null, null, null));
+        return ResponseEntity.ok(codeService.getCodes(null));
     }
 
     @PostMapping("/delete/{code}")

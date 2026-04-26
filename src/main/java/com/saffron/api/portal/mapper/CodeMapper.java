@@ -13,6 +13,8 @@ public interface CodeMapper {
                                  @Param("code") String code,
                                  @Param("codeName") String codeName);
 
+    List<CodeDto> selectAllCodes();
+
     int insertCode(CodeDto codeDto);
 
     int updateCode(CodeDto codeDto);

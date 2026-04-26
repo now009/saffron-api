@@ -1,11 +1,14 @@
 package com.saffron.api.portal.service.code;
 
 import com.saffron.api.portal.dto.code.CodeDto;
+import com.saffron.api.portal.dto.code.CodeTreeDto;
 import com.saffron.api.portal.dto.common.ApiResponse;
 import com.saffron.api.portal.mapper.CodeMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CodeServiceImpl implements CodeService {
@@ -17,8 +20,21 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    public List<CodeDto> getCodes(String parentCode, String code, String codeName) {
-        return codeMapper.selectCodeList(parentCode, code, codeName);
+    public List<CodeTreeDto> getCodes(String parentCode) {
+        List<CodeDto> all = codeMapper.selectAllCodes();
+        return buildTree(all, parentCode);
+    }
+
+    private List<CodeTreeDto> buildTree(List<CodeDto> all, String parentCode) {
+        List<CodeTreeDto> result = new ArrayList<>();
+        for (CodeDto dto : all) {
+            if (Objects.equals(dto.getParentCode(), parentCode)) {
+                CodeTreeDto node = new CodeTreeDto(dto);
+                node.setChildren(buildTree(all, dto.getCode()));
+                result.add(node);
+            }
+        }
+        return result;
     }
 
     @Override

@@ -56,6 +56,16 @@
         DELETE FROM code_info WHERE code = #{code}
     </delete>
 
+    <select id="selectAllCodes" resultType="com.saffron.api.portal.dto.code.CodeDto">
+        SELECT code,
+               parentCode,
+               codeName,
+               sortOrder,
+               useYn
+        FROM   code_info
+        ORDER  BY COALESCE(parentCode, ''), sortOrder, code
+    </select>
+
     <select id="selectNextCode" resultType="string">
         SELECT CONCAT('CODE', LPAD(COALESCE(MAX(CAST(SUBSTRING(code, 5) AS UNSIGNED)), 0) + 1, 3, '0'))
         FROM   code_info
