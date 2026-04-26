@@ -340,3 +340,53 @@ MenuController를 참조해서 DeptController를 구현해줘
 -- user
  UserController에 
  - front에서 사용자 ID로 중복체크할수 있는 endpoint를 만들어줘
+
+-- dept_info table을 조회한 결과에 treeName을 deptNameTree를 변경해주고 
+   dept별로 [ space + 컬럼값 ] 처럼 tree로 표현할수 있게 해줘 
+
+ - {
+   "deptId": "DEPT002",
+   "parentDeptId": "DEPT001",
+   "deptCode": "MGMT",
+   "deptName": "경영지원본부",
+   "deptLevel": 2,
+   "sortOrder": 1,
+   "useYn": "Y",
+   "treePath": "DEPT001 > DEPT002",  
+   "treeName": "본사 > 경영지원본부", -->  ex) "deptNameTree":"  경영지원본부"
+   "depth": 1,
+   "createdUser": null,
+   "createdDate": null,
+   "updateUser": null,
+   "updatedDate": null
+   },
+
+MenuController를 참조해 RoleController에 아래 endpoint를 구현해주고 
+추가할것이 있으면 해줘
+- GET /portal/role/next-id  roleCode 자동생성 
+- list POST /portal/role/list
+- 생성 POST /portal/role, 
+- 수정 POST /portal/role/{roleCode}, 
+- 삭제 POST /portal/role/{roleCode}
+
+MenuController를 참조해 code폴더를 생성후 CodeController를 생성하고 endpoint를 구현
+table : code_info
+- list POST /portal/code/list  - parentCode를 기준으로 Groupping해 조회
+- 생성 POST /portal/code,
+- 수정 POST /portal/code/{code},
+- 삭제 POST /portal/code/{code}
+  ┌────────┬─────────────────────────────────┬─────────────────────────────────────────────────────────────────┐
+  │ Method │               URI               │                           Description                           │
+  ├────────┼─────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+  │ POST   │ /portal/codes/list              │ 조회 (parentCode/code/codeName 필터, parentCode 기준 그룹 정렬) │
+  ├────────┼─────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+  │ POST   │ /portal/codes/save              │ 생성 → 성공 시 전체 목록 반환                                   │
+  ├────────┼─────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+  │ POST   │ /portal/codes/update            │ 수정 → 성공 시 전체 목록 반환                                   │
+  ├────────┼─────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+  │ POST   │ /portal/codes/delete/{code}     │ 삭제 (하위 코드 존재 시 fail)                                   │
+  ├────────┼─────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+  │ GET    │ /portal/codes/check-code/{code} │ 코드 중복 체크                                                  │
+  ├────────┼─────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+  │ GET    │ /portal/codes/next-id           │ 다음 코드값 (CODE001, CODE002...)                               │
+  └────────┴─────────────────────────────────┴─────────────────────────────────────────────────────────────────┘

@@ -25,5 +25,7 @@ public interface DeptMapper {
 
     int deleteDept(@Param("deptId") String deptId);
 
+    int countDeptCode(@Param("deptCode") String deptCode);
+
     String selectNextDeptId();
 }

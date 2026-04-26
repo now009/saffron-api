@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.api.portal.mapper.CodeMapper">
+
+    <select id="selectCodeList" resultType="com.saffron.api.portal.dto.code.CodeDto">
+        SELECT code,
+               parentCode,
+               codeName,
+               sortOrder,
+               useYn,
+               createdUser,
+               createdDate,
+               updateUser,
+               updatedDate
+        FROM   code_info
+        <where>
+            <if test="parentCode != null and parentCode != ''">
+                AND parentCode = #{parentCode}
+            </if>
+            <if test="code != null and code != ''">
+                AND code LIKE CONCAT('%', #{code}, '%')
+            </if>
+            <if test="codeName != null and codeName != ''">
+                AND codeName LIKE CONCAT('%', #{codeName}, '%')
+            </if>
+        </where>
+        ORDER BY parentCode, sortOrder, code
+    </select>
+
+    <insert id="insertCode" parameterType="com.saffron.api.portal.dto.code.CodeDto">
+        INSERT INTO code_info (code, parentCode, codeName, sortOrder, useYn)
+        VALUES (#{code}, #{parentCode}, #{codeName}, #{sortOrder}, #{useYn})
+    </insert>
+
+    <update id="updateCode" parameterType="com.saffron.api.portal.dto.code.CodeDto">
+        UPDATE code_info
+        SET    parentCode  = #{parentCode},
+               codeName    = #{codeName},
+               sortOrder   = #{sortOrder},
+               useYn       = #{useYn},
+               updatedDate = NOW()
+        WHERE  code = #{code}
+    </update>
+
+    <select id="countCode" resultType="int">
+        SELECT COUNT(*) FROM code_info WHERE code = #{code}
+    </select>
+
+    <select id="countChildCodes" resultType="int">
+        SELECT COUNT(*) FROM code_info WHERE parentCode = #{code}
+    </select>
+
+    <delete id="deleteCode">
+        DELETE FROM code_info WHERE code = #{code}
+    </delete>
+
+    <select id="selectNextCode" resultType="string">
+        SELECT CONCAT('CODE', LPAD(COALESCE(MAX(CAST(SUBSTRING(code, 5) AS UNSIGNED)), 0) + 1, 3, '0'))
+        FROM   code_info
+        WHERE  code REGEXP '^CODE[0-9]+$'
+    </select>
+
+</mapper>

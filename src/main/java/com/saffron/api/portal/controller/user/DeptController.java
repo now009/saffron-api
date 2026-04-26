@@ -50,6 +50,11 @@ public class DeptController {
         return ResponseEntity.ok(deptService.deleteDept(deptId));
     }
 
+    @GetMapping("/check-code/{deptCode}")
+    public ResponseEntity<ApiResponse> checkCode(@PathVariable String deptCode) {
+        return ResponseEntity.ok(deptService.checkDeptCode(deptCode));
+    }
+
     @GetMapping("/next-id")
     public ResponseEntity<Map<String, String>> nextId() {
         return ResponseEntity.ok(Map.of("deptId", deptService.getNextDeptId()));

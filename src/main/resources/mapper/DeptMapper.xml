@@ -13,9 +13,8 @@
                    d.deptLevel,
                    d.sortOrder,
                    d.useYn,
-                   CAST(d.deptId   AS CHAR(1000)) AS treePath,
-                   CAST(d.deptName AS CHAR(1000)) AS treeName,
-                   0                              AS depth
+                   CAST(d.deptId AS CHAR(1000)) AS treePath,
+                   0                            AS depth
             FROM   dept_info d
             WHERE  d.parentDeptId IS NULL
             UNION ALL
@@ -26,9 +25,8 @@
                    d.deptLevel,
                    d.sortOrder,
                    d.useYn,
-                   CONCAT(dt.treePath, ' > ', d.deptId)   AS treePath,
-                   CONCAT(dt.treeName, ' > ', d.deptName) AS treeName,
-                   dt.depth + 1                           AS depth
+                   CONCAT(dt.treePath, ' > ', d.deptId) AS treePath,
+                   dt.depth + 1                         AS depth
             FROM   dept_info d
             INNER JOIN dept_tree dt ON d.parentDeptId = dt.deptId
         )
@@ -40,7 +38,7 @@
                dt.sortOrder,
                dt.useYn,
                dt.treePath,
-               dt.treeName,
+               CONCAT(REPEAT('　', dt.depth), dt.deptName) AS deptNameTree,
                dt.depth
         FROM   dept_tree dt
         <where>
@@ -89,6 +87,10 @@
     <delete id="deleteDept">
         DELETE FROM dept_info WHERE deptId = #{deptId}
     </delete>
+
+    <select id="countDeptCode" resultType="int">
+        SELECT COUNT(*) FROM dept_info WHERE deptCode = #{deptCode}
+    </select>
 
     <select id="selectNextDeptId" resultType="string">
         SELECT CONCAT('DEPT', LPAD(COALESCE(MAX(CAST(SUBSTRING(deptId, 5) AS UNSIGNED)), 0) + 1, 3, '0'))

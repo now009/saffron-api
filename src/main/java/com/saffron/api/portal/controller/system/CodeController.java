@@ -1,48 +1,62 @@
 package com.saffron.api.portal.controller.system;
 
+import com.saffron.api.portal.dto.code.CodeDto;
+import com.saffron.api.portal.dto.common.ApiResponse;
+import com.saffron.api.portal.service.code.CodeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/portal/codes")
 public class CodeController {
 
-    @GetMapping
-    public ResponseEntity<?> list(@RequestParam(required = false) String groupCode,
-                                  @RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "20") int size) {
-        return ResponseEntity.ok(Map.of(
-                "page", page,
-                "size", size,
-                "data", java.util.List.of()
-        ));
+    private final CodeService codeService;
+
+    public CodeController(CodeService codeService) {
+        this.codeService = codeService;
     }
 
-    @GetMapping("/groups")
-    public ResponseEntity<?> groups() {
-        return ResponseEntity.ok(Map.of("data", java.util.List.of()));
+    @PostMapping("/list")
+    public ResponseEntity<List<CodeDto>> list(@RequestBody(required = false) Map<String, String> params) {
+        String parentCode = params != null ? params.get("parentCode") : null;
+        String code      = params != null ? params.get("code") : null;
+        String codeName  = params != null ? params.get("codeName") : null;
+        return ResponseEntity.ok(codeService.getCodes(parentCode, code, codeName));
     }
 
-    @GetMapping("/{codeId}")
-    public ResponseEntity<?> get(@PathVariable String codeId) {
-        return ResponseEntity.ok(Map.of("codeId", codeId));
+    @PostMapping("/save")
+    public ResponseEntity<?> save(@RequestBody CodeDto codeDto) {
+        ApiResponse result = codeService.saveCode(codeDto);
+        if ("fail".equals(result.getMessageCode())) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.ok(codeService.getCodes(null, null, null));
     }
 
-    @PostMapping
-    public ResponseEntity<?> save(@RequestBody Map<String, Object> body) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    @PostMapping("/update")
+    public ResponseEntity<?> update(@RequestBody CodeDto codeDto) {
+        ApiResponse result = codeService.updateCode(codeDto);
+        if ("fail".equals(result.getMessageCode())) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.ok(codeService.getCodes(null, null, null));
     }
 
-    @PutMapping("/{codeId}")
-    public ResponseEntity<?> update(@PathVariable String codeId,
-                                    @RequestBody Map<String, Object> body) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    @PostMapping("/delete/{code}")
+    public ResponseEntity<ApiResponse> delete(@PathVariable String code) {
+        return ResponseEntity.ok(codeService.deleteCode(code));
     }
 
-    @DeleteMapping("/{codeId}")
-    public ResponseEntity<?> delete(@PathVariable String codeId) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    @GetMapping("/check-code/{code}")
+    public ResponseEntity<ApiResponse> checkCode(@PathVariable String code) {
+        return ResponseEntity.ok(codeService.checkCode(code));
+    }
+
+    @GetMapping("/next-id")
+    public ResponseEntity<Map<String, String>> nextId() {
+        return ResponseEntity.ok(Map.of("code", codeService.getNextCode()));
     }
 }

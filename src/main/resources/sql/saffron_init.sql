@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS program_info;
 DROP TABLE IF EXISTS menu_info;
 DROP TABLE IF EXISTS user_info;
 DROP TABLE IF EXISTS dept_info;
-
+DROP TABLE IF EXISTS code_info;
 -- =====================================================================================
 -- CREATE
 -- =====================================================================================
@@ -105,6 +105,18 @@ CREATE TABLE role_mapping (
                               PRIMARY KEY (mappingId)
 ) COMMENT '권한매핑';
 
+CREATE TABLE code_info (
+                           code            VARCHAR(50)     NOT NULL                  COMMENT '코드',
+                           parentCode      VARCHAR(50)     NULL                      COMMENT '상위코드',
+                           codeName        VARCHAR(100)    NOT NULL                  COMMENT '코드명',
+                           sortOrder       INT             DEFAULT 0                 COMMENT '정렬순서',
+                           useYn           CHAR(1)         DEFAULT 'Y'               COMMENT '사용여부',
+                           createdUser     VARCHAR(20)     DEFAULT 'system'          COMMENT '생성자',
+                           createdDate     TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
+                           updateUser      VARCHAR(20)     DEFAULT 'system'          COMMENT '수정자',
+                           updatedDate     TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '수정일시',
+                           PRIMARY KEY (code)
+) COMMENT '코드정보';
 -- =====================================================================================
 -- INIT SAMPLE DATA
 -- =====================================================================================
@@ -184,3 +196,90 @@ INSERT INTO role_mapping (mappingId, roleId, userId, programId, canRead, canWrit
  ('MAP018', 'ROLE_GUEST',   NULL,     'PGM007', 'Y', 'N', 'N', 'N'),
  ('MAP019', 'ROLE_GUEST',   NULL,     'PGM010', 'Y', 'N', 'N', 'N'),
  ('MAP020', 'ROLE_ADMIN',   'now009', 'PGM001', 'Y', 'Y', 'Y', 'Y');
+
+-- =====================================================================================
+-- INIT CODE DATA
+-- =====================================================================================
+
+-- 사용여부
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('USE_YN',   NULL,     '사용여부', 1),
+('USE_YN_Y', 'USE_YN', '사용',     2),
+('USE_YN_N', 'USE_YN', '미사용',   3);
+
+-- 성별
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('GENDER',   NULL,     '성별', 1),
+('GENDER_M', 'GENDER', '남성', 2),
+('GENDER_F', 'GENDER', '여성', 3);
+
+-- 직급
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('JOB_GRADE',    NULL,        '직급', 1),
+('JOB_GRADE_1',  'JOB_GRADE', '1급',  2),
+('JOB_GRADE_2',  'JOB_GRADE', '2급',  3),
+('JOB_GRADE_3',  'JOB_GRADE', '3급',  4),
+('JOB_GRADE_4',  'JOB_GRADE', '4급',  5),
+('JOB_GRADE_5',  'JOB_GRADE', '5급',  6),
+('JOB_GRADE_EX', 'JOB_GRADE', '임원', 7);
+
+-- 직위
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('POSITION',    NULL,       '직위',    1),
+('POSITION_01', 'POSITION', '사원',    2),
+('POSITION_02', 'POSITION', '주임',    3),
+('POSITION_03', 'POSITION', '대리',    4),
+('POSITION_04', 'POSITION', '과장',    5),
+('POSITION_05', 'POSITION', '차장',    6),
+('POSITION_06', 'POSITION', '부장',    7),
+('POSITION_07', 'POSITION', '팀장',    8),
+('POSITION_08', 'POSITION', '본부장',  9),
+('POSITION_09', 'POSITION', '이사',    10),
+('POSITION_10', 'POSITION', '대표이사',11);
+
+-- 부서레벨
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('DEPT_LEVEL',   NULL,         '부서레벨', 1),
+('DEPT_LEVEL_1', 'DEPT_LEVEL', '본부',     2),
+('DEPT_LEVEL_2', 'DEPT_LEVEL', '부',       3),
+('DEPT_LEVEL_3', 'DEPT_LEVEL', '팀',       4);
+
+-- 메뉴레벨
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('MENU_LEVEL',   NULL,         '메뉴레벨', 1),
+('MENU_LEVEL_1', 'MENU_LEVEL', '대메뉴',   2),
+('MENU_LEVEL_2', 'MENU_LEVEL', '중메뉴',   3),
+('MENU_LEVEL_3', 'MENU_LEVEL', '소메뉴',   4);
+
+-- 권한유형
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('ROLE_TYPE',         NULL,        '권한유형',     1),
+('ROLE_TYPE_ADMIN',   'ROLE_TYPE', '시스템관리자', 2),
+('ROLE_TYPE_MANAGER', 'ROLE_TYPE', '팀장',         3),
+('ROLE_TYPE_USER',    'ROLE_TYPE', '일반사용자',   4),
+('ROLE_TYPE_GUEST',   'ROLE_TYPE', '게스트',       5);
+
+-- 로그인상태
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('LOGIN_STATUS',         NULL,           '로그인상태',    1),
+('LOGIN_STATUS_SUCCESS', 'LOGIN_STATUS', '로그인 성공',   2),
+('LOGIN_STATUS_FAIL',    'LOGIN_STATUS', '로그인 실패',   3),
+('LOGIN_STATUS_LOCKED',  'LOGIN_STATUS', '계정 잠금',     4),
+('LOGIN_STATUS_EXPIRED', 'LOGIN_STATUS', '비밀번호 만료', 5),
+('LOGIN_STATUS_LOGOUT',  'LOGIN_STATUS', '로그아웃',      6);
+
+-- 게시판유형
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('BOARD_TYPE',        NULL,         '게시판유형', 1),
+('BOARD_TYPE_NOTICE', 'BOARD_TYPE', '공지사항',   2),
+('BOARD_TYPE_FAQ',    'BOARD_TYPE', 'FAQ',         3),
+('BOARD_TYPE_QNA',    'BOARD_TYPE', 'Q&A',         4),
+('BOARD_TYPE_FREE',   'BOARD_TYPE', '자유게시판', 5);
+
+-- 파일유형
+INSERT INTO code_info (code, parentCode, codeName, sortOrder) VALUES
+('FILE_TYPE',       NULL,        '파일유형', 1),
+('FILE_TYPE_IMAGE', 'FILE_TYPE', '이미지',   2),
+('FILE_TYPE_DOC',   'FILE_TYPE', '문서',     3),
+('FILE_TYPE_VIDEO', 'FILE_TYPE', '동영상',   4),
+('FILE_TYPE_ZIP',   'FILE_TYPE', '압축파일', 5);

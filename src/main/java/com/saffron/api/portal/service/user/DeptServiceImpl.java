@@ -63,6 +63,14 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
+    public ApiResponse checkDeptCode(String deptCode) {
+        if (deptMapper.countDeptCode(deptCode) > 0) {
+            return ApiResponse.fail("이미 사용중인 부서코드입니다");
+        }
+        return ApiResponse.success("사용 가능한 부서코드입니다");
+    }
+
+    @Override
     public String getNextDeptId() {
         return deptMapper.selectNextDeptId();
     }

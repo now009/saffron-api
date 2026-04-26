@@ -12,7 +12,7 @@ public class DeptDto {
     private Integer sortOrder;
     private String useYn;
     private String treePath;
-    private String treeName;
+    private String deptNameTree;
     private Integer depth;
     private String createdUser;
     private LocalDateTime createdDate;
@@ -45,8 +45,8 @@ public class DeptDto {
     public String getTreePath() { return treePath; }
     public void setTreePath(String treePath) { this.treePath = treePath; }
 
-    public String getTreeName() { return treeName; }
-    public void setTreeName(String treeName) { this.treeName = treeName; }
+    public String getDeptNameTree() { return deptNameTree; }
+    public void setDeptNameTree(String deptNameTree) { this.deptNameTree = deptNameTree; }
 
     public Integer getDepth() { return depth; }
     public void setDepth(Integer depth) { this.depth = depth; }

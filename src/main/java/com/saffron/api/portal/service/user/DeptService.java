@@ -15,5 +15,7 @@ public interface DeptService {
 
     ApiResponse deleteDept(String deptId);
 
+    ApiResponse checkDeptCode(String deptCode);
+
     String getNextDeptId();
 }

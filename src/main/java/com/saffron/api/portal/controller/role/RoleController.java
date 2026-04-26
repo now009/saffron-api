@@ -1,42 +1,61 @@
 package com.saffron.api.portal.controller.role;
 
+import com.saffron.api.portal.dto.common.ApiResponse;
+import com.saffron.api.portal.dto.role.RoleDto;
+import com.saffron.api.portal.service.role.RoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/portal/roles")
 public class RoleController {
 
-    @GetMapping
-    public ResponseEntity<?> list(@RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "20") int size) {
-        return ResponseEntity.ok(Map.of(
-                "page", page,
-                "size", size,
-                "data", java.util.List.of()
-        ));
+    private final RoleService roleService;
+
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
     }
 
-    @GetMapping("/{roleId}")
-    public ResponseEntity<?> get(@PathVariable String roleId) {
-        return ResponseEntity.ok(Map.of("roleId", roleId));
+    @PostMapping("/list")
+    public ResponseEntity<List<RoleDto>> list(@RequestBody(required = false) Map<String, String> params) {
+        String roleCode = params != null ? params.get("roleCode") : null;
+        String roleName = params != null ? params.get("roleName") : null;
+        return ResponseEntity.ok(roleService.getRoles(roleCode, roleName));
     }
 
-    @PostMapping
-    public ResponseEntity<?> save(@RequestBody Map<String, Object> body) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    @PostMapping("/save")
+    public ResponseEntity<?> save(@RequestBody RoleDto roleDto) {
+        ApiResponse result = roleService.saveRole(roleDto);
+        if ("fail".equals(result.getMessageCode())) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.ok(roleService.getRoles(null, null));
     }
 
-    @PutMapping("/{roleId}")
-    public ResponseEntity<?> update(@PathVariable String roleId,
-                                    @RequestBody Map<String, Object> body) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    @PostMapping("/update")
+    public ResponseEntity<?> update(@RequestBody RoleDto roleDto) {
+        ApiResponse result = roleService.updateRole(roleDto);
+        if ("fail".equals(result.getMessageCode())) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.ok(roleService.getRoles(null, null));
     }
 
-    @DeleteMapping("/{roleId}")
-    public ResponseEntity<?> delete(@PathVariable String roleId) {
-        return ResponseEntity.ok(Map.of("result", "ok"));
+    @PostMapping("/delete/{roleCode}")
+    public ResponseEntity<ApiResponse> delete(@PathVariable String roleCode) {
+        return ResponseEntity.ok(roleService.deleteRole(roleCode));
+    }
+
+    @GetMapping("/check-code/{roleCode}")
+    public ResponseEntity<ApiResponse> checkCode(@PathVariable String roleCode) {
+        return ResponseEntity.ok(roleService.checkRoleCode(roleCode));
+    }
+
+    @GetMapping("/next-id")
+    public ResponseEntity<Map<String, String>> nextId() {
+        return ResponseEntity.ok(Map.of("roleCode", roleService.getNextRoleCode()));
     }
 }
