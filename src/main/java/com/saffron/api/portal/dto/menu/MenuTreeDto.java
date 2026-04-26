@@ -10,6 +10,8 @@ public class MenuTreeDto {
     private String menuName;
     private Integer menuLevel;
     private String menuIcon;
+    private String menuDirYn;
+    private String programId;
     private Integer sortOrder;
     private List<MenuTreeDto> children = new ArrayList<>();
 
@@ -29,6 +31,12 @@ public class MenuTreeDto {
 
     public String getMenuIcon() { return menuIcon; }
     public void setMenuIcon(String menuIcon) { this.menuIcon = menuIcon; }
+
+    public String getMenuDirYn() { return menuDirYn; }
+    public void setMenuDirYn(String menuDirYn) { this.menuDirYn = menuDirYn; }
+
+    public String getProgramId() { return programId; }
+    public void setProgramId(String programId) { this.programId = programId; }
 
     public Integer getSortOrder() { return sortOrder; }
     public void setSortOrder(Integer sortOrder) { this.sortOrder = sortOrder; }

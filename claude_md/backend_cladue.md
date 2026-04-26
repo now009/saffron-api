@@ -282,5 +282,53 @@ MenuController에 새로운 MenuId값을 조회해 리턴하는 코드를 추가
 - {"messageCode":"success","message":"저장되었습니다"}
 실행후 list redirect
 
+-------------------------------------------------------------------------
+Program Controller의 URI를
+/portal/programs/list
+/portal/programs/save
+/portal/programs/update
+/portal/programs/delet로 수정
 
+/portal/programs/list는 program_info table을 조회하고
+검색조건으로 programId, programName, programUrl로도 조회할 수 있도록 수정
+
+-- Front에서 메뉴생성 , 수정요청이 요구
+    예제)
+    1. 메뉴 생성 (add)
+    URL: POST http://localhost:8080/portal/menus/save
+    Body:
+    
+    {
+    "menuId": "MENU006",
+    "parentMenuId": "MENU001",
+    "menuName": "테스트메뉴",
+    "menuLevel": 1,
+    "programId": "PRG001",
+    "programUrl": "/test",
+    "sortOrder": 3,
+    "useYn": "Y"
+    }
+    
+    2.메뉴 수정 (edit)
+    
+    URL: POST http://localhost:8080/portal/menus/update
+    Body:
+    
+    {
+    "menuId": "MENU001",
+    "menuName": "시스템관리",
+    "programId": "PRG001",
+    "programUrl": "/system",
+    "useYn": "Y"
+    }
+
+저장실행후
+- {"messageCode":"fail","message":""} <- 에러메세지 Exception
+- {"messageCode":"success","message":"저장되었습니다"}
+
+관련된 코드를 수정해줘
+
+role_mapping, role_info , program_info , menu_info, user_info, dept_info table에 insert/update시
+parentDeptId    VARCHAR(20)    NULL 처럼 컬럼에 NULL 이 설정되어 있으면
+front에서 ''값처럼 빈값이 오더라도 NULL 컬럼에 NULL이 입력될수 있도록 수정
 

@@ -1,41 +1,42 @@
 package com.saffron.api.portal.controller.menu;
 
+import com.saffron.api.portal.dto.menu.ProgramDto;
+import com.saffron.api.portal.service.program.ProgramService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/portal/programs")
 public class ProgramController {
 
-    @GetMapping
-    public ResponseEntity<?> list(@RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "20") int size) {
-        return ResponseEntity.ok(Map.of(
-                "page", page,
-                "size", size,
-                "data", java.util.List.of()
-        ));
+    private final ProgramService programService;
+
+    public ProgramController(ProgramService programService) {
+        this.programService = programService;
     }
 
-    @GetMapping("/{programId}")
-    public ResponseEntity<?> get(@PathVariable String programId) {
-        return ResponseEntity.ok(Map.of("programId", programId));
+    @PostMapping("/list")
+    public ResponseEntity<List<ProgramDto>> list(@RequestBody(required = false) Map<String, String> params) {
+        String programId   = params != null ? params.get("programId")   : null;
+        String programName = params != null ? params.get("programName") : null;
+        String programUrl  = params != null ? params.get("programUrl")  : null;
+        return ResponseEntity.ok(programService.getPrograms(programId, programName, programUrl));
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody Map<String, Object> body) {
         return ResponseEntity.ok(Map.of("result", "ok"));
     }
 
-    @PutMapping("/{programId}")
-    public ResponseEntity<?> update(@PathVariable String programId,
-                                    @RequestBody Map<String, Object> body) {
+    @PostMapping("/update")
+    public ResponseEntity<?> update(@RequestBody Map<String, Object> body) {
         return ResponseEntity.ok(Map.of("result", "ok"));
     }
 
-    @DeleteMapping("/{programId}")
+    @PostMapping("/delete/{programId}")
     public ResponseEntity<?> delete(@PathVariable String programId) {
         return ResponseEntity.ok(Map.of("result", "ok"));
     }

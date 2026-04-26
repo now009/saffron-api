@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.api.portal.mapper.ProgramMapper">
+
+    <select id="selectProgramList" resultType="com.saffron.api.portal.dto.menu.ProgramDto">
+        SELECT programId,
+               programName,
+               programUrl,
+               useYn,
+               sortOrder
+        FROM   program_info
+        <where>
+            <if test="programId != null and programId != ''">
+                AND programId LIKE CONCAT('%', #{programId}, '%')
+            </if>
+            <if test="programName != null and programName != ''">
+                AND programName LIKE CONCAT('%', #{programName}, '%')
+            </if>
+            <if test="programUrl != null and programUrl != ''">
+                AND programUrl LIKE CONCAT('%', #{programUrl}, '%')
+            </if>
+        </where>
+        ORDER BY sortOrder, programId
+    </select>
+
+
+</mapper>

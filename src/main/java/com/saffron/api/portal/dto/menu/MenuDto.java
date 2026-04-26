@@ -9,6 +9,9 @@ public class MenuDto {
     private String menuName;
     private Integer menuLevel;
     private String menuIcon;
+    private String menuDirYn;
+    private String programId;
+    private String programUrl;
     private Integer sortOrder;
     private String useYn;
     private String createdUser;
@@ -32,6 +35,15 @@ public class MenuDto {
 
     public String getMenuIcon() { return menuIcon; }
     public void setMenuIcon(String menuIcon) { this.menuIcon = menuIcon; }
+
+    public String getMenuDirYn() { return menuDirYn; }
+    public void setMenuDirYn(String menuDirYn) { this.menuDirYn = menuDirYn; }
+
+    public String getProgramId() { return programId; }
+    public void setProgramId(String programId) { this.programId = programId; }
+
+    public String getProgramUrl() { return programUrl; }
+    public void setProgramUrl(String programUrl) { this.programUrl = programUrl; }
 
     public Integer getSortOrder() { return sortOrder; }
     public void setSortOrder(Integer sortOrder) { this.sortOrder = sortOrder; }

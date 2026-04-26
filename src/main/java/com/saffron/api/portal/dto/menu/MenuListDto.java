@@ -9,11 +9,11 @@ public class MenuListDto {
     private String parentMenuId;
     private Integer menuLevel;
     private String menuIcon;
+    private String menuDirYn;
     private Integer sortOrder;
     private String useYn;
     private String treePath;
     private String programId;
-    private String programCode;
     private String programName;
     private String programUrl;
 
@@ -40,6 +40,9 @@ public class MenuListDto {
     public String getMenuIcon() { return menuIcon; }
     public void setMenuIcon(String menuIcon) { this.menuIcon = menuIcon; }
 
+    public String getMenuDirYn() { return menuDirYn; }
+    public void setMenuDirYn(String menuDirYn) { this.menuDirYn = menuDirYn; }
+
     public Integer getSortOrder() { return sortOrder; }
     public void setSortOrder(Integer sortOrder) { this.sortOrder = sortOrder; }
 
@@ -51,9 +54,6 @@ public class MenuListDto {
 
     public String getProgramId() { return programId; }
     public void setProgramId(String programId) { this.programId = programId; }
-
-    public String getProgramCode() { return programCode; }
-    public void setProgramCode(String programCode) { this.programCode = programCode; }
 
     public String getProgramName() { return programName; }
     public void setProgramName(String programName) { this.programName = programName; }

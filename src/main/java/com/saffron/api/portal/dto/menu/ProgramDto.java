@@ -6,7 +6,6 @@ public class ProgramDto {
 
     private String programId;
     private String menuId;
-    private String programCode;
     private String programName;
     private String programUrl;
     private String useYn;
@@ -23,9 +22,6 @@ public class ProgramDto {
 
     public String getMenuId() { return menuId; }
     public void setMenuId(String menuId) { this.menuId = menuId; }
-
-    public String getProgramCode() { return programCode; }
-    public void setProgramCode(String programCode) { this.programCode = programCode; }
 
     public String getProgramName() { return programName; }
     public void setProgramName(String programName) { this.programName = programName; }

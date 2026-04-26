@@ -11,6 +11,7 @@
                    m.menuName,
                    m.menuLevel,
                    m.menuIcon,
+                   m.menuDirYn,
                    m.programId,
                    m.sortOrder,
                    m.useYn,
@@ -26,6 +27,7 @@
                    m.menuName,
                    m.menuLevel,
                    m.menuIcon,
+                   m.menuDirYn,
                    m.programId,
                    m.sortOrder,
                    m.useYn,
@@ -43,11 +45,11 @@
                mt.parentMenuId,
                mt.menuLevel,
                mt.menuIcon,
+               mt.menuDirYn,
                mt.programId,
                mt.sortOrder,
                mt.useYn,
                mt.treePath,
-               p.programCode,
                p.programName,
                p.programUrl
         FROM   menu_tree mt
@@ -71,6 +73,7 @@
                menuName,
                menuLevel,
                menuIcon,
+               menuDirYn,
                programId,
                sortOrder
         FROM   menu_info
@@ -93,6 +96,7 @@
     <update id="updateMenu" parameterType="com.saffron.api.portal.dto.menu.MenuDto">
         UPDATE menu_info
         SET    menuName    = #{menuName},
+               menuDirYn  = #{menuDirYn},
                programId   = #{programId},
                useYn       = #{useYn},
                updatedDate = NOW()
@@ -100,8 +104,8 @@
     </update>
 
     <insert id="insertMenu" parameterType="com.saffron.api.portal.dto.menu.MenuDto">
-        INSERT INTO menu_info (menuId, parentMenuId, menuName, menuLevel, menuIcon, programId, sortOrder, useYn)
-        VALUES (#{menuId}, #{parentMenuId}, #{menuName}, #{menuLevel}, #{menuIcon}, #{programId}, #{sortOrder}, #{useYn})
+        INSERT INTO menu_info (menuId, parentMenuId, menuName, menuLevel, menuIcon, menuDirYn, programId, sortOrder, useYn)
+        VALUES (#{menuId}, #{parentMenuId}, #{menuName}, #{menuLevel}, #{menuIcon}, #{menuDirYn}, #{programId}, #{sortOrder}, #{useYn})
     </insert>
 
     <select id="selectParentMenus" resultType="com.saffron.api.portal.dto.menu.MenuListDto">
@@ -111,6 +115,7 @@
                    m.menuName,
                    m.menuLevel,
                    m.menuIcon,
+                   m.menuDirYn,
                    m.programId,
                    m.sortOrder,
                    m.useYn,
@@ -119,13 +124,15 @@
                    0                              AS depth
             FROM   menu_info m
             WHERE  m.parentMenuId IS NULL
-              AND  m.useYn = 'Y'
+              AND  m.useYn    = 'Y'
+              AND  m.menuDirYn = 'Y'
             UNION ALL
             SELECT m.menuId,
                    m.parentMenuId,
                    m.menuName,
                    m.menuLevel,
                    m.menuIcon,
+                   m.menuDirYn,
                    m.programId,
                    m.sortOrder,
                    m.useYn,
@@ -134,8 +141,9 @@
                    mt.depth + 1                           AS depth
             FROM   menu_info m
             INNER JOIN menu_tree mt ON m.parentMenuId = mt.menuId
-            WHERE  m.useYn = 'Y'
-              AND  mt.depth &lt; 1
+            WHERE  m.useYn    = 'Y'
+              AND  m.menuDirYn = 'Y'
+              AND  mt.depth   &lt; 1
         )
         SELECT mt.depth,
                CONCAT(REPEAT('　', mt.depth), mt.menuName) AS menuNameTree,
@@ -143,11 +151,11 @@
                mt.parentMenuId,
                mt.menuLevel,
                mt.menuIcon,
+               mt.menuDirYn,
                mt.programId,
                mt.sortOrder,
                mt.useYn,
                mt.treePath,
-               NULL AS programCode,
                NULL AS programName,
                NULL AS programUrl
         FROM   menu_tree mt
