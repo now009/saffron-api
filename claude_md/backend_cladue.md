@@ -371,10 +371,10 @@ MenuController를 참조해 RoleController에 아래 endpoint를 구현해주고
 
 MenuController를 참조해 code폴더를 생성후 CodeController를 생성하고 endpoint를 구현
 table : code_info
-- list POST /portal/code/list  - parentCode를 기준으로 Groupping해 조회
-- 생성 POST /portal/code,
-- 수정 POST /portal/code/{code},
-- 삭제 POST /portal/code/{code}
+- list POST /portal/codes/list  - parentCode를 기준으로 Groupping해 조회
+- 생성 POST /portal/codes/save,
+- 수정 POST /portal/codes/update,
+- 삭제 POST /portal/codes/delete/{code}
   ┌────────┬─────────────────────────────────┬─────────────────────────────────────────────────────────────────┐
   │ Method │               URI               │                           Description                           │
   ├────────┼─────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
