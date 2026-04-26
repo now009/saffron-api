@@ -197,6 +197,37 @@ INSERT INTO role_mapping (mappingId, roleId, userId, programId, canRead, canWrit
  ('MAP019', 'ROLE_GUEST',   NULL,     'PGM010', 'Y', 'N', 'N', 'N'),
  ('MAP020', 'ROLE_ADMIN',   'now009', 'PGM001', 'Y', 'Y', 'Y', 'Y');
 
+-- 사용자 ↔ 역할
+CREATE TABLE user_role (
+userId      VARCHAR(50) NOT NULL  COMMENT '사용자ID',
+roleCode    VARCHAR(50) NOT NULL  COMMENT '권한코드',
+createdUser VARCHAR(20) DEFAULT 'system'          COMMENT '생성자',
+createdDate TIMESTAMP   DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
+PRIMARY KEY (userId, roleCode)
+) COMMENT '사용자권한매핑';
+
+-- 부서 ↔ 역할
+CREATE TABLE dept_role (
+deptId      VARCHAR(20) NOT NULL  COMMENT '부서ID',
+roleCode    VARCHAR(50) NOT NULL  COMMENT '권한코드',
+createdUser VARCHAR(20) DEFAULT 'system'          COMMENT '생성자',
+createdDate TIMESTAMP   DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
+PRIMARY KEY (deptId, roleCode)
+) COMMENT '부서권한매핑';
+
+-- 역할 ↔ 메뉴
+CREATE TABLE role_menu (
+roleCode    VARCHAR(50) NOT NULL  COMMENT '권한코드',
+menuId      VARCHAR(50) NOT NULL  COMMENT '메뉴ID',
+canRead     CHAR(1)     DEFAULT 'N' COMMENT '조회권한',
+canWrite    CHAR(1)     DEFAULT 'N' COMMENT '등록권한',
+canUpdate   CHAR(1)     DEFAULT 'N' COMMENT '수정권한',
+canDelete   CHAR(1)     DEFAULT 'N' COMMENT '삭제권한',
+createdUser VARCHAR(20) DEFAULT 'system'          COMMENT '생성자',
+createdDate TIMESTAMP   DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
+PRIMARY KEY (roleCode, menuId)
+) COMMENT '역할메뉴매핑';
+
 -- =====================================================================================
 -- INIT CODE DATA
 -- =====================================================================================
