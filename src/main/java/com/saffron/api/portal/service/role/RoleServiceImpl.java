@@ -2,6 +2,7 @@ package com.saffron.api.portal.service.role;
 
 import com.saffron.api.portal.dto.common.ApiResponse;
 import com.saffron.api.portal.dto.role.RoleDto;
+import com.saffron.api.portal.dto.role.UserMenuPermDto;
 import com.saffron.api.portal.mapper.RoleMapper;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<RoleDto> getRoles(String roleCode, String roleName) {
         return roleMapper.selectRoleList(roleCode, roleName);
+    }
+
+    @Override
+    public List<UserMenuPermDto> getUserMenuPermissions(String userId) {
+        return roleMapper.selectUserMenuPermissions(userId);
     }
 
     @Override

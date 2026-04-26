@@ -2,6 +2,7 @@ package com.saffron.api.portal.controller.role;
 
 import com.saffron.api.portal.dto.common.ApiResponse;
 import com.saffron.api.portal.dto.role.RoleDto;
+import com.saffron.api.portal.dto.role.UserMenuPermDto;
 import com.saffron.api.portal.service.role.RoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,5 +58,10 @@ public class RoleController {
     @GetMapping("/next-id")
     public ResponseEntity<Map<String, String>> nextId() {
         return ResponseEntity.ok(Map.of("roleCode", roleService.getNextRoleCode()));
+    }
+
+    @GetMapping("/user-menus/{userId}")
+    public ResponseEntity<List<UserMenuPermDto>> userMenus(@PathVariable String userId) {
+        return ResponseEntity.ok(roleService.getUserMenuPermissions(userId));
     }
 }
