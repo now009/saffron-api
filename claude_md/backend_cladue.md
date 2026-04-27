@@ -396,3 +396,65 @@ table : code_info
 -------------------------------------------------------------------
 로그인 시 권한 조회 흐름
 user_info → user_role / dept_role → role_info → role_menu → menu_info → 접근 가능 메뉴 반환
+
+
+---------------------
+권한 설정 API 구현해줘
+
+[테이블]
+- role_info, role_menu, menu_info, user_role, dept_role
+
+[API 목록]
+
+1. Role 전체 조회
+   GET /api/roles
+    - role_info 전체 조회 (useYn = 'Y')
+    - 응답: RoleDto { roleCode, roleName, description, useYn }
+
+2. Role별 메뉴 권한 조회
+   GET /api/roles/{roleCode}/menus
+    - menu_info 전체를 LEFT JOIN role_menu ON roleCode
+    - role_menu 있으면 useYn = 'Y', 없으면 useYn = 'N'
+    - 응답: RoleMenuDto { menuId, parentMenuId, menuName, menuLevel, menuIcon, sortOrder, useYn }
+    - SQL:
+      SELECT m.menuId, m.parentMenuId, m.menuName, m.menuLevel,
+      m.menuIcon, m.sortOrder,
+      CASE WHEN rm.menuId IS NOT NULL THEN 'Y' ELSE 'N' END AS useYn
+      FROM menu_info m
+      LEFT JOIN role_menu rm
+      ON m.menuId = rm.menuId AND rm.roleCode = :roleCode
+      WHERE m.useYn = 'Y'
+      ORDER BY m.menuLevel, m.sortOrder
+
+3. Role별 메뉴 권한 저장
+   POST /api/roles/{roleCode}/menus
+    - Body: [ { menuId, useYn } ]
+    - 처리방식: DELETE 후 INSERT (일괄 저장)
+    - useYn = 'Y' 인 항목만 INSERT
+    - SQL:
+      DELETE FROM role_menu WHERE roleCode = :roleCode
+      INSERT INTO role_menu (roleCode, menuId, canRead, canWrite, canUpdate, canDelete)
+      VALUES (:roleCode, :menuId, 'Y', 'Y', 'Y', 'Y')
+
+4. Role별 소속 사용자 조회
+   GET /api/roles/{roleCode}/users
+    - user_role + dept_role 통합 조회
+    - 응답: RoleUserDto { userId, userName, deptName, position, assignType }
+
+5. Role별 소속 부서 조회
+   GET /api/roles/{roleCode}/depts
+    - dept_role 조회
+    - 응답: RoleDeptDto { deptId, deptName, deptLevel }
+
+[구현 클래스]
+RoleController.java      ← @RestController, /api/roles
+RoleService.java         ← 비즈니스 로직
+RoleMapper.java          ← MyBatis or JPA Repository
+RoleDto.java             ← Role 응답 DTO
+RoleMenuDto.java         ← 메뉴 권한 응답 DTO
+RoleMenuRequest.java     ← 저장 요청 DTO
+
+[공통 조건]
+- 응답 공통 포맷: { code: "200", message: "success", data: [...] }
+- roleCode 유효성 검증 (존재하지 않으면 404)
+- 저장 시 트랜잭션 처리 (@Transactional)

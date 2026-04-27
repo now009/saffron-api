@@ -2,10 +2,12 @@ package com.saffron.api.portal.service.role;
 
 import com.saffron.api.portal.dto.common.ApiResponse;
 import com.saffron.api.portal.dto.role.RoleDeptDto;
+import com.saffron.api.portal.dto.role.RoleDeptRequest;
 import com.saffron.api.portal.dto.role.RoleDto;
 import com.saffron.api.portal.dto.role.RoleMenuDto;
 import com.saffron.api.portal.dto.role.RoleMenuRequest;
 import com.saffron.api.portal.dto.role.RoleUserDto;
+import com.saffron.api.portal.dto.role.RoleUserRequest;
 import com.saffron.api.portal.dto.role.UserMenuPermDto;
 import com.saffron.api.portal.mapper.RoleMapper;
 import org.springframework.stereotype.Service;
@@ -67,8 +69,34 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
+    public void saveRoleUsers(String roleCode, List<RoleUserRequest> requests) {
+        roleMapper.deleteRoleUsers(roleCode);
+        List<String> userIds = requests.stream()
+                .filter(r -> "Y".equals(r.getUseYn()))
+                .map(RoleUserRequest::getUserId)
+                .collect(Collectors.toList());
+        if (!userIds.isEmpty()) {
+            roleMapper.insertRoleUsers(roleCode, userIds);
+        }
+    }
+
+    @Override
     public List<RoleDeptDto> getRoleDepts(String roleCode) {
         return roleMapper.selectRoleDepts(roleCode);
+    }
+
+    @Override
+    @Transactional
+    public void saveRoleDepts(String roleCode, List<RoleDeptRequest> requests) {
+        roleMapper.deleteRoleDepts(roleCode);
+        List<String> deptIds = requests.stream()
+                .filter(r -> "Y".equals(r.getUseYn()))
+                .map(RoleDeptRequest::getDeptId)
+                .collect(Collectors.toList());
+        if (!deptIds.isEmpty()) {
+            roleMapper.insertRoleDepts(roleCode, deptIds);
+        }
     }
 
     @Override

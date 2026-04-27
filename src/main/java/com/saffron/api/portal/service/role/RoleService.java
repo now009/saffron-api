@@ -2,10 +2,12 @@ package com.saffron.api.portal.service.role;
 
 import com.saffron.api.portal.dto.common.ApiResponse;
 import com.saffron.api.portal.dto.role.RoleDeptDto;
+import com.saffron.api.portal.dto.role.RoleDeptRequest;
 import com.saffron.api.portal.dto.role.RoleDto;
 import com.saffron.api.portal.dto.role.RoleMenuDto;
 import com.saffron.api.portal.dto.role.RoleMenuRequest;
 import com.saffron.api.portal.dto.role.RoleUserDto;
+import com.saffron.api.portal.dto.role.RoleUserRequest;
 import com.saffron.api.portal.dto.role.UserMenuPermDto;
 
 import java.util.List;
@@ -26,7 +28,11 @@ public interface RoleService {
 
     List<RoleUserDto> getRoleUsers(String roleCode);
 
+    void saveRoleUsers(String roleCode, List<RoleUserRequest> requests);
+
     List<RoleDeptDto> getRoleDepts(String roleCode);
+
+    void saveRoleDepts(String roleCode, List<RoleDeptRequest> requests);
 
     ApiResponse saveRole(RoleDto roleDto);
 

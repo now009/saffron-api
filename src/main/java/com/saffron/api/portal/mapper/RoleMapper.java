@@ -29,7 +29,17 @@ public interface RoleMapper {
 
     List<RoleUserDto> selectRoleUsers(@Param("roleCode") String roleCode);
 
+    void deleteRoleUsers(@Param("roleCode") String roleCode);
+
+    void insertRoleUsers(@Param("roleCode") String roleCode,
+                         @Param("userIds") List<String> userIds);
+
     List<RoleDeptDto> selectRoleDepts(@Param("roleCode") String roleCode);
+
+    void deleteRoleDepts(@Param("roleCode") String roleCode);
+
+    void insertRoleDepts(@Param("roleCode") String roleCode,
+                         @Param("deptIds") List<String> deptIds);
 
     int insertRole(RoleDto roleDto);
 
