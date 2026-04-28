@@ -89,21 +89,6 @@ CREATE TABLE program_info (
                               PRIMARY KEY (programId)
 ) COMMENT '프로그램정보';
 
-CREATE TABLE role_mapping (
-                              mappingId       VARCHAR(50)    NOT NULL                  COMMENT '매핑ID',
-                              roleId          VARCHAR(50)    NOT NULL                  COMMENT '권한ID',
-                              userId          VARCHAR(50)    NULL                      COMMENT '사용자ID',
-                              programId       VARCHAR(50)    NOT NULL                  COMMENT '프로그램ID',
-                              canRead         CHAR(1)        DEFAULT 'N'               COMMENT '조회권한',
-                              canWrite        CHAR(1)        DEFAULT 'N'               COMMENT '등록권한',
-                              canUpdate       CHAR(1)        DEFAULT 'N'               COMMENT '수정권한',
-                              canDelete       CHAR(1)        DEFAULT 'N'               COMMENT '삭제권한',
-                              createdUser     VARCHAR(20)    DEFAULT 'system'          COMMENT '생성자',
-                              createdDate     TIMESTAMP      DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
-                              updateUser      VARCHAR(20)    DEFAULT 'system'          COMMENT '수정자',
-                              updatedDate     TIMESTAMP      DEFAULT CURRENT_TIMESTAMP COMMENT '수정일시',
-                              PRIMARY KEY (mappingId)
-) COMMENT '권한매핑';
 
 CREATE TABLE code_info (
                            code            VARCHAR(50)     NOT NULL                  COMMENT '코드',
@@ -159,7 +144,7 @@ INSERT INTO menu_info (menuId, parentMenuId, menuName, menuLevel, menuDirYn, men
 
 INSERT INTO program_info (programId, programName, programUrl, sortOrder) VALUES
  ('PGM001', '공통코드 목록', '/system/code/list',    1),
- ('PGM002', '공통코드 상세', '/system/code/detail',  2),
+ ('PGM002', '프로그램 목록', '/portal/programs/list',  2),
  ('PGM003', '메뉴 목록',     '/portal/menus/list',   1),
  ('PGM004', '메뉴 상세',     '/system/menu/detail',  2),
  ('PGM005', '권한 목록',     '/system/role/list',    1),
@@ -175,27 +160,6 @@ INSERT INTO role_info (roleCode, roleName, description) VALUES
 ('ROLE_USER',    '일반사용자',   '기본 메뉴 조회 및 본인 데이터 수정'),
 ('ROLE_GUEST',   '게스트',      '제한된 조회 기능만 접근 가능');
 
-INSERT INTO role_mapping (mappingId, roleId, userId, programId, canRead, canWrite, canUpdate, canDelete) VALUES
- ('MAP001', 'ROLE_ADMIN',   NULL,     'PGM001', 'Y', 'Y', 'Y', 'Y'),
- ('MAP002', 'ROLE_ADMIN',   NULL,     'PGM002', 'Y', 'Y', 'Y', 'Y'),
- ('MAP003', 'ROLE_ADMIN',   NULL,     'PGM003', 'Y', 'Y', 'Y', 'Y'),
- ('MAP004', 'ROLE_ADMIN',   NULL,     'PGM004', 'Y', 'Y', 'Y', 'Y'),
- ('MAP005', 'ROLE_ADMIN',   NULL,     'PGM005', 'Y', 'Y', 'Y', 'Y'),
- ('MAP006', 'ROLE_ADMIN',   NULL,     'PGM006', 'Y', 'Y', 'Y', 'Y'),
- ('MAP007', 'ROLE_ADMIN',   NULL,     'PGM007', 'Y', 'Y', 'Y', 'Y'),
- ('MAP008', 'ROLE_ADMIN',   NULL,     'PGM008', 'Y', 'Y', 'Y', 'Y'),
- ('MAP009', 'ROLE_ADMIN',   NULL,     'PGM009', 'Y', 'Y', 'Y', 'Y'),
- ('MAP010', 'ROLE_ADMIN',   NULL,     'PGM010', 'Y', 'Y', 'Y', 'Y'),
- ('MAP011', 'ROLE_MANAGER', NULL,     'PGM007', 'Y', 'Y', 'Y', 'N'),
- ('MAP012', 'ROLE_MANAGER', NULL,     'PGM008', 'Y', 'Y', 'Y', 'N'),
- ('MAP013', 'ROLE_MANAGER', NULL,     'PGM009', 'Y', 'Y', 'Y', 'N'),
- ('MAP014', 'ROLE_MANAGER', NULL,     'PGM010', 'Y', 'Y', 'Y', 'N'),
- ('MAP015', 'ROLE_USER',    NULL,     'PGM007', 'Y', 'N', 'N', 'N'),
- ('MAP016', 'ROLE_USER',    NULL,     'PGM008', 'Y', 'Y', 'N', 'N'),
- ('MAP017', 'ROLE_USER',    NULL,     'PGM010', 'Y', 'Y', 'N', 'N'),
- ('MAP018', 'ROLE_GUEST',   NULL,     'PGM007', 'Y', 'N', 'N', 'N'),
- ('MAP019', 'ROLE_GUEST',   NULL,     'PGM010', 'Y', 'N', 'N', 'N'),
- ('MAP020', 'ROLE_ADMIN',   'now009', 'PGM001', 'Y', 'Y', 'Y', 'Y');
 
 -- 사용자 ↔ 역할
 CREATE TABLE user_role (

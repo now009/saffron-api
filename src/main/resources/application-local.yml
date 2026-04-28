@@ -21,6 +21,9 @@ auth:
 app:
   redirect:
     main-url: http://localhost:8000/main
+    login-url: http://localhost:8000/login
+
+# JWT 검증 - secret 은 secret.yml 에서 관리 (Auth 서버와 동일)
 
 cors:
   allowed-origins: "http://localhost:8000"

@@ -130,9 +130,6 @@ public class RoleServiceImpl implements RoleService {
         if (roleMapper.countRole(roleCode) == 0) {
             return ApiResponse.fail("권한이 존재하지 않습니다");
         }
-        if (roleMapper.countRoleInMapping(roleCode) > 0) {
-            return ApiResponse.fail("사용중인 권한입니다");
-        }
         roleMapper.deleteRole(roleCode);
         return ApiResponse.success("삭제되었습니다");
     }

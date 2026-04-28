@@ -8,6 +8,7 @@ public class UserMenuPermDto {
     private Integer menuLevel;
     private String menuIcon;
     private Integer sortOrder;
+    private String programUrl;
     private String canRead;
     private String canWrite;
     private String canUpdate;
@@ -32,6 +33,9 @@ public class UserMenuPermDto {
 
     public Integer getSortOrder() { return sortOrder; }
     public void setSortOrder(Integer sortOrder) { this.sortOrder = sortOrder; }
+
+    public String getProgramUrl() { return programUrl; }
+    public void setProgramUrl(String programUrl) { this.programUrl = programUrl; }
 
     public String getCanRead() { return canRead; }
     public void setCanRead(String canRead) { this.canRead = canRead; }

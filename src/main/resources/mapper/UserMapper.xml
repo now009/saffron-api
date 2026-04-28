@@ -34,7 +34,7 @@
 
     <insert id="insertUser" parameterType="com.saffron.api.portal.dto.user.UserDto">
         INSERT INTO user_info (userId, deptId, userName, password, email, phone, position, jobGrade, useYn, managerYn)
-        VALUES (#{userId}, #{deptId}, #{userName}, SHA2(#{password}, 256), #{email}, #{phone}, #{position}, #{jobGrade}, #{useYn}, #{managerYn})
+        VALUES (#{userId}, #{deptId}, #{userName}, #{password}, #{email}, #{phone}, #{position}, #{jobGrade}, #{useYn}, #{managerYn})
     </insert>
 
     <update id="updateUser" parameterType="com.saffron.api.portal.dto.user.UserDto">
@@ -43,7 +43,7 @@
             deptId      = #{deptId},
             userName    = #{userName},
             <if test="password != null">
-            password    = SHA2(#{password}, 256),
+            password    = #{password},
             </if>
             email       = #{email},
             phone       = #{phone},

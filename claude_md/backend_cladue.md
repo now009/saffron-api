@@ -458,3 +458,42 @@ RoleMenuRequest.java     ← 저장 요청 DTO
 - 응답 공통 포맷: { code: "200", message: "success", data: [...] }
 - roleCode 유효성 검증 (존재하지 않으면 404)
 - 저장 시 트랜잭션 처리 (@Transactional)
+
+----------------------------------------------------------------
+UPDATE user_info
+SET    password    = '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+updatedDate = NOW()
+WHERE  userId      = 'now009';
+
+Auth 서버로부터 redirect된 요청을 처리하는 /main 엔드포인트를 확인하고 수정해줘.
+
+조건:
+- GET /main?access_token={token} 요청 받음
+- JWT 서명 검증 (Auth 서버와 동일한 secret key 사용)
+- 만료 여부 확인
+- 검증 실패 시 → http://localhost:8000/login 으로 redirect (에러 처리)
+- 검증 성공 시 → http://localhost:8000/main?access_token={token} 으로 redirect
+- JWT Claims에서 userId, deptId, userName, email 추출 가능하도록 유틸 함수도 만들어줘
+  (이후 다른 API에서 사용자 정보 꺼낼 때 재사용)
+
+현재 사용 중인 프레임워크: [Spring Boot / Node.js 등 기입]
+Auth 서버와 동일한 JWT secret key를 application.yml(또는 .env)에서 관리할 것
+
+--------------------------------------------------
+인증단계를 확인해주고 JWT에 포함된 변수를 확인해서 SaffronTop.jsx 상단메뉴의 
+User아이콘 대신 사용자명을 표시해줘 
+
+[1단계 - 로그인 페이지]
+- /login 페이지에서 userId, password 입력 받기
+- 로그인 버튼 클릭 시 POST http://localhost:8090/auth/login 호출
+
+[2단계 - 메인 페이지 진입]
+- /main 페이지 진입 시 URL 파라미터에서 access_token 추출
+- localStorage에 access_token 저장
+- JWT payload decode해서 사용자 정보(userId, deptId, userName, email) 추출
+- 화면에 userName 표시
+
+[3단계 - API 호출]
+- 이후 모든 API 요청 시 Header에 자동으로 토큰 포함
+  Authorization: Bearer {access_token}
+- 토큰 없거나 만료 시 /login으로 redirect

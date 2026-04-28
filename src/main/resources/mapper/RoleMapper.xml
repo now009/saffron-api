@@ -39,10 +39,6 @@
         SELECT COUNT(*) FROM role_info WHERE roleCode = #{roleCode}
     </select>
 
-    <select id="countRoleInMapping" resultType="int">
-        SELECT COUNT(*) FROM role_mapping WHERE roleId = #{roleCode}
-    </select>
-
     <delete id="deleteRole">
         DELETE FROM role_info WHERE roleCode = #{roleCode}
     </delete>
@@ -55,6 +51,7 @@
             m.menuLevel,
             m.menuIcon,
             m.sortOrder,
+            p.programUrl,
             MAX(rm.canRead)   AS canRead,
             MAX(rm.canWrite)  AS canWrite,
             MAX(rm.canUpdate) AS canUpdate,
@@ -73,6 +70,9 @@
         JOIN role_info r
             ON  rm.roleCode = r.roleCode
             AND r.useYn     = 'Y'
+        LEFT JOIN program_info p
+            ON  m.programId = p.programId
+            AND p.useYn     = 'Y'
         WHERE u.userId = #{userId}
           AND u.useYn  = 'Y'
         GROUP BY
@@ -81,7 +81,8 @@
             m.menuName,
             m.menuLevel,
             m.menuIcon,
-            m.sortOrder
+            m.sortOrder,
+            p.programUrl
         ORDER BY
             m.menuLevel,
             m.sortOrder

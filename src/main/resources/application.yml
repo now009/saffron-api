@@ -5,6 +5,9 @@ spring:
   application:
     name: saffron-api
 
+  config:
+    import: "secret.yml"
+
   security:
     oauth2:
       resourceserver:

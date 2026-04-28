@@ -47,8 +47,6 @@ public interface RoleMapper {
 
     int countRole(@Param("roleCode") String roleCode);
 
-    int countRoleInMapping(@Param("roleCode") String roleCode);
-
     int deleteRole(@Param("roleCode") String roleCode);
 
     String selectNextRoleCode();
