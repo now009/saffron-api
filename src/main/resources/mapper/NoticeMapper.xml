@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.api.portal.mapper.NoticeMapper">
+
+    <select id="selectNoticeList" resultType="com.saffron.api.portal.dto.notice.NoticeDto">
+        SELECT noticeId,
+               title,
+               noticeType,
+               isPinned,
+               isPopup,
+               popupStartDt,
+               popupEndDt,
+               targetDeptId,
+               viewCount,
+               attachYn,
+               useYn,
+               createdUser,
+               createdDate,
+               updateUser,
+               updatedDate
+        FROM   notice_info
+        <where>
+            <if test="title != null and title != ''">
+                AND title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="noticeType != null and noticeType != ''">
+                AND noticeType = #{noticeType}
+            </if>
+            <if test="useYn != null and useYn != ''">
+                AND useYn = #{useYn}
+            </if>
+        </where>
+        ORDER BY isPinned DESC, createdDate DESC
+    </select>
+
+    <select id="selectNotice" resultType="com.saffron.api.portal.dto.notice.NoticeDto">
+        SELECT noticeId,
+               title,
+               content,
+               noticeType,
+               isPinned,
+               isPopup,
+               popupStartDt,
+               popupEndDt,
+               targetDeptId,
+               viewCount,
+               attachYn,
+               useYn,
+               createdUser,
+               createdDate,
+               updateUser,
+               updatedDate
+        FROM   notice_info
+        WHERE  noticeId = #{noticeId}
+    </select>
+
+    <insert id="insertNotice" parameterType="com.saffron.api.portal.dto.notice.NoticeDto">
+        INSERT INTO notice_info
+            (noticeId, title, content, noticeType, isPinned, isPopup,
+             popupStartDt, popupEndDt, targetDeptId, attachYn, useYn,
+             createdUser, updateUser)
+        VALUES
+            (#{noticeId}, #{title}, #{content}, #{noticeType}, #{isPinned}, #{isPopup},
+             #{popupStartDt}, #{popupEndDt}, #{targetDeptId}, #{attachYn}, #{useYn},
+             #{createdUser}, #{updateUser})
+    </insert>
+
+    <update id="updateNotice" parameterType="com.saffron.api.portal.dto.notice.NoticeDto">
+        UPDATE notice_info
+        SET    title        = #{title},
+               content      = #{content},
+               noticeType   = #{noticeType},
+               isPinned     = #{isPinned},
+               isPopup      = #{isPopup},
+               popupStartDt = #{popupStartDt},
+               popupEndDt   = #{popupEndDt},
+               targetDeptId = #{targetDeptId},
+               attachYn     = #{attachYn},
+               useYn        = #{useYn},
+               updateUser   = #{updateUser},
+               updatedDate  = NOW()
+        WHERE  noticeId = #{noticeId}
+    </update>
+
+    <delete id="deleteNotice">
+        DELETE FROM notice_info WHERE noticeId = #{noticeId}
+    </delete>
+
+    <select id="countNotice" resultType="int">
+        SELECT COUNT(*) FROM notice_info WHERE noticeId = #{noticeId}
+    </select>
+
+    <update id="incrementViewCount">
+        UPDATE notice_info
+        SET    viewCount = viewCount + 1
+        WHERE  noticeId = #{noticeId}
+    </update>
+
+    <select id="selectNextNoticeId" resultType="string">
+        SELECT CONCAT('NT', LPAD(
+            COALESCE(CAST(SUBSTRING(MAX(noticeId), 3) AS UNSIGNED), 0) + 1, 7, '0'
+        )) AS nextNoticeId
+        FROM   notice_info
+    </select>
+
+</mapper>

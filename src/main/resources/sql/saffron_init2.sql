@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS role_info;
 DROP TABLE IF EXISTS user_info;
 DROP TABLE IF EXISTS dept_info;
 DROP TABLE IF EXISTS code_info;
+DROP TABLE IF EXISTS notice_info;
 
 -- =====================================================================================
 -- CREATE
@@ -142,6 +143,28 @@ CREATE TABLE role_menu (
                            createdDate TIMESTAMP   DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
                            PRIMARY KEY (roleCode, menuId)
 ) COMMENT '역할메뉴매핑';
+
+
+-- 공지사항 테이블
+CREATE TABLE notice_info (
+                             noticeId        VARCHAR(50)     NOT NULL                  COMMENT '공지사항 ID',
+                             title           VARCHAR(200)    NOT NULL                  COMMENT '제목',
+                             content         LONGTEXT        NOT NULL                  COMMENT '내용',
+                             noticeType      VARCHAR(20)     NOT NULL DEFAULT 'NORMAL' COMMENT '공지유형 (NORMAL/IMPORTANT/POPUP)',
+                             isPinned        CHAR(1)         NOT NULL DEFAULT 'N'      COMMENT '상단고정 여부',
+                             isPopup         CHAR(1)         NOT NULL DEFAULT 'N'      COMMENT '팝업 여부',
+                             popupStartDt    DATETIME        NULL                      COMMENT '팝업 시작일시',
+                             popupEndDt      DATETIME        NULL                      COMMENT '팝업 종료일시',
+                             targetDeptId    VARCHAR(50)     NULL                      COMMENT '대상부서 (NULL이면 전체)',
+                             viewCount       INT             NOT NULL DEFAULT 0        COMMENT '조회수',
+                             attachYn        CHAR(1)         NOT NULL DEFAULT 'N'      COMMENT '첨부파일 여부',
+                             useYn           CHAR(1)         NOT NULL DEFAULT 'Y'      COMMENT '사용여부',
+                             createdUser     VARCHAR(20)    DEFAULT 'system'           COMMENT '생성자',
+                             createdDate     TIMESTAMP      DEFAULT CURRENT_TIMESTAMP  COMMENT '생성일시',
+                             updateUser      VARCHAR(20)    DEFAULT 'system'           COMMENT '수정자',
+                             updatedDate     TIMESTAMP      DEFAULT CURRENT_TIMESTAMP  COMMENT '수정일시',
+                             PRIMARY KEY (noticeId)
+) COMMENT='공지사항';
 
 -- =====================================================================================
 -- INSERT - dept_info (10건)
@@ -327,3 +350,87 @@ INSERT INTO role_menu (roleCode, menuId, canRead, canWrite, canUpdate, canDelete
 ('ROLE_ADMIN', 'MENU021', 'Y', 'Y', 'Y', 'Y'),
 ('ROLE_ADMIN', 'MENU030', 'Y', 'Y', 'Y', 'Y'),
 ('ROLE_GUEST', 'MENU004', 'Y', 'Y', 'Y', 'Y');
+
+------------------------------------------------------------------------
+
+
+
+INSERT INTO notice_info
+(noticeId, title, content, noticeType, isPinned, isPopup, popupStartDt, popupEndDt, targetDeptId, viewCount, attachYn, useYn, createdUser, updateUser)
+VALUES
+    ('NT0000001',
+     '2026년 상반기 전사 시스템 점검 안내',
+     '2026년 5월 1일(금) 오후 11시부터 익일 오전 2시까지 전사 시스템 정기 점검이 진행됩니다.\n점검 시간 동안 모든 서비스 이용이 불가하오니 업무에 참고하시기 바랍니다.',
+     'IMPORTANT', 'Y', 'Y', '2026-04-28 00:00:00', '2026-05-01 23:00:00', NULL, 245, 'N', 'Y', 'admin', 'admin'),
+
+    ('NT0000002',
+     '개인정보 보호 의무교육 실시 안내',
+     '전 직원 대상 개인정보 보호 의무교육을 아래와 같이 실시합니다.\n- 일시: 2026년 5월 10일 14:00\n- 장소: 대강당\n- 대상: 전 직원 필수 참석',
+     'IMPORTANT', 'Y', 'N', NULL, NULL, NULL, 182, 'Y', 'Y', 'admin', 'admin'),
+
+    ('NT0000003',
+     '근태 시스템 개편 안내 (5월 적용)',
+     '5월부터 근태 시스템이 새롭게 개편됩니다.\n주요 변경사항:\n1. 모바일 출퇴근 기능 추가\n2. 재택근무 신청 프로세스 간소화\n3. 초과근무 자동 집계 기능 개선',
+     'POPUP', 'N', 'Y', '2026-04-25 00:00:00', '2026-05-05 23:59:59', NULL, 310, 'Y', 'Y', 'hr_admin', 'hr_admin'),
+
+    ('NT0000004',
+     '사내 카페테리아 메뉴 개편 및 운영시간 변경',
+     '5월 1일부터 카페테리아 운영시간 및 메뉴가 변경됩니다.\n- 운영시간: 07:30 ~ 20:00 (기존 08:00 ~ 19:00)\n- 조식 메뉴 추가 운영\n- 주말 운영 중단',
+     'POPUP', 'N', 'Y', '2026-04-28 00:00:00', '2026-05-03 23:59:59', NULL, 98, 'N', 'Y', 'admin', 'admin'),
+
+    ('NT0000005',
+     '2026년 5월 사내 휴일 안내',
+     '2026년 5월 임시 공휴일 지정에 따라 아래 날짜를 휴무일로 운영합니다.\n- 5월 1일(금): 근로자의 날\n- 5월 5일(화): 어린이날\n- 5월 6일(수): 임시공휴일',
+     'NORMAL', 'N', 'N', NULL, NULL, NULL, 421, 'N', 'Y', 'admin', 'admin'),
+
+    ('NT0000006',
+     '사내 복지포인트 지급 안내 (2026년 상반기)',
+     '2026년 상반기 복지포인트가 아래와 같이 지급됩니다.\n- 지급일: 2026년 5월 2일\n- 지급액: 직급별 차등 지급\n- 유효기간: 2026년 12월 31일까지\n복지몰 접속 후 사용 가능합니다.',
+     'NORMAL', 'N', 'N', NULL, NULL, NULL, 367, 'N', 'Y', 'hr_admin', 'hr_admin'),
+
+    ('NT0000007',
+     '사내 도서관 신규 도서 입고 안내',
+     '4월 신규 도서 50권이 입고되었습니다.\n주요 도서:\n- AI 시대의 업무 혁신\n- 클린 아키텍처\n- 데이터 중심 애플리케이션 설계\n사내 도서관 시스템에서 예약 후 이용 가능합니다.',
+     'NORMAL', 'N', 'N', NULL, NULL, NULL, 89, 'N', 'Y', 'admin', 'admin'),
+
+    ('NT0000008',
+     '주차장 공사로 인한 주차 공간 제한 안내',
+     '4월 30일(목) ~ 5월 7일(수) 기간 중 본관 지하주차장 B2 구역 공사로 인해 해당 구역 이용이 불가합니다.\n대체 주차장: 별관 지상주차장 이용 바랍니다.',
+     'NORMAL', 'N', 'N', NULL, NULL, NULL, 156, 'N', 'Y', 'admin', 'admin'),
+
+    ('NT0000009',
+     '2026년 상반기 성과평가 일정 안내',
+     '2026년 상반기 성과평가 일정을 안내드립니다.\n- 자기평가 기간: 5월 12일 ~ 5월 16일\n- 팀장 평가: 5월 19일 ~ 5월 23일\n- 결과 확인: 6월 2일\nHR 시스템에 접속하여 기간 내 평가를 완료해 주시기 바랍니다.',
+     'NORMAL', 'N', 'N', NULL, NULL, NULL, 278, 'N', 'Y', 'hr_admin', 'hr_admin'),
+
+    ('NT0000010',
+     'IT 보안 패치 적용 안내 (4월 29일)',
+     '보안 강화를 위해 아래 일정으로 보안 패치를 적용합니다.\n- 일시: 4월 29일(수) 오후 6시 ~ 8시\n- 대상: 전 임직원 업무용 PC\n- 방법: 자동 업데이트 (재부팅 필요)\n업무 종료 후 PC를 켜두신 채로 퇴근해 주시기 바랍니다.',
+     'NORMAL', 'N', 'N', NULL, NULL, NULL, 203, 'N', 'Y', 'it_admin', 'it_admin'),
+
+    ('NT0000011',
+     '개발팀 코드 리뷰 프로세스 변경 안내',
+     '5월부터 개발팀 코드 리뷰 프로세스가 아래와 같이 변경됩니다.\n- PR 최소 승인자: 1명 → 2명\n- 리뷰 완료 기한: PR 등록 후 2 영업일 이내\n- 자동화 테스트 통과 필수\n세부 가이드는 Confluence를 참조하세요.',
+     'NORMAL', 'N', 'N', NULL, NULL, 'D001', 45, 'Y', 'Y', 'dev_lead', 'dev_lead'),
+
+    ('NT0000012',
+     '인사팀 급여 명세서 발송 안내 (4월분)',
+     '4월 급여 명세서가 발송되었습니다.\n- 발송일: 2026년 4월 25일\n- 확인 방법: 사내 HR 포털 → 급여 명세서 메뉴\n문의사항은 인사팀(내선 1234)으로 연락 바랍니다.',
+     'NORMAL', 'N', 'N', NULL, NULL, 'D002', 67, 'N', 'Y', 'hr_admin', 'hr_admin'),
+
+    ('NT0000013',
+     '2026년 1분기 전사 워크샵 안내',
+     '2026년 1분기 전사 워크샵을 아래와 같이 진행합니다.\n- 일시: 2026년 3월 14일 ~ 15일\n- 장소: 경기도 가평 리조트\n- 대상: 전 직원\n버스 탑승 명단은 첨부파일을 확인하세요.',
+     'NORMAL', 'N', 'N', NULL, NULL, NULL, 534, 'Y', 'N', 'admin', 'admin'),
+
+    ('NT0000014',
+     '사내 해커톤 참가자 모집 (마감)',
+     '2026 사내 해커톤 참가자를 모집합니다.\n- 주제: AI를 활용한 업무 효율화 아이디어\n- 일시: 2026년 4월 18일 ~ 19일\n- 팀구성: 3~5인\n- 신청마감: 4월 10일\n많은 참여 부탁드립니다.',
+     'NORMAL', 'N', 'N', NULL, NULL, NULL, 612, 'Y', 'N', 'admin', 'admin'),
+
+    ('NT0000015',
+     '2025년 연말 결산 보고서 제출 안내 (완료)',
+     '2025년 연말 결산 보고서 제출 기한을 안내드립니다.\n- 제출기한: 2026년 1월 10일\n- 제출방법: 재경팀 이메일 또는 ERP 시스템\n- 문의: 재경팀 내선 5678',
+     'NORMAL', 'N', 'N', NULL, NULL, NULL, 289, 'N', 'N', 'finance_admin', 'finance_admin');
+
+
