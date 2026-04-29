@@ -15,7 +15,7 @@
                    m.programId,
                    m.sortOrder,
                    m.useYn,
-                   CAST(m.menuId   AS CHAR(1000)) AS treePath,
+                   CAST(CONCAT(LPAD(COALESCE(m.sortOrder, 0), 10, '0'), '_', m.menuId) AS CHAR(1000)) AS treePath,
                    CAST(m.menuName AS CHAR(1000)) AS treeName,
                    0                              AS depth
             FROM   menu_info m
@@ -31,7 +31,7 @@
                    m.programId,
                    m.sortOrder,
                    m.useYn,
-                   CONCAT(mt.treePath, ' > ', m.menuId)   AS treePath,
+                   CONCAT(mt.treePath, ' > ', LPAD(COALESCE(m.sortOrder, 0), 10, '0'), '_', m.menuId) AS treePath,
                    CONCAT(mt.treeName, ' > ', m.menuName) AS treeName,
                    mt.depth + 1                           AS depth
             FROM   menu_info m
@@ -64,7 +64,7 @@
                 AND mt.menuName LIKE CONCAT('%', #{menuName}, '%')
             </if>
         </where>
-        ORDER BY mt.treePath, mt.sortOrder, p.sortOrder
+        ORDER BY mt.treePath
     </select>
 
     <select id="selectMenu" resultType="com.saffron.api.portal.dto.menu.MenuTreeDto">
@@ -96,8 +96,10 @@
     <update id="updateMenu" parameterType="com.saffron.api.portal.dto.menu.MenuDto">
         UPDATE menu_info
         SET    menuName    = #{menuName},
-               menuDirYn  = #{menuDirYn},
+               menuLevel   = #{menuLevel},
+               menuDirYn   = #{menuDirYn},
                programId   = #{programId},
+               sortOrder   = #{sortOrder},
                useYn       = #{useYn},
                updatedDate = NOW()
         WHERE  menuId = #{menuId}
