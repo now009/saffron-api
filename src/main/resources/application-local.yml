@@ -31,3 +31,6 @@ cors:
 logging:
   file:
     path: C:/temp
+
+board:
+  filePath: C:/temp/board/file

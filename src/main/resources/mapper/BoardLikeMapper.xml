@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.api.portal.mapper.BoardLikeMapper">
+
+    <select id="countLike" resultType="int">
+        SELECT COUNT(*)
+        FROM   board_like
+        WHERE  targetType  = #{targetType}
+          AND  targetId    = #{targetId}
+          AND  createdUser = #{createdUser}
+    </select>
+
+    <insert id="insertLike" parameterType="com.saffron.api.portal.dto.board.BoardLikeDto">
+        INSERT INTO board_like
+            (likeId, boardId, targetType, targetId, createdUser)
+        VALUES
+            (#{likeId}, #{boardId}, #{targetType}, #{targetId}, #{createdUser})
+    </insert>
+
+    <delete id="deleteLike">
+        DELETE FROM board_like
+        WHERE  targetType  = #{targetType}
+          AND  targetId    = #{targetId}
+          AND  createdUser = #{createdUser}
+    </delete>
+
+    <select id="selectNextLikeId" resultType="string">
+        SELECT CONCAT('LIKE', LPAD(
+            COALESCE(CAST(SUBSTRING(MAX(likeId), 5) AS UNSIGNED), 0) + 1, 7, '0'
+        )) AS nextLikeId
+        FROM   board_like
+        WHERE  likeId REGEXP '^LIKE[0-9]+$'
+    </select>
+
+</mapper>

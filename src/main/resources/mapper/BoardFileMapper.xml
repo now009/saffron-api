@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.api.portal.mapper.BoardFileMapper">
+
+    <select id="selectFilesByPost" resultType="com.saffron.api.portal.dto.board.BoardFileDto">
+        SELECT fileId,
+               postId,
+               boardId,
+               originalName,
+               savedName,
+               filePath,
+               fileSize,
+               fileExt,
+               sortOrder,
+               createdUser,
+               createdDate
+        FROM   board_file
+        WHERE  postId = #{postId}
+        ORDER BY sortOrder, fileId
+    </select>
+
+    <select id="selectFile" resultType="com.saffron.api.portal.dto.board.BoardFileDto">
+        SELECT fileId,
+               postId,
+               boardId,
+               originalName,
+               savedName,
+               filePath,
+               fileSize,
+               fileExt,
+               sortOrder,
+               createdUser,
+               createdDate
+        FROM   board_file
+        WHERE  fileId = #{fileId}
+    </select>
+
+    <insert id="insertFile" parameterType="com.saffron.api.portal.dto.board.BoardFileDto">
+        INSERT INTO board_file
+            (fileId, postId, boardId, originalName, savedName, filePath,
+             fileSize, fileExt, sortOrder, createdUser)
+        VALUES
+            (#{fileId}, #{postId}, #{boardId}, #{originalName}, #{savedName}, #{filePath},
+             #{fileSize}, #{fileExt}, #{sortOrder}, #{createdUser})
+    </insert>
+
+    <delete id="deleteFile">
+        DELETE FROM board_file WHERE fileId = #{fileId}
+    </delete>
+
+    <delete id="deleteFilesByPost">
+        DELETE FROM board_file WHERE postId = #{postId}
+    </delete>
+
+    <select id="countFile" resultType="int">
+        SELECT COUNT(*) FROM board_file WHERE fileId = #{fileId}
+    </select>
+
+    <select id="selectNextFileId" resultType="string">
+        SELECT CONCAT('FILE', LPAD(
+            COALESCE(CAST(SUBSTRING(MAX(fileId), 5) AS UNSIGNED), 0) + 1, 7, '0'
+        )) AS nextFileId
+        FROM   board_file
+        WHERE  fileId REGEXP '^FILE[0-9]+$'
+    </select>
+
+</mapper>

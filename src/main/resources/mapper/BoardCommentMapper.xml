@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.api.portal.mapper.BoardCommentMapper">
+
+    <select id="selectCommentList" resultType="com.saffron.api.portal.dto.board.BoardCommentDto">
+        SELECT c.commentId,
+               c.postId,
+               c.boardId,
+               c.parentCommentId,
+               c.depth,
+               c.content,
+               c.isAnonymous,
+               c.likeCount,
+               c.useYn,
+               c.createdUser,
+               c.createdDate,
+               c.updateUser,
+               c.updatedDate,
+               CASE WHEN l.likeId IS NOT NULL THEN 'Y' ELSE 'N' END AS isLiked
+        FROM   board_comment c
+        LEFT JOIN board_like l
+               ON l.targetType = 'COMMENT'
+              AND l.targetId   = c.commentId
+              AND l.createdUser = #{currentUser}
+        WHERE  c.postId = #{postId}
+          AND  c.useYn = 'Y'
+        ORDER BY c.createdDate, c.commentId
+    </select>
+
+    <select id="selectComment" resultType="com.saffron.api.portal.dto.board.BoardCommentDto">
+        SELECT commentId,
+               postId,
+               boardId,
+               parentCommentId,
+               depth,
+               content,
+               isAnonymous,
+               likeCount,
+               useYn,
+               createdUser,
+               createdDate,
+               updateUser,
+               updatedDate
+        FROM   board_comment
+        WHERE  commentId = #{commentId}
+    </select>
+
+    <insert id="insertComment" parameterType="com.saffron.api.portal.dto.board.BoardCommentDto">
+        INSERT INTO board_comment
+            (commentId, postId, boardId, parentCommentId, depth, content,
+             isAnonymous, useYn, createdUser, updateUser)
+        VALUES
+            (#{commentId}, #{postId}, #{boardId}, #{parentCommentId}, #{depth}, #{content},
+             #{isAnonymous}, #{useYn}, #{createdUser}, #{updateUser})
+    </insert>
+
+    <update id="updateComment" parameterType="com.saffron.api.portal.dto.board.BoardCommentDto">
+        UPDATE board_comment
+        SET    content     = #{content},
+               isAnonymous = #{isAnonymous},
+               useYn       = #{useYn},
+               updateUser  = #{updateUser},
+               updatedDate = NOW()
+        WHERE  commentId = #{commentId}
+    </update>
+
+    <delete id="deleteComment">
+        DELETE FROM board_comment WHERE commentId = #{commentId}
+    </delete>
+
+    <select id="countComment" resultType="int">
+        SELECT COUNT(*) FROM board_comment WHERE commentId = #{commentId}
+    </select>
+
+    <update id="incrementLikeCount">
+        UPDATE board_comment SET likeCount = likeCount + 1 WHERE commentId = #{commentId}
+    </update>
+
+    <update id="decrementLikeCount">
+        UPDATE board_comment SET likeCount = GREATEST(likeCount - 1, 0) WHERE commentId = #{commentId}
+    </update>
+
+    <select id="selectNextCommentId" resultType="string">
+        SELECT CONCAT('CMT', LPAD(
+            COALESCE(CAST(SUBSTRING(MAX(commentId), 4) AS UNSIGNED), 0) + 1, 7, '0'
+        )) AS nextCommentId
+        FROM   board_comment
+        WHERE  commentId REGEXP '^CMT[0-9]+$'
+    </select>
+
+</mapper>

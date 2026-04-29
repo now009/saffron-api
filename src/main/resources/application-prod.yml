@@ -27,3 +27,6 @@ cors:
 logging:
   file:
     path: ${LOG_FILE_PATH:C:/temp/api}
+
+board:
+  filePath: ${BOARD_FILE_PATH:C:/temp/board/file}

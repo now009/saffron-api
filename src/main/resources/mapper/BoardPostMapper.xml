@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.api.portal.mapper.BoardPostMapper">
+
+    <select id="selectPostList" resultType="com.saffron.api.portal.dto.board.BoardPostDto">
+        SELECT p.postId,
+               p.boardId,
+               p.parentPostId,
+               p.depth,
+               p.title,
+               p.category,
+               p.tags,
+               p.isPinned,
+               p.isSecret,
+               p.isAnonymous,
+               p.viewCount,
+               p.likeCount,
+               p.commentCount,
+               p.attachCount,
+               p.targetDeptId,
+               p.useYn,
+               p.createdUser,
+               p.createdDate,
+               p.updateUser,
+               p.updatedDate,
+               m.boardName,
+               CASE WHEN l.likeId IS NOT NULL THEN 'Y' ELSE 'N' END AS isLiked
+        FROM   board_post p
+        LEFT JOIN board_master m ON p.boardId = m.boardId
+        LEFT JOIN board_like l
+               ON l.targetType = 'POST'
+              AND l.targetId   = p.postId
+              AND l.createdUser = #{currentUser}
+        <where>
+            <if test="boardId != null and boardId != ''">
+                AND p.boardId = #{boardId}
+            </if>
+            <if test="title != null and title != ''">
+                AND p.title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="category != null and category != ''">
+                AND p.category = #{category}
+            </if>
+            <if test="useYn != null and useYn != ''">
+                AND p.useYn = #{useYn}
+            </if>
+        </where>
+        ORDER BY p.isPinned DESC, p.createdDate DESC
+    </select>
+
+    <select id="selectPost" resultType="com.saffron.api.portal.dto.board.BoardPostDto">
+        SELECT p.postId,
+               p.boardId,
+               p.parentPostId,
+               p.depth,
+               p.title,
+               p.content,
+               p.category,
+               p.tags,
+               p.isPinned,
+               p.isSecret,
+               p.isAnonymous,
+               p.viewCount,
+               p.likeCount,
+               p.commentCount,
+               p.attachCount,
+               p.targetDeptId,
+               p.useYn,
+               p.createdUser,
+               p.createdDate,
+               p.updateUser,
+               p.updatedDate,
+               m.boardName,
+               CASE WHEN l.likeId IS NOT NULL THEN 'Y' ELSE 'N' END AS isLiked
+        FROM   board_post p
+        LEFT JOIN board_master m ON p.boardId = m.boardId
+        LEFT JOIN board_like l
+               ON l.targetType = 'POST'
+              AND l.targetId   = p.postId
+              AND l.createdUser = #{currentUser}
+        WHERE  p.postId = #{postId}
+    </select>
+
+    <insert id="insertPost" parameterType="com.saffron.api.portal.dto.board.BoardPostDto">
+        INSERT INTO board_post
+            (postId, boardId, parentPostId, depth, title, content,
+             category, tags, isPinned, isSecret, isAnonymous,
+             targetDeptId, useYn, createdUser, updateUser)
+        VALUES
+            (#{postId}, #{boardId}, #{parentPostId}, #{depth}, #{title}, #{content},
+             #{category}, #{tags}, #{isPinned}, #{isSecret}, #{isAnonymous},
+             #{targetDeptId}, #{useYn}, #{createdUser}, #{updateUser})
+    </insert>
+
+    <update id="updatePost" parameterType="com.saffron.api.portal.dto.board.BoardPostDto">
+        UPDATE board_post
+        SET    title        = #{title},
+               content      = #{content},
+               category     = #{category},
+               tags         = #{tags},
+               isPinned     = #{isPinned},
+               isSecret     = #{isSecret},
+               isAnonymous  = #{isAnonymous},
+               targetDeptId = #{targetDeptId},
+               useYn        = #{useYn},
+               updateUser   = #{updateUser},
+               updatedDate  = NOW()
+        WHERE  postId = #{postId}
+    </update>
+
+    <delete id="deletePost">
+        DELETE FROM board_post WHERE postId = #{postId}
+    </delete>
+
+    <select id="countPost" resultType="int">
+        SELECT COUNT(*) FROM board_post WHERE postId = #{postId}
+    </select>
+
+    <update id="incrementViewCount">
+        UPDATE board_post SET viewCount = viewCount + 1 WHERE postId = #{postId}
+    </update>
+
+    <update id="incrementLikeCount">
+        UPDATE board_post SET likeCount = likeCount + 1 WHERE postId = #{postId}
+    </update>
+
+    <update id="decrementLikeCount">
+        UPDATE board_post SET likeCount = GREATEST(likeCount - 1, 0) WHERE postId = #{postId}
+    </update>
+
+    <update id="incrementCommentCount">
+        UPDATE board_post SET commentCount = commentCount + 1 WHERE postId = #{postId}
+    </update>
+
+    <update id="decrementCommentCount">
+        UPDATE board_post SET commentCount = GREATEST(commentCount - 1, 0) WHERE postId = #{postId}
+    </update>
+
+    <update id="incrementAttachCount">
+        UPDATE board_post SET attachCount = attachCount + 1 WHERE postId = #{postId}
+    </update>
+
+    <update id="decrementAttachCount">
+        UPDATE board_post SET attachCount = GREATEST(attachCount - 1, 0) WHERE postId = #{postId}
+    </update>
+
+    <select id="selectNextPostId" resultType="string">
+        SELECT CONCAT('POST', LPAD(
+            COALESCE(CAST(SUBSTRING(MAX(postId), 5) AS UNSIGNED), 0) + 1, 7, '0'
+        )) AS nextPostId
+        FROM   board_post
+        WHERE  postId REGEXP '^POST[0-9]+$'
+    </select>
+
+    <select id="selectTopLikedPosts" resultType="com.saffron.api.portal.dto.board.BoardPostDto">
+        SELECT p.postId,
+               p.boardId,
+               p.title,
+               p.likeCount,
+               p.viewCount,
+               p.commentCount,
+               m.boardName
+        FROM   board_post p
+        LEFT JOIN board_master m ON p.boardId = m.boardId
+        WHERE  p.useYn = 'Y'
+        <if test="boardId != null and boardId != ''">
+            AND p.boardId = #{boardId}
+        </if>
+        ORDER BY p.likeCount DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>
