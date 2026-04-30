@@ -83,7 +83,11 @@ CREATE TABLE program_info (
                               PRIMARY KEY (programId)
 ) COMMENT '프로그램정보';
 
+ALTER TABLE menu_info
+    ADD COLUMN site VARCHAR(50) NOT NULL FIRST;
+
 CREATE TABLE menu_info (
+                           site            VARCHAR(50)    NOT NULL                  COMMENT 'SITE',
                            menuId          VARCHAR(50)    NOT NULL                  COMMENT '메뉴ID',
                            parentMenuId    VARCHAR(50)    NULL                      COMMENT '상위메뉴ID',
                            menuName        VARCHAR(100)   NOT NULL                  COMMENT '메뉴명',
@@ -241,20 +245,20 @@ INSERT INTO program_info (programId, programName, programUrl, useYn, sortOrder) 
 -- INSERT - menu_info (15건)
 -- =====================================================================================
 INSERT INTO menu_info (menuId, parentMenuId, menuName, menuLevel, menuDirYn, menuIcon, programId, sortOrder, useYn) VALUES
-('MENU001', NULL,      '시스템관리',   1, 'Y', 'icon-setting', NULL,     1, 'Y'),
-('MENU002', NULL,      '사용자관리',   1, 'Y', 'icon-user',    NULL,     2, 'Y'),
-('MENU003', NULL,      '업무관리',     1, 'Y', 'icon-work',    NULL,     3, 'Y'),
-('MENU004', NULL,      '보고서',       1, 'Y', 'icon-report',  NULL,     4, 'Y'),
-('MENU010', 'MENU001', '공통코드관리', 2, 'N', 'icon-code',    'PGM001', 1, 'Y'),
-('MENU011', 'MENU001', '메뉴관리',     2, 'N', 'icon-menu',    'PGM003', 2, 'Y'),
-('MENU012', 'MENU001', '권한관리',     2, 'N', 'icon-lock',    'PGM005', 3, 'Y'),
-('MENU013', 'MENU001', '프로그램관리', 2, 'N', 'icon-setting', 'PGM011', 1, 'Y'),
-('MENU014', 'MENU001', '권한설정',     2, 'N', 'icon-setting', 'PGM012', 1, 'Y'),
-('MENU015', 'MENU001', '스케줄',       2, 'N', 'icon-setting', 'PGM013', 1, 'Y'),
-('MENU016', 'MENU001', '환경설정',     2, 'Y', 'icon-setting', NULL,     1, 'N'),
-('MENU020', 'MENU002', '사용자목록',   2, 'N', 'icon-list',    'PGM007', 1, 'Y'),
-('MENU021', 'MENU002', '부서관리',     2, 'N', 'icon-dept',    'PGM009', 2, 'Y'),
-('MENU030', 'MENU003', '업무현황',     2, 'N', 'icon-status',  'PGM010', 1, 'Y');
+('portal','MENU001', NULL,      '시스템관리',   1, 'Y', 'icon-setting', NULL,     1, 'Y'),
+('portal''MENU002', NULL,      '사용자관리',   1, 'Y', 'icon-user',    NULL,     2, 'Y'),
+('portal''MENU003', NULL,      '업무관리',     1, 'Y', 'icon-work',    NULL,     3, 'Y'),
+('portal''MENU004', NULL,      '보고서',       1, 'Y', 'icon-report',  NULL,     4, 'Y'),
+('portal''MENU010', 'MENU001', '공통코드관리', 2, 'N', 'icon-code',    'PGM001', 1, 'Y'),
+('portal''MENU011', 'MENU001', '메뉴관리',     2, 'N', 'icon-menu',    'PGM003', 2, 'Y'),
+('portal''MENU012', 'MENU001', '권한관리',     2, 'N', 'icon-lock',    'PGM005', 3, 'Y'),
+('portal''MENU013', 'MENU001', '프로그램관리', 2, 'N', 'icon-setting', 'PGM011', 1, 'Y'),
+('portal''MENU014', 'MENU001', '권한설정',     2, 'N', 'icon-setting', 'PGM012', 1, 'Y'),
+('portal''MENU015', 'MENU001', '스케줄',       2, 'N', 'icon-setting', 'PGM013', 1, 'Y'),
+('portal''MENU016', 'MENU001', '환경설정',     2, 'Y', 'icon-setting', NULL,     1, 'N'),
+('portal''MENU020', 'MENU002', '사용자목록',   2, 'N', 'icon-list',    'PGM007', 1, 'Y'),
+('portal''MENU021', 'MENU002', '부서관리',     2, 'N', 'icon-dept',    'PGM009', 2, 'Y'),
+('portal''MENU030', 'MENU003', '업무현황',     2, 'N', 'icon-status',  'PGM010', 1, 'Y');
 
 -- =====================================================================================
 -- INSERT - code_info (48건)
