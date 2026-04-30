@@ -42,6 +42,9 @@
             FROM   menu_info m
             INNER JOIN menu_tree mt ON m.parentMenuId = mt.menuId
             WHERE  m.useYn = 'Y'
+              <if test="site != null and site != ''">
+              AND  m.site = #{site}
+              </if>
         )
         SELECT mt.depth,
                CONCAT(REPEAT('　', mt.depth), mt.menuName) AS menuNameTree,
@@ -169,6 +172,9 @@
             WHERE  m.useYn    = 'Y'
               AND  m.menuDirYn = 'Y'
               AND  mt.depth   &lt; 1
+              <if test="site != null and site != ''">
+              AND  m.site = #{site}
+              </if>
         )
         SELECT mt.depth,
                CONCAT(REPEAT('　', mt.depth), mt.menuName) AS menuNameTree,

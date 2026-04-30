@@ -18,9 +18,11 @@ public interface RoleMapper {
 
     List<RoleDto> selectActiveRoles();
 
-    List<UserMenuPermDto> selectUserMenuPermissions(@Param("userId") String userId);
+    List<UserMenuPermDto> selectUserMenuPermissions(@Param("userId") String userId,
+                                                    @Param("site") String site);
 
-    List<RoleMenuDto> selectRoleMenus(@Param("roleCode") String roleCode);
+    List<RoleMenuDto> selectRoleMenus(@Param("roleCode") String roleCode,
+                                      @Param("site") String site);
 
     void deleteRoleMenus(@Param("roleCode") String roleCode);
 

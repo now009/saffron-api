@@ -36,11 +36,13 @@ public class RoleSettingController {
      * 역할별 전체 메뉴 + 할당여부 조회
      */
     @GetMapping("/{roleCode}/menus")
-    public ResponseEntity<CommonResponse<List<RoleMenuDto>>> getRoleMenus(@PathVariable String roleCode) {
+    public ResponseEntity<CommonResponse<List<RoleMenuDto>>> getRoleMenus(
+            @PathVariable String roleCode,
+            @RequestParam(required = false) String site) {
         if (!roleService.existsRole(roleCode)) {
             return ResponseEntity.status(404).body(CommonResponse.notFound("존재하지 않는 권한입니다"));
         }
-        return ResponseEntity.ok(CommonResponse.success(roleService.getRoleMenus(roleCode)));
+        return ResponseEntity.ok(CommonResponse.success(roleService.getRoleMenus(roleCode, site)));
     }
 
     /**
@@ -49,12 +51,13 @@ public class RoleSettingController {
     @PostMapping("/{roleCode}/menus")
     public ResponseEntity<CommonResponse<List<RoleMenuDto>>> saveRoleMenus(
             @PathVariable String roleCode,
+            @RequestParam(required = false) String site,
             @RequestBody List<RoleMenuRequest> requests) {
         if (!roleService.existsRole(roleCode)) {
             return ResponseEntity.status(404).body(CommonResponse.notFound("존재하지 않는 권한입니다"));
         }
         roleService.saveRoleMenus(roleCode, requests);
-        return ResponseEntity.ok(CommonResponse.success(roleService.getRoleMenus(roleCode)));
+        return ResponseEntity.ok(CommonResponse.success(roleService.getRoleMenus(roleCode, site)));
     }
 
     /**

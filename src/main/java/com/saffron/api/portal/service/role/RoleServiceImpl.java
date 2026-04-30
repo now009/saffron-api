@@ -41,13 +41,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<UserMenuPermDto> getUserMenuPermissions(String userId) {
-        return roleMapper.selectUserMenuPermissions(userId);
+    public List<UserMenuPermDto> getUserMenuPermissions(String userId, String site) {
+        return roleMapper.selectUserMenuPermissions(userId, site);
     }
 
     @Override
-    public List<RoleMenuDto> getRoleMenus(String roleCode) {
-        return roleMapper.selectRoleMenus(roleCode);
+    public List<RoleMenuDto> getRoleMenus(String roleCode, String site) {
+        return roleMapper.selectRoleMenus(roleCode, site);
     }
 
     @Override

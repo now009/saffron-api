@@ -75,6 +75,9 @@
             AND p.useYn     = 'Y'
         WHERE u.userId = #{userId}
           AND u.useYn  = 'Y'
+        <if test="site != null and site != ''">
+          AND m.site = #{site}
+        </if>
         GROUP BY
             m.menuId,
             m.parentMenuId,
@@ -111,6 +114,9 @@
                ON  m.menuId   = rm.menuId
                AND rm.roleCode = #{roleCode}
         WHERE  m.useYn = 'Y'
+        <if test="site != null and site != ''">
+          AND m.site = #{site}
+        </if>
         ORDER  BY m.menuLevel, m.sortOrder
     </select>
 

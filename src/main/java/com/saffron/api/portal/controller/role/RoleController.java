@@ -61,7 +61,9 @@ public class RoleController {
     }
 
     @GetMapping("/user-menus/{userId}")
-    public ResponseEntity<List<UserMenuPermDto>> userMenus(@PathVariable String userId) {
-        return ResponseEntity.ok(roleService.getUserMenuPermissions(userId));
+    public ResponseEntity<List<UserMenuPermDto>> userMenus(
+            @PathVariable String userId,
+            @RequestParam(required = false) String site) {
+        return ResponseEntity.ok(roleService.getUserMenuPermissions(userId, site));
     }
 }

@@ -20,9 +20,9 @@ public interface RoleService {
 
     boolean existsRole(String roleCode);
 
-    List<UserMenuPermDto> getUserMenuPermissions(String userId);
+    List<UserMenuPermDto> getUserMenuPermissions(String userId, String site);
 
-    List<RoleMenuDto> getRoleMenus(String roleCode);
+    List<RoleMenuDto> getRoleMenus(String roleCode, String site);
 
     void saveRoleMenus(String roleCode, List<RoleMenuRequest> requests);
 
