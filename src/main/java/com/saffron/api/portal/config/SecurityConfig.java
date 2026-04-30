@@ -39,7 +39,7 @@ public class SecurityConfig {
         if (authCheckEnabled) {
             http
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/actuator/health", "/main").permitAll()
+                    .requestMatchers("/actuator/health", "/portal/main").permitAll()
                     .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

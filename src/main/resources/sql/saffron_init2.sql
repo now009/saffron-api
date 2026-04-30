@@ -222,6 +222,21 @@ INSERT INTO program_info (programId, programName, programUrl, sortOrder) VALUES
 ('PGM013', '스케줄',        '/system/schedule/list',     2),
 ('PGM014', '환경설정',      '/system/env-setting/list',  2);
 
+UPDATE program_info SET programUrl='/portal/codes/list' WHERE programId='PGM001';   -- 공통코드 목록
+UPDATE program_info SET programUrl='/portal/menus/list' WHERE programId='PGM003';   -- 메뉴 목록
+UPDATE program_info SET programUrl='/portal/roles/list' WHERE programId='PGM005';   -- 권한 목록
+UPDATE program_info SET programUrl='/portal/users/list' WHERE programId='PGM007';   -- 사용자 목록
+UPDATE program_info SET programUrl='/portal/depts/list' WHERE programId='PGM009';   -- 부서 목록
+UPDATE program_info SET programUrl='/portal/depts/list' WHERE programId='PGM009';   -- 부서 목록
+
+DELETE FROM program_info WHERE programId IN ('PGM011','PGM012','PGM013','PGM014');
+
+INSERT INTO program_info (programId, programName, programUrl, useYn, sortOrder) VALUES
+('PGM011', '프로그램 관리',  '/portal/programs/list',     'Y', 11),
+('PGM012', '권한 설정',      '/portal/rolesetting/list',  'Y', 12),
+('PGM013', '스케줄 관리',    '/portal/schedules/list',    'Y', 13),
+('PGM014', '환경설정 관리',  '/portal/env-settings/list', 'Y', 14);
+
 -- =====================================================================================
 -- INSERT - menu_info (15건)
 -- =====================================================================================
@@ -434,3 +449,10 @@ VALUES
      'NORMAL', 'N', 'N', NULL, NULL, NULL, 289, 'N', 'N', 'finance_admin', 'finance_admin');
 
 
+-----------------
+
+UPDATE program_info SET programUrl='/portal/codes/list' WHERE programId='PGM001';   -- 공통코드 목록
+UPDATE program_info SET programUrl='/portal/menus/list' WHERE programId='PGM003';   -- 메뉴 목록
+UPDATE program_info SET programUrl='/portal/roles/list' WHERE programId='PGM005';   -- 권한 목록
+UPDATE program_info SET programUrl='/portal/users/list' WHERE programId='PGM007';   -- 사용자 목록
+UPDATE program_info SET programUrl='/portal/depts/list' WHERE programId='PGM009';   -- 부서 목록
