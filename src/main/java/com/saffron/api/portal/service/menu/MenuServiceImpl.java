@@ -48,8 +48,8 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuTreeDto> getMenuTree() {
-        List<MenuTreeDto> allMenus = menuMapper.selectMenu();
+    public List<MenuTreeDto> getMenuTree(String site) {
+        List<MenuTreeDto> allMenus = menuMapper.selectMenu(site);
 
         Map<String, MenuTreeDto> menuMap = new LinkedHashMap<>();
         for (MenuTreeDto menu : allMenus) {
@@ -72,8 +72,8 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuListDto> getMenus(String menuId, String menuName) {
-        return menuMapper.selectMenuList(menuId, menuName);
+    public List<MenuListDto> getMenus(String menuId, String menuName, String site) {
+        return menuMapper.selectMenuList(menuId, menuName, site);
     }
 
     @Override
@@ -89,8 +89,8 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuListDto> getParentMenus() {
-        return menuMapper.selectParentMenus();
+    public List<MenuListDto> getParentMenus(String site) {
+        return menuMapper.selectParentMenus(site);
     }
 
     @Override

@@ -13,13 +13,13 @@ public interface MenuService {
 
     ApiResponse updateMenu(MenuDto menuDto);
 
-    List<MenuListDto> getMenus(String menuId, String menuName);
+    List<MenuListDto> getMenus(String menuId, String menuName, String site);
 
-    List<MenuTreeDto> getMenuTree();
+    List<MenuTreeDto> getMenuTree(String site);
 
     ApiResponse deleteMenu(String menuId);
 
-    List<MenuListDto> getParentMenus();
+    List<MenuListDto> getParentMenus(String site);
 
     String getNextMenuId();
 }

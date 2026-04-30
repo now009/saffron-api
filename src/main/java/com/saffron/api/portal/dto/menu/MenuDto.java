@@ -14,6 +14,7 @@ public class MenuDto {
     private String programUrl;
     private Integer sortOrder;
     private String useYn;
+    private String site;
     private String createdUser;
     private LocalDateTime createdDate;
     private String updateUser;
@@ -50,6 +51,9 @@ public class MenuDto {
 
     public String getUseYn() { return useYn; }
     public void setUseYn(String useYn) { this.useYn = useYn; }
+
+    public String getSite() { return site; }
+    public void setSite(String site) { this.site = site; }
 
     public String getCreatedUser() { return createdUser; }
     public void setCreatedUser(String createdUser) { this.createdUser = createdUser; }

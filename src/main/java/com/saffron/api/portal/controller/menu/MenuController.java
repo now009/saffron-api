@@ -24,13 +24,15 @@ public class MenuController {
     @PostMapping("/list")
     public ResponseEntity<List<MenuListDto>> list(
             @RequestParam(required = false) String menuId,
-            @RequestParam(required = false) String menuName) {
-        return ResponseEntity.ok(menuService.getMenus(menuId, menuName));
+            @RequestParam(required = false) String menuName,
+            @RequestParam(required = false) String site) {
+        return ResponseEntity.ok(menuService.getMenus(menuId, menuName, site));
     }
 
     @GetMapping("/tree")
-    public ResponseEntity<List<MenuTreeDto>> tree() {
-        return ResponseEntity.ok(menuService.getMenuTree());
+    public ResponseEntity<List<MenuTreeDto>> tree(
+            @RequestParam(required = false) String site) {
+        return ResponseEntity.ok(menuService.getMenuTree(site));
     }
 
     @GetMapping("/{menuId}")
@@ -44,7 +46,7 @@ public class MenuController {
         if ("fail".equals(result.getMessageCode())) {
             return ResponseEntity.ok(result);
         }
-        return ResponseEntity.ok(menuService.getMenus(null, null));
+        return ResponseEntity.ok(menuService.getMenus(null, null, null));
     }
 
     @PostMapping("/update")
@@ -53,7 +55,7 @@ public class MenuController {
         if ("fail".equals(result.getMessageCode())) {
             return ResponseEntity.ok(result);
         }
-        return ResponseEntity.ok(menuService.getMenus(null, null));
+        return ResponseEntity.ok(menuService.getMenus(null, null, null));
     }
 
     @PostMapping("/delete/{menuId}")
@@ -62,8 +64,9 @@ public class MenuController {
     }
 
     @GetMapping("/parent-menus")
-    public ResponseEntity<List<MenuListDto>> parentMenus() {
-        return ResponseEntity.ok(menuService.getParentMenus());
+    public ResponseEntity<List<MenuListDto>> parentMenus(
+            @RequestParam(required = false) String site) {
+        return ResponseEntity.ok(menuService.getParentMenus(site));
     }
 
     @GetMapping("/next-id")

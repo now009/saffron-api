@@ -12,6 +12,7 @@ public class MenuListDto {
     private String menuDirYn;
     private Integer sortOrder;
     private String useYn;
+    private String site;
     private String treePath;
     private String programId;
     private String programName;
@@ -48,6 +49,9 @@ public class MenuListDto {
 
     public String getUseYn() { return useYn; }
     public void setUseYn(String useYn) { this.useYn = useYn; }
+
+    public String getSite() { return site; }
+    public void setSite(String site) { this.site = site; }
 
     public String getTreePath() { return treePath; }
     public void setTreePath(String treePath) { this.treePath = treePath; }

@@ -15,9 +15,11 @@ public interface MenuMapper {
 
     int insertMenu(MenuDto menuDto);
 
-    List<MenuListDto> selectMenuList(@Param("menuId") String menuId, @Param("menuName") String menuName);
+    List<MenuListDto> selectMenuList(@Param("menuId") String menuId,
+                                     @Param("menuName") String menuName,
+                                     @Param("site") String site);
 
-    List<MenuTreeDto> selectMenu();
+    List<MenuTreeDto> selectMenu(@Param("site") String site);
 
     int countMenu(@Param("menuId") String menuId);
 
@@ -25,7 +27,7 @@ public interface MenuMapper {
 
     int deleteMenu(@Param("menuId") String menuId);
 
-    List<MenuListDto> selectParentMenus();
+    List<MenuListDto> selectParentMenus(@Param("site") String site);
 
     String selectNextMenuId();
 }

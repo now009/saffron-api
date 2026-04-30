@@ -15,12 +15,16 @@
                    m.programId,
                    m.sortOrder,
                    m.useYn,
+                   m.site,
                    CAST(CONCAT(LPAD(COALESCE(m.sortOrder, 0), 10, '0'), '_', m.menuId) AS CHAR(1000)) AS treePath,
                    CAST(m.menuName AS CHAR(1000)) AS treeName,
                    0                              AS depth
             FROM   menu_info m
-            WHERE  m.parentMenuId IS NULL
+            WHERE  m.menuLevel = 1
               AND  m.useYn = 'Y'
+              <if test="site != null and site != ''">
+              AND  m.site = #{site}
+              </if>
             UNION ALL
             SELECT m.menuId,
                    m.parentMenuId,
@@ -31,6 +35,7 @@
                    m.programId,
                    m.sortOrder,
                    m.useYn,
+                   m.site,
                    CONCAT(mt.treePath, ' > ', LPAD(COALESCE(m.sortOrder, 0), 10, '0'), '_', m.menuId) AS treePath,
                    CONCAT(mt.treeName, ' > ', m.menuName) AS treeName,
                    mt.depth + 1                           AS depth
@@ -49,6 +54,7 @@
                mt.programId,
                mt.sortOrder,
                mt.useYn,
+               mt.site,
                mt.treePath,
                p.programName,
                p.programUrl
@@ -75,9 +81,15 @@
                menuIcon,
                menuDirYn,
                programId,
-               sortOrder
+               sortOrder,
+               site
         FROM   menu_info
-        WHERE  useYn = 'Y'
+        <where>
+            useYn = 'Y'
+            <if test="site != null and site != ''">
+                AND site = #{site}
+            </if>
+        </where>
         ORDER  BY menuLevel ASC, sortOrder ASC
     </select>
 
@@ -101,13 +113,19 @@
                programId   = #{programId},
                sortOrder   = #{sortOrder},
                useYn       = #{useYn},
+               <if test="parentMenuId != null and parentMenuId != ''">
+               parentMenuId = #{parentMenuId},
+               </if>
+               <if test="site != null and site != ''">
+               site        = #{site},
+               </if>
                updatedDate = NOW()
         WHERE  menuId = #{menuId}
     </update>
 
     <insert id="insertMenu" parameterType="com.saffron.api.portal.dto.menu.MenuDto">
-        INSERT INTO menu_info (menuId, parentMenuId, menuName, menuLevel, menuIcon, menuDirYn, programId, sortOrder, useYn)
-        VALUES (#{menuId}, #{parentMenuId}, #{menuName}, #{menuLevel}, #{menuIcon}, #{menuDirYn}, #{programId}, #{sortOrder}, #{useYn})
+        INSERT INTO menu_info (menuId, parentMenuId, menuName, menuLevel, menuIcon, menuDirYn, programId, sortOrder, useYn, site)
+        VALUES (#{menuId}, #{parentMenuId}, #{menuName}, #{menuLevel}, #{menuIcon}, #{menuDirYn}, #{programId}, #{sortOrder}, #{useYn}, #{site})
     </insert>
 
     <select id="selectParentMenus" resultType="com.saffron.api.portal.dto.menu.MenuListDto">
@@ -121,6 +139,7 @@
                    m.programId,
                    m.sortOrder,
                    m.useYn,
+                   m.site,
                    CAST(m.menuId   AS CHAR(1000)) AS treePath,
                    CAST(m.menuName AS CHAR(1000)) AS treeName,
                    0                              AS depth
@@ -128,6 +147,9 @@
             WHERE  m.parentMenuId IS NULL
               AND  m.useYn    = 'Y'
               AND  m.menuDirYn = 'Y'
+              <if test="site != null and site != ''">
+              AND  m.site = #{site}
+              </if>
             UNION ALL
             SELECT m.menuId,
                    m.parentMenuId,
@@ -138,6 +160,7 @@
                    m.programId,
                    m.sortOrder,
                    m.useYn,
+                   m.site,
                    CONCAT(mt.treePath, ' > ', m.menuId)   AS treePath,
                    CONCAT(mt.treeName, ' > ', m.menuName) AS treeName,
                    mt.depth + 1                           AS depth
@@ -157,6 +180,7 @@
                mt.programId,
                mt.sortOrder,
                mt.useYn,
+               mt.site,
                mt.treePath,
                NULL AS programName,
                NULL AS programUrl

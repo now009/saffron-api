@@ -13,6 +13,7 @@ public class MenuTreeDto {
     private String menuDirYn;
     private String programId;
     private Integer sortOrder;
+    private String site;
     private List<MenuTreeDto> children = new ArrayList<>();
 
     public MenuTreeDto() {}
@@ -40,6 +41,9 @@ public class MenuTreeDto {
 
     public Integer getSortOrder() { return sortOrder; }
     public void setSortOrder(Integer sortOrder) { this.sortOrder = sortOrder; }
+
+    public String getSite() { return site; }
+    public void setSite(String site) { this.site = site; }
 
     public List<MenuTreeDto> getChildren() { return children; }
     public void setChildren(List<MenuTreeDto> children) { this.children = children; }
