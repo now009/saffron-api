@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.saffron.api.portal.mapper.RoleMapper">
+<mapper namespace="com.saffron.portal.mapper.RoleMapper">
 
-    <select id="selectRoleList" resultType="com.saffron.api.portal.dto.role.RoleDto">
+    <select id="selectRoleList" resultType="com.saffron.portal.dto.role.RoleDto">
         SELECT roleCode,
                roleName,
                description,
@@ -21,12 +21,12 @@
         ORDER BY roleCode
     </select>
 
-    <insert id="insertRole" parameterType="com.saffron.api.portal.dto.role.RoleDto">
+    <insert id="insertRole" parameterType="com.saffron.portal.dto.role.RoleDto">
         INSERT INTO role_info (roleCode, roleName, description, useYn)
         VALUES (#{roleCode}, #{roleName}, #{description}, #{useYn})
     </insert>
 
-    <update id="updateRole" parameterType="com.saffron.api.portal.dto.role.RoleDto">
+    <update id="updateRole" parameterType="com.saffron.portal.dto.role.RoleDto">
         UPDATE role_info
         SET    roleName    = #{roleName},
                description = #{description},
@@ -43,7 +43,7 @@
         DELETE FROM role_info WHERE roleCode = #{roleCode}
     </delete>
 
-    <select id="selectUserMenuPermissions" resultType="com.saffron.api.portal.dto.role.UserMenuPermDto">
+    <select id="selectUserMenuPermissions" resultType="com.saffron.portal.dto.role.UserMenuPermDto">
         SELECT
             m.menuId,
             m.parentMenuId,
@@ -91,7 +91,7 @@
             m.sortOrder
     </select>
 
-    <select id="selectActiveRoles" resultType="com.saffron.api.portal.dto.role.RoleDto">
+    <select id="selectActiveRoles" resultType="com.saffron.portal.dto.role.RoleDto">
         SELECT roleCode,
                roleName,
                description,
@@ -101,7 +101,7 @@
         ORDER  BY roleCode
     </select>
 
-    <select id="selectRoleMenus" resultType="com.saffron.api.portal.dto.role.RoleMenuDto">
+    <select id="selectRoleMenus" resultType="com.saffron.portal.dto.role.RoleMenuDto">
         SELECT m.menuId,
                m.parentMenuId,
                m.menuName,
@@ -132,7 +132,7 @@
         </foreach>
     </insert>
 
-    <select id="selectRoleUsers" resultType="com.saffron.api.portal.dto.role.RoleUserDto">
+    <select id="selectRoleUsers" resultType="com.saffron.portal.dto.role.RoleUserDto">
         SELECT u.userId,
                u.userName,
                d.deptName,
@@ -158,7 +158,7 @@
         ORDER  BY userId
     </select>
 
-    <select id="selectRoleDepts" resultType="com.saffron.api.portal.dto.role.RoleDeptDto">
+    <select id="selectRoleDepts" resultType="com.saffron.portal.dto.role.RoleDeptDto">
         SELECT d.deptId,
                d.deptName,
                d.deptLevel

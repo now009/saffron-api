@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.saffron.api.portal.mapper.CodeMapper">
+<mapper namespace="com.saffron.portal.mapper.CodeMapper">
 
-    <select id="selectCodeList" resultType="com.saffron.api.portal.dto.code.CodeDto">
+    <select id="selectCodeList" resultType="com.saffron.portal.dto.code.CodeDto">
         SELECT code,
                parentCode,
                codeName,
@@ -29,12 +29,12 @@
         ORDER BY parentCode, sortOrder, code
     </select>
 
-    <insert id="insertCode" parameterType="com.saffron.api.portal.dto.code.CodeDto">
+    <insert id="insertCode" parameterType="com.saffron.portal.dto.code.CodeDto">
         INSERT INTO code_info (code, parentCode, codeName, sortOrder, useYn)
         VALUES (#{code}, #{parentCode}, #{codeName}, #{sortOrder}, #{useYn})
     </insert>
 
-    <update id="updateCode" parameterType="com.saffron.api.portal.dto.code.CodeDto">
+    <update id="updateCode" parameterType="com.saffron.portal.dto.code.CodeDto">
         UPDATE code_info
         SET    parentCode  = #{parentCode},
                codeName    = #{codeName},
@@ -56,7 +56,7 @@
         DELETE FROM code_info WHERE code = #{code}
     </delete>
 
-    <select id="selectAllCodes" resultType="com.saffron.api.portal.dto.code.CodeDto">
+    <select id="selectAllCodes" resultType="com.saffron.portal.dto.code.CodeDto">
         SELECT code,
                parentCode,
                codeName,

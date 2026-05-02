@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.saffron.api.portal.mapper.BoardCommentMapper">
+<mapper namespace="com.saffron.portal.mapper.BoardCommentMapper">
 
-    <select id="selectCommentList" resultType="com.saffron.api.portal.dto.board.BoardCommentDto">
+    <select id="selectCommentList" resultType="com.saffron.portal.dto.board.BoardCommentDto">
         SELECT c.commentId,
                c.postId,
                c.boardId,
@@ -29,7 +29,7 @@
         ORDER BY c.createdDate, c.commentId
     </select>
 
-    <select id="selectComment" resultType="com.saffron.api.portal.dto.board.BoardCommentDto">
+    <select id="selectComment" resultType="com.saffron.portal.dto.board.BoardCommentDto">
         SELECT commentId,
                postId,
                boardId,
@@ -47,7 +47,7 @@
         WHERE  commentId = #{commentId}
     </select>
 
-    <insert id="insertComment" parameterType="com.saffron.api.portal.dto.board.BoardCommentDto">
+    <insert id="insertComment" parameterType="com.saffron.portal.dto.board.BoardCommentDto">
         INSERT INTO board_comment
             (commentId, postId, boardId, parentCommentId, depth, content,
              isAnonymous, useYn, createdUser, updateUser)
@@ -56,7 +56,7 @@
              #{isAnonymous}, #{useYn}, #{createdUser}, #{updateUser})
     </insert>
 
-    <update id="updateComment" parameterType="com.saffron.api.portal.dto.board.BoardCommentDto">
+    <update id="updateComment" parameterType="com.saffron.portal.dto.board.BoardCommentDto">
         UPDATE board_comment
         SET    content     = #{content},
                isAnonymous = #{isAnonymous},

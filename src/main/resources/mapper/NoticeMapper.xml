@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.saffron.api.portal.mapper.NoticeMapper">
+<mapper namespace="com.saffron.portal.mapper.NoticeMapper">
 
-    <select id="selectNoticeList" resultType="com.saffron.api.portal.dto.notice.NoticeDto">
+    <select id="selectNoticeList" resultType="com.saffron.portal.dto.notice.NoticeDto">
         SELECT noticeId,
                title,
                noticeType,
@@ -35,7 +35,7 @@
         ORDER BY isPinned DESC, createdDate DESC
     </select>
 
-    <select id="selectNotice" resultType="com.saffron.api.portal.dto.notice.NoticeDto">
+    <select id="selectNotice" resultType="com.saffron.portal.dto.notice.NoticeDto">
         SELECT noticeId,
                title,
                content,
@@ -56,7 +56,7 @@
         WHERE  noticeId = #{noticeId}
     </select>
 
-    <insert id="insertNotice" parameterType="com.saffron.api.portal.dto.notice.NoticeDto">
+    <insert id="insertNotice" parameterType="com.saffron.portal.dto.notice.NoticeDto">
         INSERT INTO notice_info
             (noticeId, title, content, noticeType, isPinned, isPopup,
              popupStartDt, popupEndDt, targetDeptId, attachYn, useYn,
@@ -67,7 +67,7 @@
              #{createdUser}, #{updateUser})
     </insert>
 
-    <update id="updateNotice" parameterType="com.saffron.api.portal.dto.notice.NoticeDto">
+    <update id="updateNotice" parameterType="com.saffron.portal.dto.notice.NoticeDto">
         UPDATE notice_info
         SET    title        = #{title},
                content      = #{content},

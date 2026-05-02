@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.saffron.api.portal.mapper.BoardPostMapper">
+<mapper namespace="com.saffron.portal.mapper.BoardPostMapper">
 
-    <select id="selectPostList" resultType="com.saffron.api.portal.dto.board.BoardPostDto">
+    <select id="selectPostList" resultType="com.saffron.portal.dto.board.BoardPostDto">
         SELECT p.postId,
                p.boardId,
                p.parentPostId,
@@ -50,7 +50,7 @@
         ORDER BY p.isPinned DESC, p.createdDate DESC
     </select>
 
-    <select id="selectPost" resultType="com.saffron.api.portal.dto.board.BoardPostDto">
+    <select id="selectPost" resultType="com.saffron.portal.dto.board.BoardPostDto">
         SELECT p.postId,
                p.boardId,
                p.parentPostId,
@@ -83,7 +83,7 @@
         WHERE  p.postId = #{postId}
     </select>
 
-    <insert id="insertPost" parameterType="com.saffron.api.portal.dto.board.BoardPostDto">
+    <insert id="insertPost" parameterType="com.saffron.portal.dto.board.BoardPostDto">
         INSERT INTO board_post
             (postId, boardId, parentPostId, depth, title, content,
              category, tags, isPinned, isSecret, isAnonymous,
@@ -94,7 +94,7 @@
              #{targetDeptId}, #{useYn}, #{createdUser}, #{updateUser})
     </insert>
 
-    <update id="updatePost" parameterType="com.saffron.api.portal.dto.board.BoardPostDto">
+    <update id="updatePost" parameterType="com.saffron.portal.dto.board.BoardPostDto">
         UPDATE board_post
         SET    title        = #{title},
                content      = #{content},
@@ -154,7 +154,7 @@
         WHERE  postId REGEXP '^POST[0-9]+$'
     </select>
 
-    <select id="selectTopLikedPosts" resultType="com.saffron.api.portal.dto.board.BoardPostDto">
+    <select id="selectTopLikedPosts" resultType="com.saffron.portal.dto.board.BoardPostDto">
         SELECT p.postId,
                p.boardId,
                p.title,

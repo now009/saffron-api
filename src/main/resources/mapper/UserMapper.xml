@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.saffron.api.portal.mapper.UserMapper">
+<mapper namespace="com.saffron.portal.mapper.UserMapper">
 
-    <select id="selectUserList" resultType="com.saffron.api.portal.dto.user.UserDto">
+    <select id="selectUserList" resultType="com.saffron.portal.dto.user.UserDto">
         SELECT u.userId,
                u.deptId,
                d.deptName,
@@ -32,12 +32,12 @@
         ORDER BY u.deptId, u.userId
     </select>
 
-    <insert id="insertUser" parameterType="com.saffron.api.portal.dto.user.UserDto">
+    <insert id="insertUser" parameterType="com.saffron.portal.dto.user.UserDto">
         INSERT INTO user_info (userId, deptId, userName, password, email, phone, position, jobGrade, useYn, managerYn)
         VALUES (#{userId}, #{deptId}, #{userName}, #{password}, #{email}, #{phone}, #{position}, #{jobGrade}, #{useYn}, #{managerYn})
     </insert>
 
-    <update id="updateUser" parameterType="com.saffron.api.portal.dto.user.UserDto">
+    <update id="updateUser" parameterType="com.saffron.portal.dto.user.UserDto">
         UPDATE user_info
         <set>
             deptId      = #{deptId},
