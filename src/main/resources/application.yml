@@ -6,7 +6,9 @@ spring:
     name: saffron-api
 
   config:
-    import: "secret.yml"
+    import:
+      - "secret.yml"
+      - "saffron_eai.yml"
 
   security:
     oauth2:

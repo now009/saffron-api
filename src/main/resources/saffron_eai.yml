@@ -1,0 +1,41 @@
+# EAI 모듈 설정
+# application.yml 에서 spring.config.import: "saffron_eai.yml" 로 포함
+
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+      properties:
+        enable.idempotence: true
+    consumer:
+      group-id: eai-workflow-engine
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.saffron.eai.*"
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
+      concurrency: 3
+
+eai:
+  adapter:
+    rest:
+      default-timeout-ms: 5000
+      max-retry: 3
+    sftp:
+      known-hosts-file: ${user.home}/.ssh/known_hosts
+  kafka:
+    request-topic: eai.interface.request
+    response-topic: eai.interface.response
+    dlq-topic: eai.interface.dlq
+  encrypt:
+    aes-key: ${EAI_AES_KEY:changeme-32-byte-key-placeholder}
+  monitoring:
+    lag-threshold: 1000
+    dlq-threshold: 100
