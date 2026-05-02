@@ -1,8 +1,8 @@
 package com.saffron.eai.service;
 
 import com.saffron.eai.dto.response.DashboardSnapshotResponse;
-import com.saffron.eai.repository.EaiInterfaceRepository;
-import com.saffron.eai.repository.EaiMessageHistoryRepository;
+import com.saffron.eai.mapper.EaiInterfaceMapper;
+import com.saffron.eai.mapper.EaiMessageHistoryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,8 +15,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EaiMonitoringServiceImpl implements EaiMonitoringService {
 
-    private final EaiMessageHistoryRepository historyRepository;
-    private final EaiInterfaceRepository interfaceRepository;
+    private final EaiMessageHistoryMapper historyRepository;
+    private final EaiInterfaceMapper interfaceRepository;
 
     @Override
     public DashboardSnapshotResponse getSnapshot() {

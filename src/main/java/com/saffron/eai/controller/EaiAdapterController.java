@@ -2,7 +2,7 @@ package com.saffron.eai.controller;
 
 import com.saffron.eai.domain.EaiAdapterConfig;
 import com.saffron.eai.dto.request.AdapterConfigRequest;
-import com.saffron.eai.repository.EaiAdapterConfigRepository;
+import com.saffron.eai.mapper.EaiAdapterConfigMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EaiAdapterController {
 
-    private final EaiAdapterConfigRepository adapterConfigRepository;
+    private final EaiAdapterConfigMapper adapterConfigRepository;
 
     @GetMapping
     public ResponseEntity<List<EaiAdapterConfig>> list(

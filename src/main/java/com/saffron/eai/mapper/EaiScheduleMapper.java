@@ -1,4 +1,4 @@
-package com.saffron.eai.repository;
+package com.saffron.eai.mapper;
 
 import com.saffron.eai.domain.EaiSchedule;
 import org.apache.ibatis.annotations.Mapper;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
-public interface EaiScheduleRepository {
+public interface EaiScheduleMapper {
 
     List<EaiSchedule> selectScheduleList(@Param("interfaceId") String interfaceId,
                                           @Param("isActive") Boolean isActive);

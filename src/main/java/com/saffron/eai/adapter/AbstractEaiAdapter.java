@@ -5,7 +5,7 @@ package com.saffron.eai.adapter;
 import com.saffron.eai.common.EaiMessage;
 import com.saffron.eai.common.EaiResponse;
 import com.saffron.eai.domain.EaiMessageHistory;
-import com.saffron.eai.repository.EaiMessageHistoryRepository;
+import com.saffron.eai.mapper.EaiMessageHistoryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractEaiAdapter implements EaiAdapter {
 
     @Autowired
-    private EaiMessageHistoryRepository historyRepository;
+    private EaiMessageHistoryMapper historyRepository;
 
     @Autowired
     private AesEncryptor aesEncryptor;

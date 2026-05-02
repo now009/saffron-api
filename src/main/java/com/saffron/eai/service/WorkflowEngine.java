@@ -6,7 +6,7 @@ import com.saffron.eai.common.EaiMessage;
 import com.saffron.eai.domain.EaiAdapterConfig;
 import com.saffron.eai.domain.EaiInterfaceDef;
 import com.saffron.eai.domain.EaiRoutingRule;
-import com.saffron.eai.repository.EaiMessageHistoryRepository;
+import com.saffron.eai.mapper.EaiMessageHistoryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -27,7 +27,7 @@ public class WorkflowEngine {
     private final AdapterFactory adapterFactory;
     private final MessageTransformer transformer;
     private final EaiInterfaceService interfaceService;
-    private final EaiMessageHistoryRepository historyRepo;
+    private final EaiMessageHistoryMapper historyRepo;
 
     @Retryable(
             retryFor = { RuntimeException.class },

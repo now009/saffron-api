@@ -1,7 +1,7 @@
 package com.saffron.eai.scheduler;
 
 import com.saffron.eai.domain.EaiSchedule;
-import com.saffron.eai.repository.EaiScheduleRepository;
+import com.saffron.eai.mapper.EaiScheduleMapper;
 import com.saffron.eai.service.EaiSchedulerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EaiBatchScheduler {
 
-    private final EaiScheduleRepository scheduleRepository;
+    private final EaiScheduleMapper scheduleRepository;
     private final EaiSchedulerService schedulerService;
 
     @Scheduled(fixedDelay = 60000)

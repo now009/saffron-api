@@ -1,7 +1,7 @@
 package com.saffron.eai.service;
 
 import com.saffron.eai.domain.EaiSchedule;
-import com.saffron.eai.repository.EaiScheduleRepository;
+import com.saffron.eai.mapper.EaiScheduleMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EaiSchedulerServiceImpl implements EaiSchedulerService {
 
-    private final EaiScheduleRepository scheduleRepository;
+    private final EaiScheduleMapper scheduleRepository;
     private final WorkflowEngine workflowEngine;
 
     @Override

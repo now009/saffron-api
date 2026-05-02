@@ -2,7 +2,7 @@ package com.saffron.eai.service;
 
 import com.saffron.eai.domain.EaiMessageHistory;
 import com.saffron.eai.dto.response.MessageHistoryResponse;
-import com.saffron.eai.repository.EaiMessageHistoryRepository;
+import com.saffron.eai.mapper.EaiMessageHistoryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EaiMessageServiceImpl implements EaiMessageService {
 
-    private final EaiMessageHistoryRepository historyRepository;
+    private final EaiMessageHistoryMapper historyRepository;
     private final WorkflowEngine workflowEngine;
 
     @Override

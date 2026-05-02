@@ -1,7 +1,7 @@
 package com.saffron.eai.kafka;
 
 import com.saffron.eai.common.EaiMessage;
-import com.saffron.eai.repository.EaiMessageHistoryRepository;
+import com.saffron.eai.mapper.EaiMessageHistoryMapper;
 import com.saffron.eai.service.WorkflowEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class EaiMessageConsumer {
 
     private final WorkflowEngine workflowEngine;
     private final EaiMessageProducer producer;
-    private final EaiMessageHistoryRepository historyRepo;
+    private final EaiMessageHistoryMapper historyRepo;
 
     @KafkaListener(
             topics = "eai.interface.request",

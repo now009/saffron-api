@@ -8,8 +8,8 @@ import com.saffron.eai.domain.EaiAdapterConfig;
 import com.saffron.eai.domain.EaiInterfaceDef;
 import com.saffron.eai.dto.request.InterfaceCreateRequest;
 import com.saffron.eai.dto.response.InterfaceResponse;
-import com.saffron.eai.repository.EaiAdapterConfigRepository;
-import com.saffron.eai.repository.EaiInterfaceRepository;
+import com.saffron.eai.mapper.EaiAdapterConfigMapper;
+import com.saffron.eai.mapper.EaiInterfaceMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EaiInterfaceServiceImpl implements EaiInterfaceService {
 
-    private final EaiInterfaceRepository interfaceRepository;
-    private final EaiAdapterConfigRepository adapterConfigRepository;
+    private final EaiInterfaceMapper interfaceRepository;
+    private final EaiAdapterConfigMapper adapterConfigRepository;
     private final AdapterFactory adapterFactory;
 
     @Override

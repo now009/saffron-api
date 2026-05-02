@@ -1,4 +1,4 @@
-package com.saffron.eai.repository;
+package com.saffron.eai.mapper;
 
 import com.saffron.eai.domain.EaiMessageHistory;
 import org.apache.ibatis.annotations.Mapper;
@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface EaiMessageHistoryRepository {
+public interface EaiMessageHistoryMapper {
 
     List<EaiMessageHistory> selectHistoryList(@Param("interfaceId") String interfaceId,
                                                @Param("status") String status,

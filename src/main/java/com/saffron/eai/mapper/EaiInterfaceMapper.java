@@ -1,4 +1,4 @@
-package com.saffron.eai.repository;
+package com.saffron.eai.mapper;
 
 import com.saffron.eai.domain.EaiAdapterConfig;
 import com.saffron.eai.domain.EaiInterfaceDef;
@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface EaiInterfaceRepository {
+public interface EaiInterfaceMapper {
 
     List<EaiInterfaceDef> selectInterfaceList(@Param("status") String status,
                                                @Param("adapterType") String adapterType,
