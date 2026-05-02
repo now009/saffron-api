@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.service.role;
+package com.saffron.portal.service.role;
 
 import com.saffron.portal.dto.common.ApiResponse;
 import com.saffron.portal.dto.role.RoleDeptDto;

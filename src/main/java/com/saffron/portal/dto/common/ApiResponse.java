@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.dto.common;
+package com.saffron.portal.dto.common;
 
 public class ApiResponse {
 

@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.dto.user;
+package com.saffron.portal.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;

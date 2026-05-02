@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.mapper;
+package com.saffron.portal.mapper;
 
 import com.saffron.portal.dto.board.BoardMasterDto;
 import com.saffron.portal.dto.board.BoardStatsDto;

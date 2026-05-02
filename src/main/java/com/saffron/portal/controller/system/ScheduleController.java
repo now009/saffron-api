@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.controller.system;
+package com.saffron.portal.controller.system;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

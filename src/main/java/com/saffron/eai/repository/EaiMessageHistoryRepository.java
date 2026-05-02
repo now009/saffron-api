@@ -19,6 +19,10 @@ public interface EaiMessageHistoryRepository {
 
     int insertHistory(EaiMessageHistory history);
 
+    default int save(EaiMessageHistory history) {
+        return insertHistory(history);
+    }
+
     int updateHistoryStatus(@Param("id") Long id, @Param("status") String status);
 
     int updateDlqStatus(@Param("messageId") String messageId);

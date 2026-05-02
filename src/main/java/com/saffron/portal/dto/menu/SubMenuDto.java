@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.dto.menu;
+package com.saffron.portal.dto.menu;
 
 public class SubMenuDto {
 

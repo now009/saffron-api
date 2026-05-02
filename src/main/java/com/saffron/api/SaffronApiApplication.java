@@ -1,4 +1,4 @@
-﻿package com.saffron.api;
+package com.saffron.api;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

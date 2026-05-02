@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.dto.role;
+package com.saffron.portal.dto.role;
 
 /**
  * 역할에 사용자를 할당/해제하기 위한 요청 DTO.

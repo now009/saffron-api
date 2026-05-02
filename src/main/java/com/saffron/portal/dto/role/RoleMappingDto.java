@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.dto.role;
+package com.saffron.portal.dto.role;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.mapper;
+package com.saffron.portal.mapper;
 
 import com.saffron.portal.dto.board.BoardPostDto;
 import org.apache.ibatis.annotations.Mapper;

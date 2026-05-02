@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.dto.board;
+package com.saffron.portal.dto.board;
 
 public class BoardStatsDto {
 

@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.dto.notice;
+package com.saffron.portal.dto.notice;
 
 import java.time.LocalDateTime;
 

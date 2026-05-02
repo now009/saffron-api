@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.exception;
+package com.saffron.portal.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

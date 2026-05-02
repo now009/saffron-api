@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.controller.notice;
+package com.saffron.portal.controller.notice;
 
 import com.saffron.portal.dto.common.ApiResponse;
 import com.saffron.portal.dto.notice.NoticeDto;

@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.dto.user;
+package com.saffron.portal.dto.user;
 
 import java.time.LocalDateTime;
 

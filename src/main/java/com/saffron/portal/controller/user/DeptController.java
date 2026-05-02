@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.controller.user;
+package com.saffron.portal.controller.user;
 
 import com.saffron.portal.dto.common.ApiResponse;
 import com.saffron.portal.dto.user.DeptDto;

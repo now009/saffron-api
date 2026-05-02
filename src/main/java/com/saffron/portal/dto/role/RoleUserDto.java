@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.dto.role;
+package com.saffron.portal.dto.role;
 
 public class RoleUserDto {
 

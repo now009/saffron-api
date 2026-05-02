@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.config;
+package com.saffron.portal.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

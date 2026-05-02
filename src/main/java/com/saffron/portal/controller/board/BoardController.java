@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.controller.board;
+package com.saffron.portal.controller.board;
 
 import com.saffron.portal.dto.board.*;
 import com.saffron.portal.dto.common.ApiResponse;

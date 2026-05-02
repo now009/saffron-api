@@ -1,4 +1,4 @@
-﻿package com.saffron.portal.config;
+package com.saffron.portal.config;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
