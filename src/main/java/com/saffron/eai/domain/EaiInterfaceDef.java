@@ -31,6 +31,7 @@ public class EaiInterfaceDef {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    private List<String> validationRules;
     private List<EaiMappingRule> mappingRules;
     private List<EaiRoutingRule> routingRules;
 

@@ -17,54 +17,55 @@ import java.util.Map;
 @Component("dbAdapter")
 public class DbAdapter extends AbstractEaiAdapter {
 
-    private final SqlSessionFactory sqlSessionFactory;
+    private final Map<String, SqlSessionFactory> sessionFactories;
     private final ObjectMapper objectMapper;
 
-    public DbAdapter(SqlSessionFactory sqlSessionFactory, ObjectMapper objectMapper) {
-        this.sqlSessionFactory = sqlSessionFactory;
+    public DbAdapter(Map<String, SqlSessionFactory> sessionFactories, ObjectMapper objectMapper) {
+        this.sessionFactories = sessionFactories;
         this.objectMapper = objectMapper;
     }
 
     @Override
     public EaiResponse send(EaiMessage message) throws EaiAdapterException {
         EaiAdapterConfig config = message.getEndpointConfig();
-        long startMs = System.currentTimeMillis();
+        SqlSessionFactory factory = sessionFactories.get(config.getDatasourceId());
+        if (factory == null) throw new EaiAdapterException("DataSource 미등록: " + config.getDatasourceId());
 
-        try (SqlSession session = sqlSessionFactory.openSession()) {
+        long startMs = System.currentTimeMillis();
+        try (SqlSession session = factory.openSession()) {
             Map<String, Object> params = objectMapper.readValue(message.getPayload(), Map.class);
             Object result;
 
-            switch (config.getOperationType() != null ? config.getOperationType() : "") {
-                case "QUERY"  -> result = session.selectList(config.getStatementId(), params);
-                case "INSERT" -> { result = session.insert(config.getStatementId(), params); session.commit(); }
-                case "UPDATE" -> { result = session.update(config.getStatementId(), params); session.commit(); }
+            switch (config.getOperationType()) {
+                case "QUERY"     -> result = session.selectList(config.getStatementId(), params);
+                case "INSERT"    -> { result = session.insert(config.getStatementId(), params); session.commit(); }
+                case "UPDATE"    -> { result = session.update(config.getStatementId(), params); session.commit(); }
+                case "PROCEDURE" -> result = callProcedure(session, config, params);
                 default -> throw new EaiAdapterException("미지원 operationType: " + config.getOperationType());
             }
 
             String resultJson = objectMapper.writeValueAsString(result);
             EaiResponse response = EaiResponse.success(resultJson, System.currentTimeMillis() - startMs);
             saveHistory(message, response, "SUCCESS");
-            logTransaction(message, response);
             return response;
 
         } catch (EaiAdapterException e) {
             throw e;
         } catch (Exception e) {
-            EaiResponse errResp = EaiResponse.fail(e.getMessage(), System.currentTimeMillis() - startMs);
-            saveHistory(message, errResp, "FAIL");
             throw new EaiAdapterException("DB 처리 실패: " + e.getMessage(), e);
         }
     }
 
     @Override
     public List<EaiMessage> receive(String interfaceId) throws EaiAdapterException {
-        // TODO: Pull 방식 - SELECT로 미처리 레코드 조회 후 EaiMessage 변환
         return List.of();
     }
 
     @Override
     public HealthStatus checkHealth() {
-        try (SqlSession session = sqlSessionFactory.openSession()) {
+        SqlSessionFactory factory = sessionFactories.values().stream().findFirst().orElse(null);
+        if (factory == null) return HealthStatus.UNKNOWN;
+        try (SqlSession session = factory.openSession()) {
             return HealthStatus.UP;
         } catch (Exception e) {
             return HealthStatus.DOWN;
@@ -73,4 +74,10 @@ public class DbAdapter extends AbstractEaiAdapter {
 
     @Override
     public AdapterType getType() { return AdapterType.DB; }
+
+    private Object callProcedure(SqlSession session, EaiAdapterConfig config, Map<String, Object> params) {
+        session.update(config.getStatementId(), params);
+        session.commit();
+        return params;
+    }
 }

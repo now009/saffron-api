@@ -21,9 +21,4 @@ public class EaiMessageProducer {
     public void publishResponse(EaiMessage message) {
         kafkaTemplate.send("eai.interface.response", message.getInterfaceId(), message);
     }
-
-    public void publishToDlq(EaiMessage message) {
-        log.warn("[Producer] DLQ 발행 interfaceId={}", message.getInterfaceId());
-        kafkaTemplate.send("eai.interface.dlq", message.getInterfaceId(), message);
-    }
 }

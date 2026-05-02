@@ -27,5 +27,9 @@ public interface EaiMessageHistoryMapper {
 
     int updateDlqStatus(@Param("messageId") String messageId);
 
+    default int markAsDlq(String messageId) {
+        return updateDlqStatus(messageId);
+    }
+
     int updateRetryCount(@Param("id") Long id, @Param("retryCount") Integer retryCount);
 }

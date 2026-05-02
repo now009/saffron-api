@@ -1,11 +1,14 @@
 package com.saffron.eai.kafka;
 
 import com.saffron.eai.common.EaiMessage;
+import com.saffron.eai.common.NonRetryableException;
 import com.saffron.eai.mapper.EaiMessageHistoryMapper;
+import com.saffron.eai.service.AlertService;
 import com.saffron.eai.service.WorkflowEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -18,7 +21,8 @@ import org.springframework.stereotype.Component;
 public class EaiMessageConsumer {
 
     private final WorkflowEngine workflowEngine;
-    private final EaiMessageProducer producer;
+    private final KafkaTemplate<String, EaiMessage> kafkaTemplate;
+    private final AlertService alertService;
     private final EaiMessageHistoryMapper historyRepo;
 
     @KafkaListener(
@@ -35,19 +39,20 @@ public class EaiMessageConsumer {
         try {
             workflowEngine.execute(message);
             ack.acknowledge();
+        } catch (NonRetryableException e) {
+            kafkaTemplate.send("eai.interface.dlq", message);
+            ack.acknowledge();
         } catch (Exception e) {
             log.error("[Consumer] 처리 실패, 재시도 예정: {}", e.getMessage());
-            producer.publishToDlq(message);
-            ack.acknowledge();
+            // 커밋 안 함 → Kafka 자동 재시도
         }
     }
 
     @KafkaListener(topics = "eai.interface.dlq", groupId = "eai-dlq-processor")
     public void consumeDlq(@Payload EaiMessage message, Acknowledgment ack) {
         log.warn("[DLQ] 수신 interfaceId={}", message.getInterfaceId());
-        if (message.getMessageId() != null) {
-            historyRepo.updateDlqStatus(message.getMessageId());
-        }
+        alertService.sendDlqAlert(message);
+        historyRepo.markAsDlq(message.getMessageId());
         ack.acknowledge();
     }
 }

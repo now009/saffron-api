@@ -2,6 +2,7 @@
 
 package com.saffron.eai.adapter;
 
+import com.saffron.eai.common.AesEncryptor;
 import com.saffron.eai.common.EaiMessage;
 import com.saffron.eai.common.EaiResponse;
 import com.saffron.eai.domain.EaiMessageHistory;

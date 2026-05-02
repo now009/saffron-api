@@ -17,9 +17,11 @@ import java.util.List;
 public class RestAdapter extends AbstractEaiAdapter {
 
     private final WebClient webClient;
+    private final TokenProvider tokenProvider;
 
-    public RestAdapter(WebClient.Builder builder) {
+    public RestAdapter(WebClient.Builder builder, TokenProvider tokenProvider) {
         this.webClient = builder.build();
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
@@ -28,31 +30,26 @@ public class RestAdapter extends AbstractEaiAdapter {
         long startMs = System.currentTimeMillis();
 
         try {
-            String httpMethod = config.getHttpMethod() != null ? config.getHttpMethod() : "POST";
-            int timeoutMs = config.getTimeoutMs() != null ? config.getTimeoutMs() : 5000;
-
             String responseBody = webClient
-                    .method(HttpMethod.valueOf(httpMethod))
+                    .method(HttpMethod.valueOf(config.getHttpMethod()))
                     .uri(config.getUrl())
                     .header("Content-Type", "application/json")
-                    .bodyValue(message.getPayload() != null ? message.getPayload() : "")
+                    .header("Authorization", "Bearer " + tokenProvider.getToken(config))
+                    .bodyValue(message.getPayload())
                     .retrieve()
                     .onStatus(status -> status.isError(), resp ->
                             resp.bodyToMono(String.class)
                                     .flatMap(body -> reactor.core.publisher.Mono.error(
-                                            new EaiAdapterException("HTTP error: " + resp.statusCode() + " - " + body)))
+                                            new EaiAdapterException("HTTP 오류: " + resp.statusCode() + " - " + body)))
                     )
                     .bodyToMono(String.class)
-                    .timeout(Duration.ofMillis(timeoutMs))
+                    .timeout(Duration.ofMillis(config.getTimeoutMs() != null ? config.getTimeoutMs() : 5000))
                     .block();
 
             EaiResponse response = EaiResponse.success(responseBody, System.currentTimeMillis() - startMs);
             saveHistory(message, response, "SUCCESS");
-            logTransaction(message, response);
             return response;
 
-        } catch (EaiAdapterException e) {
-            throw e;
         } catch (Exception e) {
             EaiResponse errResp = EaiResponse.fail(e.getMessage(), System.currentTimeMillis() - startMs);
             saveHistory(message, errResp, "FAIL");

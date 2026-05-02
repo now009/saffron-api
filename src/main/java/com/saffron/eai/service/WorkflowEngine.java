@@ -3,14 +3,15 @@ package com.saffron.eai.service;
 import com.saffron.eai.adapter.AdapterFactory;
 import com.saffron.eai.adapter.EaiAdapter;
 import com.saffron.eai.common.EaiMessage;
+import com.saffron.eai.common.TransientException;
 import com.saffron.eai.domain.EaiAdapterConfig;
 import com.saffron.eai.domain.EaiInterfaceDef;
-import com.saffron.eai.domain.EaiRoutingRule;
 import com.saffron.eai.mapper.EaiMessageHistoryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -26,26 +27,43 @@ public class WorkflowEngine {
 
     private final AdapterFactory adapterFactory;
     private final MessageTransformer transformer;
+    private final MessageValidator validator;
     private final EaiInterfaceService interfaceService;
     private final EaiMessageHistoryMapper historyRepo;
+    private final KafkaTemplate<String, EaiMessage> kafkaTemplate;
+    private final AlertService alertService;
 
     @Retryable(
-            retryFor = { RuntimeException.class },
+            retryFor = { TransientException.class },
             maxAttempts = 3,
             backoff = @Backoff(delay = 1000, multiplier = 2, maxDelay = 8000)
     )
     public void execute(EaiMessage message) {
         log.info("[Workflow] START interfaceId={}", message.getInterfaceId());
 
+        // 1. 인터페이스 설정 로드
         EaiInterfaceDef def = interfaceService.loadWithCache(message.getInterfaceId());
         if (!def.isActive()) {
             log.warn("[Workflow] 비활성 인터페이스 수신 무시: {}", message.getInterfaceId());
             return;
         }
 
+        // 2. 유효성 검사
+        ValidationResult validation = validator.validate(message, def.getValidationRules());
+        if (!validation.isValid()) {
+            kafkaTemplate.send("eai.interface.dlq", message);
+            alertService.sendValidationAlert(message, validation.getErrors());
+            return;
+        }
+
+        // 3. 메시지 변환
         EaiMessage transformed = transformer.transform(message, def.getMappingRules());
 
-        List<EaiAdapterConfig> targets = resolveTargets(transformed, def);
+        // 4. 라우팅 → 어댑터 전송
+        List<EaiAdapterConfig> targets = def.getRoutingRules().stream()
+                .filter(r -> evaluateCondition(r.getConditionExpr(), transformed))
+                .map(r -> interfaceService.getAdapterConfig(r.getTargetAdapterId()))
+                .collect(Collectors.toList());
 
         if (def.isParallel()) {
             sendParallel(transformed, targets);
@@ -58,19 +76,9 @@ public class WorkflowEngine {
 
     @Recover
     public void onMaxRetryExceeded(Exception e, EaiMessage message) {
-        log.error("[Workflow] 최대 재시도 초과 interfaceId={}", message.getInterfaceId(), e);
-        // TODO: DLQ 발행 및 알림 처리
-    }
-
-    private List<EaiAdapterConfig> resolveTargets(EaiMessage message, EaiInterfaceDef def) {
-        List<EaiRoutingRule> rules = def.getRoutingRules();
-        if (rules == null || rules.isEmpty()) {
-            return List.of();
-        }
-        return rules.stream()
-                .filter(r -> evaluateCondition(r.getConditionExpr(), message))
-                .map(r -> interfaceService.getAdapterConfig(r.getTargetAdapterId()))
-                .collect(Collectors.toList());
+        log.error("[Workflow] 최대 재시도 초과 → DLQ 발행: {}", message.getInterfaceId(), e);
+        kafkaTemplate.send("eai.interface.dlq", message);
+        alertService.sendRetryExhaustedAlert(message, e);
     }
 
     private void sendSequential(EaiMessage message, List<EaiAdapterConfig> targets) {

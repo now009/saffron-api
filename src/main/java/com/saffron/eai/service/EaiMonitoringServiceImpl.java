@@ -1,6 +1,7 @@
 package com.saffron.eai.service;
 
 import com.saffron.eai.dto.response.DashboardSnapshotResponse;
+import com.saffron.eai.dto.response.InterfaceStatsResponse;
 import com.saffron.eai.mapper.EaiInterfaceMapper;
 import com.saffron.eai.mapper.EaiMessageHistoryMapper;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,26 @@ public class EaiMonitoringServiceImpl implements EaiMonitoringService {
         snapshot.setAvgProcessingMs(0L); // TODO: 평균 처리 시간 집계
         snapshot.setSnapshotAt(LocalDateTime.now());
         return snapshot;
+    }
+
+    @Override
+    public InterfaceStatsResponse getStats(String interfaceId, String period) {
+        List<?> all = historyRepository.selectHistoryList(interfaceId, null, null);
+        long total = all.size();
+        long success = historyRepository.selectHistoryList(interfaceId, "SUCCESS", null).size();
+        long fail = historyRepository.selectHistoryList(interfaceId, "FAIL", null).size();
+        long dlq = historyRepository.selectHistoryList(interfaceId, "DLQ", null).size();
+
+        return InterfaceStatsResponse.builder()
+                .interfaceId(interfaceId)
+                .period(period)
+                .totalCount(total)
+                .successCount(success)
+                .failCount(fail)
+                .dlqCount(dlq)
+                .successRate(total > 0 ? (double) success / total * 100 : 0.0)
+                .avgProcessingMs(0L)
+                .maxProcessingMs(0L)
+                .build();
     }
 }
