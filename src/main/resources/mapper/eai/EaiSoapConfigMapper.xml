@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.eai.mapper.EaiSoapConfigMapper">
+
+    <resultMap id="SoapConfigResultMap" type="com.saffron.eai.domain.EaiSoapConfig">
+        <id     property="id"              column="id"/>
+        <result property="interfaceId"     column="interface_id"/>
+        <result property="configName"      column="config_name"/>
+        <result property="wsdlUrl"         column="wsdl_url"/>
+        <result property="serviceUrl"      column="service_url"/>
+        <result property="namespace"       column="namespace"/>
+        <result property="operationName"   column="operation_name"/>
+        <result property="portName"        column="port_name"/>
+        <result property="soapVersion"     column="soap_version"/>
+        <result property="soapAction"      column="soap_action"/>
+        <result property="mtomEnabled"     column="mtom_enabled"/>
+        <result property="wsSecurityType"  column="ws_security_type"/>
+        <result property="wsUsername"      column="ws_username"/>
+        <result property="wsPassword"      column="ws_password"/>
+        <result property="wsPasswordType"  column="ws_password_type"/>
+        <result property="keystorePath"    column="keystore_path"/>
+        <result property="keystorePassword" column="keystore_password"/>
+        <result property="timeoutMs"       column="timeout_ms"/>
+        <result property="requestTemplate" column="request_template"/>
+        <result property="responsePath"    column="response_path"/>
+        <result property="wsdlCachedAt"    column="wsdl_cached_at"/>
+        <result property="wsdlCache"       column="wsdl_cache"/>
+        <result property="isActive"        column="is_active"/>
+        <result property="createdAt"       column="created_at"/>
+        <result property="updatedAt"       column="updated_at"/>
+    </resultMap>
+
+    <select id="selectSoapConfigList" resultMap="SoapConfigResultMap">
+        SELECT id, interface_id, config_name, wsdl_url, service_url, namespace,
+               operation_name, port_name, soap_version, soap_action, mtom_enabled,
+               ws_security_type, ws_username, ws_password, ws_password_type,
+               keystore_path, keystore_password, timeout_ms, request_template, response_path,
+               wsdl_cached_at, wsdl_cache, is_active, created_at, updated_at
+        FROM   eai_soap_config
+        <where>
+            <if test="interfaceId != null and interfaceId != ''">
+                AND interface_id = #{interfaceId}
+            </if>
+        </where>
+        ORDER BY id
+    </select>
+
+    <select id="selectSoapConfigById" resultMap="SoapConfigResultMap">
+        SELECT id, interface_id, config_name, wsdl_url, service_url, namespace,
+               operation_name, port_name, soap_version, soap_action, mtom_enabled,
+               ws_security_type, ws_username, ws_password, ws_password_type,
+               keystore_path, keystore_password, timeout_ms, request_template, response_path,
+               wsdl_cached_at, wsdl_cache, is_active, created_at, updated_at
+        FROM   eai_soap_config
+        WHERE  id = #{id}
+    </select>
+
+    <select id="selectSoapConfigByInterfaceId" resultMap="SoapConfigResultMap">
+        SELECT id, interface_id, config_name, wsdl_url, service_url, namespace,
+               operation_name, port_name, soap_version, soap_action, mtom_enabled,
+               ws_security_type, ws_username, ws_password, ws_password_type,
+               keystore_path, keystore_password, timeout_ms, request_template, response_path,
+               wsdl_cached_at, wsdl_cache, is_active, created_at, updated_at
+        FROM   eai_soap_config
+        WHERE  interface_id = #{interfaceId}
+        LIMIT  1
+    </select>
+
+    <insert id="insertSoapConfig" parameterType="com.saffron.eai.domain.EaiSoapConfig"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO eai_soap_config
+               (interface_id, config_name, wsdl_url, service_url, namespace,
+                operation_name, port_name, soap_version, soap_action, mtom_enabled,
+                ws_security_type, ws_username, ws_password, ws_password_type,
+                keystore_path, keystore_password, timeout_ms, request_template, response_path, is_active)
+        VALUES (#{interfaceId}, #{configName}, #{wsdlUrl}, #{serviceUrl}, #{namespace},
+                #{operationName}, #{portName}, #{soapVersion}, #{soapAction}, #{mtomEnabled},
+                #{wsSecurityType}, #{wsUsername}, #{wsPassword}, #{wsPasswordType},
+                #{keystorePath}, #{keystorePassword}, #{timeoutMs}, #{requestTemplate}, #{responsePath}, #{isActive})
+    </insert>
+
+    <update id="updateSoapConfig" parameterType="com.saffron.eai.domain.EaiSoapConfig">
+        UPDATE eai_soap_config
+        <set>
+            interface_id     = #{interfaceId},
+            config_name      = #{configName},
+            wsdl_url         = #{wsdlUrl},
+            service_url      = #{serviceUrl},
+            namespace        = #{namespace},
+            operation_name   = #{operationName},
+            port_name        = #{portName},
+            soap_version     = #{soapVersion},
+            soap_action      = #{soapAction},
+            mtom_enabled     = #{mtomEnabled},
+            ws_security_type = #{wsSecurityType},
+            ws_username      = #{wsUsername},
+            <if test="wsPassword != null and wsPassword != ''">
+            ws_password      = #{wsPassword},
+            </if>
+            ws_password_type = #{wsPasswordType},
+            keystore_path    = #{keystorePath},
+            <if test="keystorePassword != null and keystorePassword != ''">
+            keystore_password = #{keystorePassword},
+            </if>
+            timeout_ms       = #{timeoutMs},
+            request_template = #{requestTemplate},
+            response_path    = #{responsePath},
+            is_active        = #{isActive},
+            updated_at       = NOW()
+        </set>
+        WHERE  id = #{id}
+    </update>
+
+    <delete id="deleteSoapConfig">
+        DELETE FROM eai_soap_config WHERE id = #{id}
+    </delete>
+
+</mapper>

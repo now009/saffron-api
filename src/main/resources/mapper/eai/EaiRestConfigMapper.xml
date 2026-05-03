@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.eai.mapper.EaiRestConfigMapper">
+
+    <resultMap id="RestConfigResultMap" type="com.saffron.eai.domain.EaiRestConfig">
+        <id     property="id"               column="id"/>
+        <result property="interfaceId"      column="interface_id"/>
+        <result property="configName"       column="config_name"/>
+        <result property="url"              column="url"/>
+        <result property="httpMethod"       column="http_method"/>
+        <result property="timeoutMs"        column="timeout_ms"/>
+        <result property="authType"         column="auth_type"/>
+        <result property="authValue"        column="auth_value"/>
+        <result property="apiKeyHeader"     column="api_key_header"/>
+        <result property="tokenUrl"         column="token_url"/>
+        <result property="clientId"         column="client_id"/>
+        <result property="clientSecret"     column="client_secret"/>
+        <result property="tokenScope"       column="token_scope"/>
+        <result property="contentType"      column="content_type"/>
+        <result property="requestHeaders"   column="request_headers"/>
+        <result property="requestTemplate"  column="request_template"/>
+        <result property="successHttpCodes" column="success_http_codes"/>
+        <result property="responsePath"     column="response_path"/>
+        <result property="sslVerify"        column="ssl_verify"/>
+        <result property="proxyHost"        column="proxy_host"/>
+        <result property="proxyPort"        column="proxy_port"/>
+        <result property="proxyUser"        column="proxy_user"/>
+        <result property="proxyPassword"    column="proxy_password"/>
+        <result property="isActive"         column="is_active"/>
+        <result property="createdAt"        column="created_at"/>
+        <result property="updatedAt"        column="updated_at"/>
+    </resultMap>
+
+    <select id="selectRestConfigList" resultMap="RestConfigResultMap">
+        SELECT id, interface_id, config_name, url, http_method, timeout_ms,
+               auth_type, auth_value, api_key_header, token_url, client_id, client_secret, token_scope,
+               content_type, request_headers, request_template, success_http_codes, response_path,
+               ssl_verify, proxy_host, proxy_port, proxy_user, proxy_password,
+               is_active, created_at, updated_at
+        FROM   eai_rest_config
+        <where>
+            <if test="interfaceId != null and interfaceId != ''">
+                AND interface_id = #{interfaceId}
+            </if>
+        </where>
+        ORDER BY id
+    </select>
+
+    <select id="selectRestConfigById" resultMap="RestConfigResultMap">
+        SELECT id, interface_id, config_name, url, http_method, timeout_ms,
+               auth_type, auth_value, api_key_header, token_url, client_id, client_secret, token_scope,
+               content_type, request_headers, request_template, success_http_codes, response_path,
+               ssl_verify, proxy_host, proxy_port, proxy_user, proxy_password,
+               is_active, created_at, updated_at
+        FROM   eai_rest_config
+        WHERE  id = #{id}
+    </select>
+
+    <select id="selectRestConfigByInterfaceId" resultMap="RestConfigResultMap">
+        SELECT id, interface_id, config_name, url, http_method, timeout_ms,
+               auth_type, auth_value, api_key_header, token_url, client_id, client_secret, token_scope,
+               content_type, request_headers, request_template, success_http_codes, response_path,
+               ssl_verify, proxy_host, proxy_port, proxy_user, proxy_password,
+               is_active, created_at, updated_at
+        FROM   eai_rest_config
+        WHERE  interface_id = #{interfaceId}
+        LIMIT  1
+    </select>
+
+    <insert id="insertRestConfig" parameterType="com.saffron.eai.domain.EaiRestConfig"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO eai_rest_config
+               (interface_id, config_name, url, http_method, timeout_ms,
+                auth_type, auth_value, api_key_header, token_url, client_id, client_secret, token_scope,
+                content_type, request_headers, request_template, success_http_codes, response_path,
+                ssl_verify, proxy_host, proxy_port, proxy_user, proxy_password, is_active)
+        VALUES (#{interfaceId}, #{configName}, #{url}, #{httpMethod}, #{timeoutMs},
+                #{authType}, #{authValue}, #{apiKeyHeader}, #{tokenUrl}, #{clientId}, #{clientSecret}, #{tokenScope},
+                #{contentType}, #{requestHeaders}, #{requestTemplate}, #{successHttpCodes}, #{responsePath},
+                #{sslVerify}, #{proxyHost}, #{proxyPort}, #{proxyUser}, #{proxyPassword}, #{isActive})
+    </insert>
+
+    <update id="updateRestConfig" parameterType="com.saffron.eai.domain.EaiRestConfig">
+        UPDATE eai_rest_config
+        <set>
+            interface_id      = #{interfaceId},
+            config_name       = #{configName},
+            url               = #{url},
+            http_method       = #{httpMethod},
+            timeout_ms        = #{timeoutMs},
+            auth_type         = #{authType},
+            <if test="authValue != null and authValue != ''">
+            auth_value        = #{authValue},
+            </if>
+            api_key_header    = #{apiKeyHeader},
+            token_url         = #{tokenUrl},
+            client_id         = #{clientId},
+            <if test="clientSecret != null and clientSecret != ''">
+            client_secret     = #{clientSecret},
+            </if>
+            token_scope       = #{tokenScope},
+            content_type      = #{contentType},
+            request_headers   = #{requestHeaders},
+            request_template  = #{requestTemplate},
+            success_http_codes = #{successHttpCodes},
+            response_path     = #{responsePath},
+            ssl_verify        = #{sslVerify},
+            proxy_host        = #{proxyHost},
+            proxy_port        = #{proxyPort},
+            proxy_user        = #{proxyUser},
+            <if test="proxyPassword != null and proxyPassword != ''">
+            proxy_password    = #{proxyPassword},
+            </if>
+            is_active         = #{isActive},
+            updated_at        = NOW()
+        </set>
+        WHERE  id = #{id}
+    </update>
+
+    <delete id="deleteRestConfig">
+        DELETE FROM eai_rest_config WHERE id = #{id}
+    </delete>
+
+</mapper>

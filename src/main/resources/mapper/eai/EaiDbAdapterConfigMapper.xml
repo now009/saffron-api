@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.eai.mapper.EaiDbAdapterConfigMapper">
+
+    <resultMap id="DbAdapterConfigResultMap" type="com.saffron.eai.domain.EaiDbAdapterConfig">
+        <id     property="id"              column="id"/>
+        <result property="interfaceId"     column="interface_id"/>
+        <result property="datasourceId"    column="datasource_id"/>
+        <result property="statementId"     column="statement_id"/>
+        <result property="operationType"   column="operation_type"/>
+        <result property="resultType"      column="result_type"/>
+        <result property="paramMapping"    column="param_mapping"/>
+        <result property="rollbackOnError" column="rollback_on_error"/>
+        <result property="isActive"        column="is_active"/>
+        <result property="createdAt"       column="created_at"/>
+        <result property="updatedAt"       column="updated_at"/>
+    </resultMap>
+
+    <select id="selectDbAdapterConfigList" resultMap="DbAdapterConfigResultMap">
+        SELECT id, interface_id, datasource_id, statement_id, operation_type, result_type,
+               param_mapping, rollback_on_error, is_active, created_at, updated_at
+        FROM   eai_db_adapter_config
+        <where>
+            <if test="interfaceId != null and interfaceId != ''">
+                AND interface_id = #{interfaceId}
+            </if>
+            <if test="datasourceId != null and datasourceId != ''">
+                AND datasource_id = #{datasourceId}
+            </if>
+        </where>
+        ORDER BY id
+    </select>
+
+    <select id="selectDbAdapterConfigById" resultMap="DbAdapterConfigResultMap">
+        SELECT id, interface_id, datasource_id, statement_id, operation_type, result_type,
+               param_mapping, rollback_on_error, is_active, created_at, updated_at
+        FROM   eai_db_adapter_config
+        WHERE  id = #{id}
+    </select>
+
+    <insert id="insertDbAdapterConfig" parameterType="com.saffron.eai.domain.EaiDbAdapterConfig"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO eai_db_adapter_config
+               (interface_id, datasource_id, statement_id, operation_type, result_type,
+                param_mapping, rollback_on_error, is_active)
+        VALUES (#{interfaceId}, #{datasourceId}, #{statementId}, #{operationType}, #{resultType},
+                #{paramMapping}, #{rollbackOnError}, #{isActive})
+    </insert>
+
+    <update id="updateDbAdapterConfig" parameterType="com.saffron.eai.domain.EaiDbAdapterConfig">
+        UPDATE eai_db_adapter_config
+        SET    interface_id     = #{interfaceId},
+               datasource_id   = #{datasourceId},
+               statement_id    = #{statementId},
+               operation_type  = #{operationType},
+               result_type     = #{resultType},
+               param_mapping   = #{paramMapping},
+               rollback_on_error = #{rollbackOnError},
+               is_active       = #{isActive},
+               updated_at      = NOW()
+        WHERE  id = #{id}
+    </update>
+
+    <delete id="deleteDbAdapterConfig">
+        DELETE FROM eai_db_adapter_config WHERE id = #{id}
+    </delete>
+
+</mapper>
