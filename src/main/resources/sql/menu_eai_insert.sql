@@ -21,9 +21,8 @@ INSERT INTO program_info (programId, programName, programUrl, useYn, sortOrder) 
 ('PGM024', 'EAI 스케줄 관리',      '/eai/schedules',  'Y', 5),
 ('PGM025', 'DataSource',      '/eai/datasources',  'Y', 6),
 ('PGM026', 'DB 어댑터',      '/eai/db-adapter-configs',  'Y', 7),
-('PGM027', 'REST 어댑터',      '/eai/rest-config',  'Y', 8),
+('PGM027', 'REST 어댑터',      '/eai/rest-configs',  'Y', 8),
 ('PGM028', 'SOAP 어댑터',      '/eai/soap-configs',  'Y', 9);
-                                                                                ;
 
 
 delete from menu_info where site = 'eai';
