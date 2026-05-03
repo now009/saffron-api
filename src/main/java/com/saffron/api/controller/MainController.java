@@ -1,6 +1,6 @@
-package com.saffron.portal.controller;
+package com.saffron.api.controller;
 
-import com.saffron.portal.security.JwtTokenProvider;
+import com.saffron.api.security.JwtTokenProvider;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.saffron.portal.security;
+package com.saffron.api.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

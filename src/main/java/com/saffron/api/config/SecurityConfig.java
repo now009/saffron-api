@@ -1,4 +1,4 @@
-package com.saffron.portal.config;
+package com.saffron.api.config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +43,6 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // 인증 실패 시 /login 리다이렉트 대신 401 반환
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, e) ->
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))

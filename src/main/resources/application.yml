@@ -18,7 +18,7 @@ logging:
   level:
     root: INFO
     org.springframework.security: TRACE
-    com.saffron.api.portal.mapper: DEBUG
+    com.saffron.portal.mapper: DEBUG
 
 management:
   endpoints:
