@@ -9,25 +9,30 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
-import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // application.yml cors.allowed-origins (콤마 구분 문자열) → List 변환
     @Value("#{'${cors.allowed-origins}'.split(',')}")
     private List<String> allowedOrigins;
 
     @Value("${auth.check.enabled:true}")
     private boolean authCheckEnabled;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -43,9 +48,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                    // ?access_token= 쿼리 파라미터와 Authorization: Bearer 헤더 모두 허용
-                    .bearerTokenResolver(bearerTokenResolver())
-                    .jwt(jwt -> {})
+                    .jwt(jwt -> jwt.decoder(jwtDecoder()))
                 );
         } else {
             http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
@@ -54,14 +57,22 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // CORS 설정 - 허용 origin은 application.yml에서 관리
+    // HS256 secret 기반 JwtDecoder — issuer-uri(RS256) 대신 사용
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        SecretKeySpec key = new SecretKeySpec(
+                jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+        return NimbusJwtDecoder.withSecretKey(key)
+                .macAlgorithm(MacAlgorithm.HS256)
+                .build();
+    }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        // Authorization 헤더를 프론트에서 읽을 수 있도록 노출
         config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true);
 
@@ -73,13 +84,5 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
-    }
-
-    @Bean
-    public BearerTokenResolver bearerTokenResolver() {
-        DefaultBearerTokenResolver resolver = new DefaultBearerTokenResolver();
-        // sffronAuth redirect 시 ?access_token= 쿼리 파라미터 허용
-        resolver.setAllowUriQueryParameter(true);
-        return resolver;
     }
 }

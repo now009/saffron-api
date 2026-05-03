@@ -10,11 +10,6 @@ spring:
       - "secret.yml"
       - "saffron_eai.yml"
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${auth.server.url}
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
