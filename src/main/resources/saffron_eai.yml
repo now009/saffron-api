@@ -2,6 +2,13 @@
 # application.yml 에서 spring.config.import: "saffron_eai.yml" 로 포함
 
 spring:
+  data:
+    redis:
+      repositories:
+        enabled: false
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
