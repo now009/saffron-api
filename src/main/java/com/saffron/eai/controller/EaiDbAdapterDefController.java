@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/eai/db-adapters")
+@RequestMapping("/eai/db-adapters")
 @RequiredArgsConstructor
 public class EaiDbAdapterDefController {
 
