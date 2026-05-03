@@ -32,7 +32,7 @@ public class MainController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @GetMapping("/portal/main")
+    @GetMapping({"/portal/main", "/main"})
     public ResponseEntity<Void> main(
             @RequestParam(value = "access_token", required = false) String accessToken) {
 
