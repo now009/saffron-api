@@ -738,3 +738,20 @@ dependencies {
 ├─────────────────────────┼────────┼─────────────────────────────────────────────────┼──────────────────────────────────────────────────────┤
 │                         │ GET    │ /api/eai/monitoring/stats/{interfaceId}?period= │ 인터페이스별 통계                                    │
 └─────────────────────────┴────────┴─────────────────────────────────────────────────┴──────────────────────────────────────────────────────┘
+
+create table eai_db_adapter_def (
+id                  BIGINT          NOT NULL AUTO_INCREMENT,
+db_adapter_id       VARCHAR(50)     NOT NULL,
+db_type             VARCHAR(20)     NOT NULL,
+db_name             VARCHAR(10)     NOT NULL,
+db_ip               VARCHAR(50)     NOT NULL,
+db_port             VARCHAR(20)     NOT NULL,
+db_id               VARCHAR(20)     NOT NULL,
+db_pw               VARCHAR(20)     NOT NULL,
+direction           VARCHAR(10)     NOT NULL,
+PRIMARY KEY (id)
+); 
+- table 생성했고, 이에 따른 DTO를 만들고 controller, service를 만들어줘
+- 기본적인 crud 기능을 만들고 end point를 알려줘
+
+
