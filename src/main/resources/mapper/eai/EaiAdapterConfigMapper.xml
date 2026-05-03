@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.eai.mapper.EaiAdapterConfigMapper">
+
+    <resultMap id="AdapterConfigResultMap" type="com.saffron.eai.domain.EaiAdapterConfig">
+        <id     property="id"             column="id"/>
+        <result property="interfaceId"    column="interface_id"/>
+        <result property="adapterType"    column="adapter_type"/>
+        <result property="url"            column="url"/>
+        <result property="httpMethod"     column="http_method"/>
+        <result property="timeoutMs"      column="timeout_ms"/>
+        <result property="authType"       column="auth_type"/>
+        <result property="authValue"      column="auth_value"/>
+        <result property="requestHeaders" column="request_headers"/>
+        <result property="datasourceId"   column="datasource_id"/>
+        <result property="statementId"    column="statement_id"/>
+        <result property="operationType"  column="operation_type"/>
+        <result property="remoteHost"     column="remote_host"/>
+        <result property="remotePort"     column="remote_port"/>
+        <result property="remoteUser"     column="remote_user"/>
+        <result property="remotePassword" column="remote_password"/>
+        <result property="remotePath"     column="remote_path"/>
+        <result property="donePath"       column="done_path"/>
+        <result property="filePattern"    column="file_pattern"/>
+        <result property="fileEncoding"   column="file_encoding"/>
+        <result property="extraConfig"    column="extra_config"/>
+        <result property="isActive"       column="is_active"/>
+        <result property="createdAt"      column="created_at"/>
+        <result property="updatedAt"      column="updated_at"/>
+    </resultMap>
+
+    <select id="selectAdapterConfigList" resultMap="AdapterConfigResultMap">
+        SELECT id, interface_id, adapter_type, url, http_method, timeout_ms,
+               auth_type, auth_value, request_headers, datasource_id, statement_id,
+               operation_type, remote_host, remote_port, remote_user, remote_password,
+               remote_path, done_path, file_pattern, file_encoding, extra_config,
+               is_active, created_at, updated_at
+        FROM   eai_adapter_config
+        <where>
+            <if test="interfaceId != null and interfaceId != ''">
+                AND interface_id = #{interfaceId}
+            </if>
+        </where>
+        ORDER BY id
+    </select>
+
+    <select id="selectAdapterConfigById" resultMap="AdapterConfigResultMap">
+        SELECT id, interface_id, adapter_type, url, http_method, timeout_ms,
+               auth_type, auth_value, request_headers, datasource_id, statement_id,
+               operation_type, remote_host, remote_port, remote_user, remote_password,
+               remote_path, done_path, file_pattern, file_encoding, extra_config,
+               is_active, created_at, updated_at
+        FROM   eai_adapter_config
+        WHERE  id = #{id}
+    </select>
+
+    <insert id="insertAdapterConfig" parameterType="com.saffron.eai.domain.EaiAdapterConfig"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO eai_adapter_config
+               (interface_id, adapter_type, url, http_method, timeout_ms,
+                auth_type, auth_value, request_headers, datasource_id, statement_id,
+                operation_type, remote_host, remote_port, remote_user, remote_password,
+                remote_path, done_path, file_pattern, file_encoding, extra_config, is_active)
+        VALUES (#{interfaceId}, #{adapterType}, #{url}, #{httpMethod}, #{timeoutMs},
+                #{authType}, #{authValue}, #{requestHeaders}, #{datasourceId}, #{statementId},
+                #{operationType}, #{remoteHost}, #{remotePort}, #{remoteUser}, #{remotePassword},
+                #{remotePath}, #{donePath}, #{filePattern}, #{fileEncoding}, #{extraConfig}, #{isActive})
+    </insert>
+
+    <update id="updateAdapterConfig" parameterType="com.saffron.eai.domain.EaiAdapterConfig">
+        UPDATE eai_adapter_config
+        <set>
+            interface_id    = #{interfaceId},
+            adapter_type    = #{adapterType},
+            url             = #{url},
+            http_method     = #{httpMethod},
+            timeout_ms      = #{timeoutMs},
+            auth_type       = #{authType},
+            <if test="authValue != null">
+            auth_value      = #{authValue},
+            </if>
+            request_headers = #{requestHeaders},
+            datasource_id   = #{datasourceId},
+            statement_id    = #{statementId},
+            operation_type  = #{operationType},
+            remote_host     = #{remoteHost},
+            remote_port     = #{remotePort},
+            remote_user     = #{remoteUser},
+            <if test="remotePassword != null">
+            remote_password = #{remotePassword},
+            </if>
+            remote_path     = #{remotePath},
+            done_path       = #{donePath},
+            file_pattern    = #{filePattern},
+            file_encoding   = #{fileEncoding},
+            extra_config    = #{extraConfig},
+            is_active       = #{isActive},
+            updated_at      = NOW()
+        </set>
+        WHERE  id = #{id}
+    </update>
+
+    <delete id="deleteAdapterConfig">
+        DELETE FROM eai_adapter_config WHERE id = #{id}
+    </delete>
+
+</mapper>

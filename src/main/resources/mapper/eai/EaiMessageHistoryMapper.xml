@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.eai.mapper.EaiMessageHistoryMapper">
+
+    <resultMap id="MessageHistoryResultMap" type="com.saffron.eai.domain.EaiMessageHistory">
+        <id     property="id"             column="id"/>
+        <result property="messageId"      column="message_id"/>
+        <result property="interfaceId"    column="interface_id"/>
+        <result property="direction"      column="direction"/>
+        <result property="sourceSystem"   column="source_system"/>
+        <result property="targetSystem"   column="target_system"/>
+        <result property="status"         column="status"/>
+        <result property="messageBody"    column="request_body"/>
+        <result property="responseBody"   column="response_body"/>
+        <result property="errorMessage"   column="error_message"/>
+        <result property="retryCount"     column="retry_count"/>
+        <result property="processingMs"   column="processing_ms"/>
+        <result property="kafkaPartition" column="kafka_partition"/>
+        <result property="kafkaOffset"    column="kafka_offset"/>
+        <result property="createdAt"      column="created_at"/>
+        <result property="processedAt"    column="processed_at"/>
+    </resultMap>
+
+    <select id="selectHistoryList" resultMap="MessageHistoryResultMap">
+        SELECT id, message_id, interface_id, direction, source_system, target_system,
+               status, request_body, response_body, error_message, retry_count,
+               processing_ms, kafka_partition, kafka_offset, created_at, processed_at
+        FROM   eai_message_history
+        <where>
+            <if test="interfaceId != null and interfaceId != ''">
+                AND interface_id = #{interfaceId}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (message_id    LIKE CONCAT('%', #{keyword}, '%')
+                  OR source_system LIKE CONCAT('%', #{keyword}, '%')
+                  OR target_system LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT 500
+    </select>
+
+    <select id="selectHistoryById" resultMap="MessageHistoryResultMap">
+        SELECT id, message_id, interface_id, direction, source_system, target_system,
+               status, request_body, response_body, error_message, retry_count,
+               processing_ms, kafka_partition, kafka_offset, created_at, processed_at
+        FROM   eai_message_history
+        WHERE  id = #{id}
+    </select>
+
+    <select id="selectHistoryByMessageId" resultMap="MessageHistoryResultMap">
+        SELECT id, message_id, interface_id, direction, source_system, target_system,
+               status, request_body, response_body, error_message, retry_count,
+               processing_ms, kafka_partition, kafka_offset, created_at, processed_at
+        FROM   eai_message_history
+        WHERE  message_id = #{messageId}
+    </select>
+
+    <insert id="insertHistory" parameterType="com.saffron.eai.domain.EaiMessageHistory"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO eai_message_history
+               (message_id, interface_id, direction, source_system, target_system,
+                status, request_body, response_body, error_message, retry_count,
+                processing_ms, kafka_partition, kafka_offset, processed_at)
+        VALUES (#{messageId}, #{interfaceId}, #{direction}, #{sourceSystem}, #{targetSystem},
+                #{status}, #{messageBody}, #{responseBody}, #{errorMessage}, #{retryCount},
+                #{processingMs}, #{kafkaPartition}, #{kafkaOffset}, #{processedAt})
+    </insert>
+
+    <update id="updateHistoryStatus">
+        UPDATE eai_message_history
+        SET    status       = #{status},
+               processed_at = NOW()
+        WHERE  id = #{id}
+    </update>
+
+    <update id="updateDlqStatus">
+        UPDATE eai_message_history
+        SET    status = 'DLQ'
+        WHERE  message_id = #{messageId}
+    </update>
+
+    <update id="updateRetryCount">
+        UPDATE eai_message_history
+        SET    retry_count = #{retryCount}
+        WHERE  id = #{id}
+    </update>
+
+</mapper>

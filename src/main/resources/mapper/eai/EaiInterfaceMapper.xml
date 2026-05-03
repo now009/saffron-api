@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.eai.mapper.EaiInterfaceMapper">
+
+    <resultMap id="InterfaceDefResultMap" type="com.saffron.eai.domain.EaiInterfaceDef">
+        <id     property="id"           column="id"/>
+        <result property="interfaceId"  column="interface_id"/>
+        <result property="name"         column="name"/>
+        <result property="sourceSystem" column="source_system"/>
+        <result property="targetSystem" column="target_system"/>
+        <result property="adapterType"  column="adapter_type"/>
+        <result property="direction"    column="direction"/>
+        <result property="isParallel"   column="is_parallel"/>
+        <result property="isActive"     column="is_active"/>
+        <result property="description"  column="description"/>
+        <result property="tags"         column="tags"/>
+        <result property="createdBy"    column="created_by"/>
+        <result property="createdAt"    column="created_at"/>
+        <result property="updatedAt"    column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="MappingRuleResultMap" type="com.saffron.eai.domain.EaiMappingRule">
+        <id     property="id"            column="id"/>
+        <result property="interfaceId"   column="interface_id"/>
+        <result property="sourcePath"    column="source_path"/>
+        <result property="targetPath"    column="target_path"/>
+        <result property="transformType" column="transform_type"/>
+        <result property="transformExpr" column="transform_expr"/>
+        <result property="defaultValue"  column="default_value"/>
+        <result property="isRequired"    column="is_required"/>
+        <result property="sortOrder"     column="sort_order"/>
+        <result property="createdAt"     column="created_at"/>
+    </resultMap>
+
+    <resultMap id="RoutingRuleResultMap" type="com.saffron.eai.domain.EaiRoutingRule">
+        <id     property="id"              column="id"/>
+        <result property="interfaceId"     column="interface_id"/>
+        <result property="conditionExpr"   column="condition_expr"/>
+        <result property="targetAdapterId" column="target_adapter_id"/>
+        <result property="targetSystem"    column="target_system"/>
+        <result property="isParallel"      column="is_parallel"/>
+        <result property="sortOrder"       column="sort_order"/>
+        <result property="createdAt"       column="created_at"/>
+    </resultMap>
+
+    <resultMap id="AdapterConfigResultMap" type="com.saffron.eai.domain.EaiAdapterConfig">
+        <id     property="id"             column="id"/>
+        <result property="interfaceId"    column="interface_id"/>
+        <result property="adapterType"    column="adapter_type"/>
+        <result property="url"            column="url"/>
+        <result property="httpMethod"     column="http_method"/>
+        <result property="timeoutMs"      column="timeout_ms"/>
+        <result property="authType"       column="auth_type"/>
+        <result property="authValue"      column="auth_value"/>
+        <result property="requestHeaders" column="request_headers"/>
+        <result property="datasourceId"   column="datasource_id"/>
+        <result property="statementId"    column="statement_id"/>
+        <result property="operationType"  column="operation_type"/>
+        <result property="remoteHost"     column="remote_host"/>
+        <result property="remotePort"     column="remote_port"/>
+        <result property="remoteUser"     column="remote_user"/>
+        <result property="remotePassword" column="remote_password"/>
+        <result property="remotePath"     column="remote_path"/>
+        <result property="donePath"       column="done_path"/>
+        <result property="filePattern"    column="file_pattern"/>
+        <result property="fileEncoding"   column="file_encoding"/>
+        <result property="extraConfig"    column="extra_config"/>
+        <result property="isActive"       column="is_active"/>
+        <result property="createdAt"      column="created_at"/>
+        <result property="updatedAt"      column="updated_at"/>
+    </resultMap>
+
+    <select id="selectInterfaceList" resultMap="InterfaceDefResultMap">
+        SELECT id, interface_id, name, source_system, target_system,
+               adapter_type, direction, is_parallel, is_active,
+               description, tags, created_by, created_at, updated_at
+        FROM   eai_interface_def
+        <where>
+            <if test="status != null and status == 'active'">
+                AND is_active = TRUE
+            </if>
+            <if test="status != null and status == 'inactive'">
+                AND is_active = FALSE
+            </if>
+            <if test="adapterType != null and adapterType != ''">
+                AND adapter_type = #{adapterType}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (interface_id LIKE CONCAT('%', #{keyword}, '%')
+                  OR name         LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY interface_id
+    </select>
+
+    <select id="selectInterfaceById" resultMap="InterfaceDefResultMap">
+        SELECT id, interface_id, name, source_system, target_system,
+               adapter_type, direction, is_parallel, is_active,
+               description, tags, created_by, created_at, updated_at
+        FROM   eai_interface_def
+        WHERE  id = #{id}
+    </select>
+
+    <select id="selectInterfaceByInterfaceId" resultMap="InterfaceDefResultMap">
+        SELECT id, interface_id, name, source_system, target_system,
+               adapter_type, direction, is_parallel, is_active,
+               description, tags, created_by, created_at, updated_at
+        FROM   eai_interface_def
+        WHERE  interface_id = #{interfaceId}
+    </select>
+
+    <insert id="insertInterface" parameterType="com.saffron.eai.domain.EaiInterfaceDef"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO eai_interface_def
+               (interface_id, name, source_system, target_system, adapter_type,
+                direction, is_parallel, is_active, description, tags, created_by)
+        VALUES (#{interfaceId}, #{name}, #{sourceSystem}, #{targetSystem}, #{adapterType},
+                #{direction}, #{isParallel}, #{isActive}, #{description}, #{tags}, #{createdBy})
+    </insert>
+
+    <update id="updateInterface" parameterType="com.saffron.eai.domain.EaiInterfaceDef">
+        UPDATE eai_interface_def
+        <set>
+            interface_id  = #{interfaceId},
+            name          = #{name},
+            source_system = #{sourceSystem},
+            target_system = #{targetSystem},
+            adapter_type  = #{adapterType},
+            direction     = #{direction},
+            is_parallel   = #{isParallel},
+            is_active     = #{isActive},
+            description   = #{description},
+            tags          = #{tags},
+            updated_at    = NOW()
+        </set>
+        WHERE  id = #{id}
+    </update>
+
+    <update id="updateInterfaceActive">
+        UPDATE eai_interface_def
+        SET    is_active  = #{isActive},
+               updated_at = NOW()
+        WHERE  id = #{id}
+    </update>
+
+    <delete id="deleteInterface">
+        DELETE FROM eai_interface_def WHERE id = #{id}
+    </delete>
+
+    <select id="selectMappingRules" resultMap="MappingRuleResultMap">
+        SELECT id, interface_id, source_path, target_path, transform_type,
+               transform_expr, default_value, is_required, sort_order, created_at
+        FROM   eai_mapping_rule
+        WHERE  interface_id = #{interfaceId}
+        ORDER BY sort_order
+    </select>
+
+    <select id="selectRoutingRules" resultMap="RoutingRuleResultMap">
+        SELECT id, interface_id, condition_expr, target_adapter_id,
+               target_system, is_parallel, sort_order, created_at
+        FROM   eai_routing_rule
+        WHERE  interface_id = #{interfaceId}
+        ORDER BY sort_order
+    </select>
+
+    <select id="selectAdapterConfigById" resultMap="AdapterConfigResultMap">
+        SELECT id, interface_id, adapter_type, url, http_method, timeout_ms,
+               auth_type, auth_value, request_headers, datasource_id, statement_id,
+               operation_type, remote_host, remote_port, remote_user, remote_password,
+               remote_path, done_path, file_pattern, file_encoding, extra_config,
+               is_active, created_at, updated_at
+        FROM   eai_adapter_config
+        WHERE  id = #{id}
+    </select>
+
+</mapper>

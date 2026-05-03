@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.eai.mapper.EaiScheduleMapper">
+
+    <resultMap id="ScheduleResultMap" type="com.saffron.eai.domain.EaiSchedule">
+        <id     property="id"            column="id"/>
+        <result property="interfaceId"   column="interface_id"/>
+        <result property="scheduleName"  column="schedule_name"/>
+        <result property="cronExpr"      column="cron_expr"/>
+        <result property="isActive"      column="is_active"/>
+        <result property="lastRunAt"     column="last_run_at"/>
+        <result property="lastRunStatus" column="last_run_status"/>
+        <result property="nextRunAt"     column="next_run_at"/>
+        <result property="createdAt"     column="created_at"/>
+        <result property="updatedAt"     column="updated_at"/>
+    </resultMap>
+
+    <select id="selectScheduleList" resultMap="ScheduleResultMap">
+        SELECT id, interface_id, schedule_name, cron_expr, is_active,
+               last_run_at, last_run_status, next_run_at, created_at, updated_at
+        FROM   eai_schedule
+        <where>
+            <if test="interfaceId != null and interfaceId != ''">
+                AND interface_id = #{interfaceId}
+            </if>
+            <if test="isActive != null">
+                AND is_active = #{isActive}
+            </if>
+        </where>
+        ORDER BY id
+    </select>
+
+    <select id="selectScheduleById" resultMap="ScheduleResultMap">
+        SELECT id, interface_id, schedule_name, cron_expr, is_active,
+               last_run_at, last_run_status, next_run_at, created_at, updated_at
+        FROM   eai_schedule
+        WHERE  id = #{id}
+    </select>
+
+    <select id="selectScheduleByInterfaceId" resultMap="ScheduleResultMap">
+        SELECT id, interface_id, schedule_name, cron_expr, is_active,
+               last_run_at, last_run_status, next_run_at, created_at, updated_at
+        FROM   eai_schedule
+        WHERE  interface_id = #{interfaceId}
+        LIMIT  1
+    </select>
+
+    <insert id="insertSchedule" parameterType="com.saffron.eai.domain.EaiSchedule"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO eai_schedule (interface_id, schedule_name, cron_expr, is_active, next_run_at)
+        VALUES (#{interfaceId}, #{scheduleName}, #{cronExpr}, #{isActive}, #{nextRunAt})
+    </insert>
+
+    <update id="updateSchedule" parameterType="com.saffron.eai.domain.EaiSchedule">
+        UPDATE eai_schedule
+        <set>
+            interface_id  = #{interfaceId},
+            schedule_name = #{scheduleName},
+            cron_expr     = #{cronExpr},
+            is_active     = #{isActive},
+            next_run_at   = #{nextRunAt},
+            updated_at    = NOW()
+        </set>
+        WHERE  id = #{id}
+    </update>
+
+    <update id="updateLastRunAt">
+        UPDATE eai_schedule
+        SET    last_run_at     = #{lastRunAt},
+               last_run_status = #{lastRunStatus},
+               updated_at      = NOW()
+        WHERE  id = #{id}
+    </update>
+
+    <delete id="deleteSchedule">
+        DELETE FROM eai_schedule WHERE id = #{id}
+    </delete>
+
+</mapper>
