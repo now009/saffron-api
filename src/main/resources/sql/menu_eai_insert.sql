@@ -6,6 +6,10 @@
 select * from menu_info;
 select * from program_info;
 
+GET /eai/datasources?dbType=&isActive=
+GET /eai/db-adapter-configs?interfaceId=&datasourceId=
+GET /eai/rest-configs?interfaceId=
+GET /eai/soap-configs?interfaceId=
 
 delete from program_info where programUrl like '%/eai%';
 -- ① program_info: EAI 페이지 프로그램 등록
@@ -15,7 +19,11 @@ INSERT INTO program_info (programId, programName, programUrl, useYn, sortOrder) 
 ('PGM022', 'EAI 메시지 이력',      '/eai/history',    'Y', 3),
 ('PGM023', 'EAI 모니터링',         '/eai/monitoring', 'Y', 4),
 ('PGM024', 'EAI 스케줄 관리',      '/eai/schedules',  'Y', 5),
-('PGM025', '어댑터 List',      '/eai/db-adapters',  'Y', 5);
+('PGM025', 'DataSource',      '/eai/datasources',  'Y', 6),
+('PGM026', 'DB 어댑터',      '/eai/db-adapter-configs',  'Y', 7),
+('PGM027', 'REST 어댑터',      '/eai/rest-config',  'Y', 8),
+('PGM028', 'SOAP 어댑터',      '/eai/soap-configs',  'Y', 9);
+                                                                                ;
 
 
 delete from menu_info where site = 'eai';
@@ -29,7 +37,11 @@ INSERT INTO menu_info (menuId, parentMenuId, menuName, menuLevel, menuDirYn, pro
 INSERT INTO menu_info (menuId, parentMenuId, menuName, menuLevel, menuDirYn, programId, sortOrder, useYn, site) values
 ('MENU034', 'MENU033', '대시보드',        2, 'N', 'PGM020', 1, 'Y', 'eai'),
 ('MENU035', 'MENU033', '인터페이스 관리',  2, 'N', 'PGM021', 2, 'Y', 'eai'),
-('MENU039', 'MENU033', '어댑터 관리',      2, 'N', 'PGM025', 3, 'Y', 'eai'),
+('MENU039', 'MENU033', '어댑터 관리',      2, 'Y', NULL, 3, 'Y', 'eai'),
+('MENU040', 'MENU039', 'DataSource 관리',      3, 'N', 'PGM025', 1, 'Y', 'eai'),
+('MENU041', 'MENU039', 'DB 어댑터',      3, 'N', 'PGM026', 2, 'Y', 'eai'),
+('MENU042', 'MENU039', 'REST 어댑터',      3, 'N', 'PGM027', 3, 'Y', 'eai'),
+('MENU043', 'MENU039', 'SOAP 어댑터',      3, 'N', 'PGM028', 4, 'Y', 'eai'),
 ('MENU036', 'MENU033', '메시지 이력',      2, 'N', 'PGM022', 4, 'Y', 'eai'),
 ('MENU037', 'MENU033', '모니터링',         2, 'N', 'PGM023', 5, 'Y', 'eai'),
 ('MENU038', 'MENU033', '스케줄 관리',      2, 'N', 'PGM024', 6, 'Y', 'eai');
