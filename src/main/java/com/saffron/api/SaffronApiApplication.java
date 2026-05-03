@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.saffron")
 @MapperScan({"com.saffron.portal.mapper", "com.saffron.eai.mapper"})
 @EnableRetry
 @EnableScheduling
