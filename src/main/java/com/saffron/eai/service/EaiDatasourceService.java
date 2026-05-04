@@ -1,6 +1,7 @@
 package com.saffron.eai.service;
 
 import com.saffron.eai.dto.EaiDatasourceDto;
+import com.saffron.eai.dto.response.ConnectionTestResponse;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface EaiDatasourceService {
     EaiDatasourceDto update(Long id, EaiDatasourceDto dto);
 
     void delete(Long id);
+
+    ConnectionTestResponse testConnection(EaiDatasourceDto dto);
 }

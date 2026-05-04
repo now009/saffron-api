@@ -2,6 +2,7 @@ package com.saffron.portal.config;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,9 @@ public class JacksonConfig {
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer emptyStringToNullCustomizer() {
-        return builder -> builder.deserializerByType(String.class, new EmptyStringToNullDeserializer());
+        return builder -> builder
+                .deserializerByType(String.class, new EmptyStringToNullDeserializer())
+                .featuresToEnable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
     }
 
     static class EmptyStringToNullDeserializer extends StdScalarDeserializer<String> {

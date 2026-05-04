@@ -1,6 +1,7 @@
 package com.saffron.eai.controller;
 
 import com.saffron.eai.dto.EaiDatasourceDto;
+import com.saffron.eai.dto.response.ConnectionTestResponse;
 import com.saffron.eai.service.EaiDatasourceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,11 @@ public class EaiDatasourceController {
     @PostMapping
     public ResponseEntity<EaiDatasourceDto> create(@RequestBody @Valid EaiDatasourceDto dto) {
         return ResponseEntity.ok(datasourceService.create(dto));
+    }
+
+    @PostMapping("/test")
+    public ResponseEntity<ConnectionTestResponse> testConnection(@RequestBody EaiDatasourceDto dto) {
+        return ResponseEntity.ok(datasourceService.testConnection(dto));
     }
 
     @PutMapping("/{id}")

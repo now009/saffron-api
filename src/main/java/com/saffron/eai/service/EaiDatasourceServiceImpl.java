@@ -2,14 +2,21 @@ package com.saffron.eai.service;
 
 import com.saffron.eai.domain.EaiDatasource;
 import com.saffron.eai.dto.EaiDatasourceDto;
+import com.saffron.eai.dto.response.ConnectionTestResponse;
 import com.saffron.eai.mapper.EaiDatasourceMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EaiDatasourceServiceImpl implements EaiDatasourceService {
@@ -69,6 +76,50 @@ public class EaiDatasourceServiceImpl implements EaiDatasourceService {
     @Transactional
     public void delete(Long id) {
         datasourceMapper.deleteDatasource(id);
+    }
+
+    @Override
+    public ConnectionTestResponse testConnection(EaiDatasourceDto dto) {
+        if (dto.getJdbcUrl() == null || dto.getJdbcUrl().isBlank()) {
+            return ConnectionTestResponse.fail("JDBC URL이 비어있습니다.");
+        }
+        if (dto.getDriverClass() == null || dto.getDriverClass().isBlank()) {
+            return ConnectionTestResponse.fail("Driver Class가 비어있습니다.");
+        }
+
+        String password = dto.getDbPassword();
+        if ((password == null || password.isBlank()) && dto.getId() != null) {
+            EaiDatasource saved = datasourceMapper.selectDatasourceById(dto.getId());
+            if (saved != null) password = saved.getDbPassword();
+        }
+
+        try {
+            Class.forName(dto.getDriverClass());
+        } catch (ClassNotFoundException e) {
+            return ConnectionTestResponse.fail("Driver Class를 찾을 수 없습니다: " + dto.getDriverClass());
+        }
+
+        Properties props = new Properties();
+        if (dto.getDbUsername() != null) props.setProperty("user", dto.getDbUsername());
+        if (password != null)            props.setProperty("password", password);
+
+        int loginTimeoutSec = (dto.getPoolTimeoutMs() != null && dto.getPoolTimeoutMs() > 0)
+                ? Math.max(1, dto.getPoolTimeoutMs() / 1000) : 10;
+
+        int prevTimeout = DriverManager.getLoginTimeout();
+        DriverManager.setLoginTimeout(loginTimeoutSec);
+        try (Connection conn = DriverManager.getConnection(dto.getJdbcUrl(), props)) {
+            int validateTimeoutSec = dto.getQueryTimeoutSec() != null ? dto.getQueryTimeoutSec() : 5;
+            boolean valid = conn.isValid(validateTimeoutSec);
+            return valid
+                    ? ConnectionTestResponse.ok("Connection 성공")
+                    : ConnectionTestResponse.fail("Connection은 열렸으나 isValid 검증에 실패했습니다.");
+        } catch (SQLException e) {
+            log.warn("[EAI] Datasource Connection Test 실패: {}", e.getMessage());
+            return ConnectionTestResponse.fail(e.getMessage());
+        } finally {
+            DriverManager.setLoginTimeout(prevTimeout);
+        }
     }
 
     private EaiDatasourceDto toDto(EaiDatasource e) {
