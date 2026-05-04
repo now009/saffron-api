@@ -60,7 +60,7 @@ CREATE TABLE eai_db_adapter_config (
                                        id                  BIGINT          NOT NULL AUTO_INCREMENT,
                                        interface_id        VARCHAR(20)     NOT NULL,
                                        datasource_id       VARCHAR(50)     NOT NULL,
-                                       statement_id        VARCHAR(300)    NOT NULL                 COMMENT 'MyBatis Mapper Namespace.ID',
+                                       query               TEXT            NOT NULL                 COMMENT '실행할 SQL 쿼리 (파라미터 바인딩은 param_mapping 참조)',
                                        operation_type      VARCHAR(20)     NOT NULL                 COMMENT 'QUERY, INSERT, UPDATE, DELETE, PROCEDURE',
                                        result_type         VARCHAR(20)     DEFAULT 'LIST'           COMMENT 'LIST, SINGLE, COUNT, NONE',
                                        param_mapping       TEXT                                     COMMENT '입력 파라미터 매핑 JSON',

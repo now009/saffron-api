@@ -18,7 +18,7 @@ public class EaiDbAdapterConfig {
     private Long id;
     private String interfaceId;
     private String datasourceId;
-    private String statementId;
+    private String query;
     private String operationType;
     private String resultType;
     private String paramMapping;

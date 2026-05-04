@@ -8,7 +8,7 @@
         <id     property="id"              column="id"/>
         <result property="interfaceId"     column="interface_id"/>
         <result property="datasourceId"    column="datasource_id"/>
-        <result property="statementId"     column="statement_id"/>
+        <result property="query"           column="query"/>
         <result property="operationType"   column="operation_type"/>
         <result property="resultType"      column="result_type"/>
         <result property="paramMapping"    column="param_mapping"/>
@@ -19,7 +19,7 @@
     </resultMap>
 
     <select id="selectDbAdapterConfigList" resultMap="DbAdapterConfigResultMap">
-        SELECT id, interface_id, datasource_id, statement_id, operation_type, result_type,
+        SELECT id, interface_id, datasource_id, query, operation_type, result_type,
                param_mapping, rollback_on_error, is_active, created_at, updated_at
         FROM   eai_db_adapter_config
         <where>
@@ -34,7 +34,7 @@
     </select>
 
     <select id="selectDbAdapterConfigById" resultMap="DbAdapterConfigResultMap">
-        SELECT id, interface_id, datasource_id, statement_id, operation_type, result_type,
+        SELECT id, interface_id, datasource_id, query, operation_type, result_type,
                param_mapping, rollback_on_error, is_active, created_at, updated_at
         FROM   eai_db_adapter_config
         WHERE  id = #{id}
@@ -43,9 +43,9 @@
     <insert id="insertDbAdapterConfig" parameterType="com.saffron.eai.domain.EaiDbAdapterConfig"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO eai_db_adapter_config
-               (interface_id, datasource_id, statement_id, operation_type, result_type,
+               (interface_id, datasource_id, query, operation_type, result_type,
                 param_mapping, rollback_on_error, is_active)
-        VALUES (#{interfaceId}, #{datasourceId}, #{statementId}, #{operationType}, #{resultType},
+        VALUES (#{interfaceId}, #{datasourceId}, #{query}, #{operationType}, #{resultType},
                 #{paramMapping}, #{rollbackOnError}, #{isActive})
     </insert>
 
@@ -53,7 +53,7 @@
         UPDATE eai_db_adapter_config
         SET    interface_id     = #{interfaceId},
                datasource_id   = #{datasourceId},
-               statement_id    = #{statementId},
+               query    = #{query},
                operation_type  = #{operationType},
                result_type     = #{resultType},
                param_mapping   = #{paramMapping},

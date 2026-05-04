@@ -156,13 +156,13 @@ VALUES
 --    인터페이스별 DB 실행 설정 (어떤 DS에서 어떤 쿼리를 실행할지)
 -- ============================================================
 INSERT INTO eai_db_adapter_config
-(interface_id, datasource_id, statement_id, operation_type,
+(interface_id, datasource_id, query, operation_type,
  result_type, rollback_on_error, param_mapping)
 VALUES
 -- 1) 재고 WMS 동기화 - ERP에서 재고 목록 조회 (Pull)
 ('IF-1002',
  'DS_ERP_SAP',
- 'eai.erp.stock.selectStockList',
+ '',
  'QUERY',
  'LIST',
  FALSE,
@@ -170,7 +170,7 @@ VALUES
 -- 2) 재고 WMS 동기화 - WMS에 재고 적재 (Target)
 ('IF-1002',
  'DS_WMS',
- 'eai.wms.stock.upsertStock',
+ '',
  'PROCEDURE',
  'NONE',
  TRUE,
@@ -178,7 +178,7 @@ VALUES
 -- 3) 생산계획 MES → ERP 전송
 ('IF-1009',
  'DS_MES',
- 'eai.mes.plan.selectPlanList',
+ '',
  'QUERY',
  'LIST',
  FALSE,
@@ -186,7 +186,7 @@ VALUES
 -- 4) 생산계획 ERP DB 적재
 ('IF-1009',
  'DS_ERP_SAP',
- 'eai.erp.plan.insertProductionPlan',
+ '',
  'INSERT',
  'COUNT',
  TRUE,
@@ -194,7 +194,7 @@ VALUES
 -- 5) 고객 포인트 CRM 동기화 - OMS 포인트 조회
 ('IF-1016',
  'DS_PORTAL',
- 'eai.portal.order.selectOrderPoint',
+ '',
  'QUERY',
  'SINGLE',
  FALSE,
@@ -202,7 +202,7 @@ VALUES
 -- 6) 고객 포인트 CRM 업데이트
 ('IF-1016',
  'DS_CRM',
- 'eai.crm.point.updateCustomerPoint',
+ '',
  'PROCEDURE',
  'NONE',
  TRUE,
@@ -210,7 +210,7 @@ VALUES
 -- 7) QMS 검사 결과 MES 적재
 ('IF-1012',
  'DS_MES',
- 'eai.mes.quality.insertInspectionResult',
+ '',
  'INSERT',
  'COUNT',
  TRUE,
@@ -218,7 +218,7 @@ VALUES
 -- 8) SCM 발주 잔량 조회
 ('IF-1007',
  'DS_SCM',
- 'eai.scm.po.selectOpenPoList',
+ '',
  'QUERY',
  'LIST',
  FALSE,
@@ -226,7 +226,7 @@ VALUES
 -- 9) HRM 급여 이체 대상 조회
 ('IF-1013',
  'DS_HRM',
- 'eai.hrm.salary.selectSalaryTransfer',
+ '',
  'QUERY',
  'LIST',
  FALSE,
@@ -234,7 +234,7 @@ VALUES
 -- 10) HRM 급여 이체 완료 업데이트
 ('IF-1013',
  'DS_HRM',
- 'eai.hrm.salary.updateTransferStatus',
+ '',
  'UPDATE',
  'COUNT',
  TRUE,
@@ -242,7 +242,7 @@ VALUES
 -- 11) ERP 리포팅 - 주간 판매 집계 조회
 ('IF-1019',
  'DS_ERP_RO',
- 'eai.erp.report.selectWeeklySales',
+ '',
  'QUERY',
  'LIST',
  FALSE,
@@ -250,7 +250,7 @@ VALUES
 -- 12) 포탈 회원 가입 이력 조회 (CRM 동기화용)
 ('IF-1005',
  'DS_PORTAL',
- 'eai.portal.member.selectNewMembers',
+ '',
  'QUERY',
  'LIST',
  FALSE,
@@ -754,7 +754,7 @@ SELECT
     d.interface_id,
     d.name                                              AS 인터페이스명,
     d.adapter_type                                      AS 타입,
-    COALESCE(db.statement_id,  '')                      AS DB설정,
+    COALESCE(db.query,         '')                      AS DB설정,
     COALESCE(r.url,            '')                      AS REST_URL,
     COALESCE(s.wsdl_url,       '')                      AS SOAP_WSDL,
     COALESCE(f.file_pattern,   '')                      AS FILE패턴

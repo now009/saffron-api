@@ -17,7 +17,7 @@ public class EaiDbAdapterConfigDto {
     private String datasourceId;
 
     @NotBlank
-    private String statementId;
+    private String query;
 
     @NotBlank
     private String operationType;

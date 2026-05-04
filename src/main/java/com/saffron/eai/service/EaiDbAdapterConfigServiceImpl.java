@@ -45,7 +45,7 @@ public class EaiDbAdapterConfigServiceImpl implements EaiDbAdapterConfigService 
 
         entity.setInterfaceId(dto.getInterfaceId());
         entity.setDatasourceId(dto.getDatasourceId());
-        entity.setStatementId(dto.getStatementId());
+        entity.setQuery(dto.getQuery());
         entity.setOperationType(dto.getOperationType());
         entity.setResultType(dto.getResultType());
         entity.setParamMapping(dto.getParamMapping());
@@ -67,7 +67,7 @@ public class EaiDbAdapterConfigServiceImpl implements EaiDbAdapterConfigService 
         dto.setId(e.getId());
         dto.setInterfaceId(e.getInterfaceId());
         dto.setDatasourceId(e.getDatasourceId());
-        dto.setStatementId(e.getStatementId());
+        dto.setQuery(e.getQuery());
         dto.setOperationType(e.getOperationType());
         dto.setResultType(e.getResultType());
         dto.setParamMapping(e.getParamMapping());
@@ -80,7 +80,7 @@ public class EaiDbAdapterConfigServiceImpl implements EaiDbAdapterConfigService 
         return EaiDbAdapterConfig.builder()
                 .interfaceId(dto.getInterfaceId())
                 .datasourceId(dto.getDatasourceId())
-                .statementId(dto.getStatementId())
+                .query(dto.getQuery())
                 .operationType(dto.getOperationType())
                 .resultType(dto.getResultType())
                 .paramMapping(dto.getParamMapping())
