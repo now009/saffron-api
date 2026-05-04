@@ -35,11 +35,12 @@ public class EaiQueryServiceImpl implements EaiQueryService {
         if (ds == null) {
             return EaiApiResponse.fail("DataSource를 찾을 수 없습니다: " + request.getDatasourceId());
         }
+        String dbTag = "[" + dbTypeDisplay(ds.getDbType()) + "] ";
 
         try {
             Class.forName(ds.getDriverClass());
         } catch (ClassNotFoundException e) {
-            return EaiApiResponse.fail("Driver Class를 찾을 수 없습니다: " + ds.getDriverClass());
+            return EaiApiResponse.fail(dbTag + "Driver Class를 찾을 수 없습니다: " + ds.getDriverClass());
         }
 
         Properties props = new Properties();
@@ -59,20 +60,34 @@ public class EaiQueryServiceImpl implements EaiQueryService {
                 }
                 // prepareStatement 단계에서 대부분의 드라이버가 syntax/object 검증 수행
                 // (실제 execute 하지 않으므로 데이터 변경 없음)
-                return EaiApiResponse.ok("Query 검증 성공 (" + ds.getDbType() + " 방언)");
+                return EaiApiResponse.ok(dbTag + "Query 검증 성공");
             } finally {
                 conn.rollback();
             }
         } catch (SQLException e) {
             log.warn("[EAI] Query 검증 실패 ds={} sqlState={} errorCode={} msg={}",
                     ds.getDatasourceId(), e.getSQLState(), e.getErrorCode(), e.getMessage());
-            String detail = String.format("[%s/%d] %s",
+            String detail = String.format("%s[%s/%d] %s",
+                    dbTag,
                     e.getSQLState() != null ? e.getSQLState() : "-",
                     e.getErrorCode(),
                     e.getMessage());
             return EaiApiResponse.fail(detail);
         } finally {
             DriverManager.setLoginTimeout(prevTimeout);
+        }
+    }
+
+    private String dbTypeDisplay(String dbType) {
+        if (dbType == null) return "Unknown";
+        switch (dbType.toUpperCase()) {
+            case "POSTGRESQL": return "PostgreSQL";
+            case "ORACLE":     return "Oracle";
+            case "MSSQL":      return "MSSQL";
+            case "MYSQL":      return "MySQL";
+            case "MARIADB":    return "MariaDB";
+            case "H2":         return "H2";
+            default:           return dbType;
         }
     }
 
