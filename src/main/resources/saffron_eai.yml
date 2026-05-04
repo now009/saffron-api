@@ -32,6 +32,9 @@ spring:
       concurrency: 3
 
 eai:
+  scheduler:
+    # eai_schedule 자동 실행 여부. true → 시스템 시작 시 EaiBatchScheduler 활성화, false → 비활성
+    enabled: false
   adapter:
     rest:
       default-timeout-ms: 5000

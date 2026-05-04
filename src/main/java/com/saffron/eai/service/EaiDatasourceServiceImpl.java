@@ -2,7 +2,7 @@ package com.saffron.eai.service;
 
 import com.saffron.eai.domain.EaiDatasource;
 import com.saffron.eai.dto.EaiDatasourceDto;
-import com.saffron.eai.dto.response.ConnectionTestResponse;
+import com.saffron.eai.dto.response.EaiApiResponse;
 import com.saffron.eai.mapper.EaiDatasourceMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,12 +79,12 @@ public class EaiDatasourceServiceImpl implements EaiDatasourceService {
     }
 
     @Override
-    public ConnectionTestResponse testConnection(EaiDatasourceDto dto) {
+    public EaiApiResponse<Void> testConnection(EaiDatasourceDto dto) {
         if (dto.getJdbcUrl() == null || dto.getJdbcUrl().isBlank()) {
-            return ConnectionTestResponse.fail("JDBC URL이 비어있습니다.");
+            return EaiApiResponse.fail("JDBC URL이 비어있습니다.");
         }
         if (dto.getDriverClass() == null || dto.getDriverClass().isBlank()) {
-            return ConnectionTestResponse.fail("Driver Class가 비어있습니다.");
+            return EaiApiResponse.fail("Driver Class가 비어있습니다.");
         }
 
         String password = dto.getDbPassword();
@@ -96,7 +96,7 @@ public class EaiDatasourceServiceImpl implements EaiDatasourceService {
         try {
             Class.forName(dto.getDriverClass());
         } catch (ClassNotFoundException e) {
-            return ConnectionTestResponse.fail("Driver Class를 찾을 수 없습니다: " + dto.getDriverClass());
+            return EaiApiResponse.fail("Driver Class를 찾을 수 없습니다: " + dto.getDriverClass());
         }
 
         Properties props = new Properties();
@@ -112,11 +112,11 @@ public class EaiDatasourceServiceImpl implements EaiDatasourceService {
             int validateTimeoutSec = dto.getQueryTimeoutSec() != null ? dto.getQueryTimeoutSec() : 5;
             boolean valid = conn.isValid(validateTimeoutSec);
             return valid
-                    ? ConnectionTestResponse.ok("Connection 성공")
-                    : ConnectionTestResponse.fail("Connection은 열렸으나 isValid 검증에 실패했습니다.");
+                    ? EaiApiResponse.ok("Connection 성공")
+                    : EaiApiResponse.fail("Connection은 열렸으나 isValid 검증에 실패했습니다.");
         } catch (SQLException e) {
             log.warn("[EAI] Datasource Connection Test 실패: {}", e.getMessage());
-            return ConnectionTestResponse.fail(e.getMessage());
+            return EaiApiResponse.fail(e.getMessage());
         } finally {
             DriverManager.setLoginTimeout(prevTimeout);
         }
