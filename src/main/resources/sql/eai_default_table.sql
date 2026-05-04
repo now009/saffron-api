@@ -426,17 +426,3 @@ PARTITION BY RANGE COLUMNS(created_at) (
 -- 통계 업데이트 (정기 실행 권장)
 ANALYZE TABLE eai_message_history;
 ANALYZE TABLE eai_interface_def;
-
------------------------------------------
-create table eai_db_adapter_def (
-    id                  BIGINT          NOT NULL AUTO_INCREMENT,
-    db_adapter_id       VARCHAR(50)     NOT NULL,
-    db_type             VARCHAR(20)     NOT NULL,
-    db_name             VARCHAR(10)     NOT NULL,
-    db_ip               VARCHAR(50)     NOT NULL,
-    db_port             VARCHAR(20)     NOT NULL,
-    db_id               VARCHAR(20)     NOT NULL,
-    db_pw               VARCHAR(20)     NOT NULL,
-    direction           VARCHAR(10)     NOT NULL,
-    PRIMARY KEY (id)
-);
