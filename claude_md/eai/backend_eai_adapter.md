@@ -181,3 +181,52 @@ SoapConfig — eai_soap_config
 └────────┴────────────────────────────────┘
 
 Enum 검증 (DB CHECK 제약과 동일)
+
+===============================================================
+
+Endpoint
+
+POST /eai/query/validate
+
+Request                                                   
+{
+"datasourceId": "DS_ERP",
+"query": "SELECT order_id, total_amt FROM t_order WHERE status = 'NEW'"
+}
+- datasourceId — eai_datasource.datasource_id. 이 값으로 dbType/jdbcUrl/driver/계정을 조회해서 해당 DB에 연결합니다 (= 자동으로 Oracle/MariaDB/Postgres 방언으로 검증)
+
+Response — 성공
+{
+"timestamp": "2026-05-04T17:01:51.123",
+"success": true,
+"message": "Query 검증 성공 (MARIADB 방언)"
+}
+
+Response — 실패 (예: Oracle에서 존재하지 않는 테이블)
+{
+"timestamp": "...",
+"success": false,
+"message": "[42000/942] ORA-00942: table or view does not exist"
+}
+형식: [SQLState/errorCode] 드라이버 메시지
+
+검증 방식
+
+1. datasourceId로 eai_datasource 조회 → driver/url/계정 획득
+2. Class.forName(driverClass) 로 드라이버 로드
+3. DriverManager.getConnection(...) (loginTimeout 적용)
+4. conn.setAutoCommit(false) → conn.prepareStatement(query) → rollback()
+5. execute 하지 않음 — 데이터 변경 없음. 대부분의 JDBC 드라이버가 prepare 시점에 syntax + 테이블/컬럼 존재 여부까지 검증
+6. 실패 시 SQLException 의 SQLState/errorCode/message 를 그대로 반환
+
+안전장치
+
+- 빈 쿼리 차단
+- ;로 구분된 multi-statement 차단 (한 번에 한 SQL만)
+- AutoCommit OFF + finally rollback — 혹시 드라이버가 prepare 단계에서 실행해버리는 케이스(드물지만)에도 변경 사항이 커밋되지 않음
+
+한계
+
+- prepareStatement만으로 syntax 체크가 부족한 드라이버(예: 일부 MySQL 버전은 client-side prepare로 syntax만 검증, 테이블 존재는 execute에서 확인)도 있습니다. 이 경우 "syntax는 OK,
+  실제 실행 시 실패" 가능
+- DDL(CREATE, DROP 등)은 드라이버에 따라 prepareStatement가 곧바로 실행되는 케이스가 있어 validate 의도와 다를 수 있습니다 — DDL 검증이 필요하면 알려주세요 (별도 처리 필요)
