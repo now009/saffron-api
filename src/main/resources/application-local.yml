@@ -31,6 +31,8 @@ cors:
 logging:
   file:
     path: C:/temp
+  http:
+    before-security: true   # dev: Security 앞에서 실행 → 인증 거부된 요청까지 모두 로깅
 
 board:
   filePath: C:/temp/board/file

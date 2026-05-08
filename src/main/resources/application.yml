@@ -19,6 +19,11 @@ logging:
     root: INFO
     org.springframework.security: TRACE
     com.saffron.portal.mapper: DEBUG
+  http:
+    enabled: true           # false → 필터 완전 비활성
+    max-body-size: 4096     # 출력 최대 바이트 (초과 시 truncated 표시)
+    log-status-check: false # 폴링 헬스체크 로그 여부
+    before-security: false  # true → Security 앞(401/403 도 로깅, dev), false → Security 뒤(운영)
 
 management:
   endpoints:

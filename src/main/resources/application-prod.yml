@@ -27,6 +27,8 @@ cors:
 logging:
   file:
     path: ${LOG_FILE_PATH:C:/temp/api}
+  http:
+    before-security: false  # 운영: Security 뒤에서 실행 → 인증 통과 요청만 로깅
 
 board:
   filePath: ${BOARD_FILE_PATH:C:/temp/board/file}
