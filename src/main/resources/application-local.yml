@@ -36,3 +36,7 @@ logging:
 
 board:
   filePath: C:/temp/board/file
+
+xml-store:
+  meta-path: C:/xmlStore/meta
+  data-path: C:/xmlStore/data

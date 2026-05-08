@@ -25,6 +25,12 @@ logging:
     log-status-check: false # 폴링 헬스체크 로그 여부
     before-security: false  # true → Security 앞(401/403 도 로깅, dev), false → Security 뒤(운영)
 
+# ─── XML Store ───────────────────────────────────────────
+# 메타/데이터 XML 저장 폴더 (프로파일별 오버라이드 가능)
+xml-store:
+  meta-path: C:/xmlStore/meta   # {subject}-meta.xml 저장 폴더
+  data-path: C:/xmlStore/data   # {subject}-data.xml 저장 폴더
+
 management:
   endpoints:
     web:
