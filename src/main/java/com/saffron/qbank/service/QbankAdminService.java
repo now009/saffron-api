@@ -39,6 +39,6 @@ public interface QbankAdminService {
 
     // 세션
     List<SessionResponse> findAllSessions(Integer paperId, String examineeName);
-    List<AnswerSheetResponse> findAnswersBySession(Integer sessionId);
+    List<AnswerDetailResponse> findAnswersBySession(Integer sessionId);
     void grade(Integer sessionId, GradeRequest request);
 }

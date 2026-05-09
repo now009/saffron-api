@@ -234,9 +234,8 @@ public class QbankAdminServiceImpl implements QbankAdminService {
     }
 
     @Override
-    public List<AnswerSheetResponse> findAnswersBySession(Integer sessionId) {
-        return answerSheetMapper.selectBySessionId(sessionId).stream()
-            .map(AnswerSheetResponse::new).collect(Collectors.toList());
+    public List<AnswerDetailResponse> findAnswersBySession(Integer sessionId) {
+        return answerSheetMapper.selectDetailBySessionId(sessionId);
     }
 
     @Override

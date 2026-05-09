@@ -28,6 +28,31 @@
           AND question_id = #{questionId}
     </select>
 
+    <resultMap id="AnswerDetailResultMap" type="com.saffron.qbank.dto.response.AnswerDetailResponse">
+        <result property="questionId"          column="question_id"/>
+        <result property="seq"                 column="seq"/>
+        <result property="qType"               column="q_type"/>
+        <result property="questionText"        column="question_text"/>
+        <result property="selectedChoiceText"  column="selected_choice_text"/>
+        <result property="answerText"          column="answer_text"/>
+        <result property="isCorrect"           column="is_correct"/>
+    </resultMap>
+
+    <select id="selectDetailBySessionId" resultMap="AnswerDetailResultMap">
+        SELECT a.question_id,
+               q.seq,
+               q.q_type,
+               q.question_text,
+               qc.choice_text AS selected_choice_text,
+               a.answer_text,
+               a.is_correct
+        FROM answer_sheet a
+        JOIN question q ON a.question_id = q.id
+        LEFT JOIN question_choice qc ON a.selected_choice = qc.id
+        WHERE a.session_id = #{sessionId}
+        ORDER BY q.seq
+    </select>
+
     <insert id="insert" parameterType="com.saffron.qbank.domain.AnswerSheet"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO answer_sheet (session_id, question_id, answer_text, selected_choice)

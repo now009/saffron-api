@@ -1,5 +1,6 @@
 package com.saffron.qbank.controller;
 
+import com.saffron.qbank.common.QbankResponse;
 import com.saffron.qbank.dto.request.*;
 import com.saffron.qbank.dto.response.*;
 import com.saffron.qbank.service.QbankAdminService;
@@ -20,143 +21,143 @@ public class QbankAdminController {
     // ── 시험종류 ──────────────────────────────────────────────
 
     @GetMapping("/exam-types")
-    public ResponseEntity<List<ExamTypeResponse>> getExamTypes() {
-        return ResponseEntity.ok(adminService.findAllTypes());
+    public ResponseEntity<QbankResponse<List<ExamTypeResponse>>> getExamTypes() {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.findAllTypes()));
     }
 
     @PostMapping("/exam-types")
-    public ResponseEntity<ExamTypeResponse> createExamType(@RequestBody @Valid ExamTypeRequest req) {
-        return ResponseEntity.ok(adminService.createType(req));
+    public ResponseEntity<QbankResponse<ExamTypeResponse>> createExamType(@RequestBody @Valid ExamTypeRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.createType(req)));
     }
 
     @PutMapping("/exam-types/{id}")
-    public ResponseEntity<ExamTypeResponse> updateExamType(@PathVariable Integer id,
-                                                            @RequestBody @Valid ExamTypeRequest req) {
-        return ResponseEntity.ok(adminService.updateType(id, req));
+    public ResponseEntity<QbankResponse<ExamTypeResponse>> updateExamType(@PathVariable Integer id,
+                                                                           @RequestBody @Valid ExamTypeRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.updateType(id, req)));
     }
 
     @DeleteMapping("/exam-types/{id}")
-    public ResponseEntity<Void> deleteExamType(@PathVariable Integer id) {
+    public ResponseEntity<QbankResponse<Void>> deleteExamType(@PathVariable Integer id) {
         adminService.deleteType(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(QbankResponse.ok(null));
     }
 
     // ── 시험대상 ──────────────────────────────────────────────
 
     @GetMapping("/exam-subjects")
-    public ResponseEntity<List<ExamSubjectResponse>> getExamSubjects() {
-        return ResponseEntity.ok(adminService.findAllSubjects());
+    public ResponseEntity<QbankResponse<List<ExamSubjectResponse>>> getExamSubjects() {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.findAllSubjects()));
     }
 
     @PostMapping("/exam-subjects")
-    public ResponseEntity<ExamSubjectResponse> createExamSubject(@RequestBody @Valid ExamSubjectRequest req) {
-        return ResponseEntity.ok(adminService.createSubject(req));
+    public ResponseEntity<QbankResponse<ExamSubjectResponse>> createExamSubject(@RequestBody @Valid ExamSubjectRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.createSubject(req)));
     }
 
     @PutMapping("/exam-subjects/{id}")
-    public ResponseEntity<ExamSubjectResponse> updateExamSubject(@PathVariable Integer id,
-                                                                   @RequestBody @Valid ExamSubjectRequest req) {
-        return ResponseEntity.ok(adminService.updateSubject(id, req));
+    public ResponseEntity<QbankResponse<ExamSubjectResponse>> updateExamSubject(@PathVariable Integer id,
+                                                                                 @RequestBody @Valid ExamSubjectRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.updateSubject(id, req)));
     }
 
     @DeleteMapping("/exam-subjects/{id}")
-    public ResponseEntity<Void> deleteExamSubject(@PathVariable Integer id) {
+    public ResponseEntity<QbankResponse<Void>> deleteExamSubject(@PathVariable Integer id) {
         adminService.deleteSubject(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(QbankResponse.ok(null));
     }
 
     // ── 시험지 ────────────────────────────────────────────────
 
     @GetMapping("/papers")
-    public ResponseEntity<List<ExamPaperResponse>> getPapers() {
-        return ResponseEntity.ok(adminService.findAllPapers());
+    public ResponseEntity<QbankResponse<List<ExamPaperResponse>>> getPapers() {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.findAllPapers()));
     }
 
     @GetMapping("/papers/{id}")
-    public ResponseEntity<ExamPaperResponse> getPaper(@PathVariable Integer id) {
-        return ResponseEntity.ok(adminService.findPaperById(id));
+    public ResponseEntity<QbankResponse<ExamPaperResponse>> getPaper(@PathVariable Integer id) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.findPaperById(id)));
     }
 
     @PostMapping("/papers")
-    public ResponseEntity<ExamPaperResponse> createPaper(@RequestBody @Valid ExamPaperRequest req) {
-        return ResponseEntity.ok(adminService.createPaper(req));
+    public ResponseEntity<QbankResponse<ExamPaperResponse>> createPaper(@RequestBody @Valid ExamPaperRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.createPaper(req)));
     }
 
     @PutMapping("/papers/{id}")
-    public ResponseEntity<ExamPaperResponse> updatePaper(@PathVariable Integer id,
-                                                          @RequestBody @Valid ExamPaperRequest req) {
-        return ResponseEntity.ok(adminService.updatePaper(id, req));
+    public ResponseEntity<QbankResponse<ExamPaperResponse>> updatePaper(@PathVariable Integer id,
+                                                                          @RequestBody @Valid ExamPaperRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.updatePaper(id, req)));
     }
 
     @DeleteMapping("/papers/{id}")
-    public ResponseEntity<Void> deletePaper(@PathVariable Integer id) {
+    public ResponseEntity<QbankResponse<Void>> deletePaper(@PathVariable Integer id) {
         adminService.deletePaper(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(QbankResponse.ok(null));
     }
 
     // ── 문항 ──────────────────────────────────────────────────
 
     @GetMapping("/papers/{paperId}/questions")
-    public ResponseEntity<List<QuestionAdminResponse>> getQuestions(@PathVariable Integer paperId) {
-        return ResponseEntity.ok(adminService.findQuestionsByPaper(paperId));
+    public ResponseEntity<QbankResponse<List<QuestionAdminResponse>>> getQuestions(@PathVariable Integer paperId) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.findQuestionsByPaper(paperId)));
     }
 
     @PostMapping("/papers/{paperId}/questions")
-    public ResponseEntity<QuestionAdminResponse> createQuestion(@PathVariable Integer paperId,
-                                                                  @RequestBody @Valid QuestionRequest req) {
-        return ResponseEntity.ok(adminService.createQuestion(paperId, req));
+    public ResponseEntity<QbankResponse<QuestionAdminResponse>> createQuestion(@PathVariable Integer paperId,
+                                                                                @RequestBody @Valid QuestionRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.createQuestion(paperId, req)));
     }
 
     @PutMapping("/questions/{id}")
-    public ResponseEntity<QuestionAdminResponse> updateQuestion(@PathVariable Integer id,
-                                                                  @RequestBody @Valid QuestionRequest req) {
-        return ResponseEntity.ok(adminService.updateQuestion(id, req));
+    public ResponseEntity<QbankResponse<QuestionAdminResponse>> updateQuestion(@PathVariable Integer id,
+                                                                                @RequestBody @Valid QuestionRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.updateQuestion(id, req)));
     }
 
     @DeleteMapping("/questions/{id}")
-    public ResponseEntity<Void> deleteQuestion(@PathVariable Integer id) {
+    public ResponseEntity<QbankResponse<Void>> deleteQuestion(@PathVariable Integer id) {
         adminService.deleteQuestion(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(QbankResponse.ok(null));
     }
 
     // ── 보기 ──────────────────────────────────────────────────
 
     @PostMapping("/questions/{id}/choices")
-    public ResponseEntity<ChoiceAdminResponse> createChoice(@PathVariable Integer id,
-                                                              @RequestBody @Valid QuestionChoiceRequest req) {
-        return ResponseEntity.ok(adminService.createChoice(id, req));
+    public ResponseEntity<QbankResponse<ChoiceAdminResponse>> createChoice(@PathVariable Integer id,
+                                                                             @RequestBody @Valid QuestionChoiceRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.createChoice(id, req)));
     }
 
     @PutMapping("/choices/{id}")
-    public ResponseEntity<ChoiceAdminResponse> updateChoice(@PathVariable Integer id,
-                                                              @RequestBody @Valid QuestionChoiceRequest req) {
-        return ResponseEntity.ok(adminService.updateChoice(id, req));
+    public ResponseEntity<QbankResponse<ChoiceAdminResponse>> updateChoice(@PathVariable Integer id,
+                                                                             @RequestBody @Valid QuestionChoiceRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.updateChoice(id, req)));
     }
 
     @DeleteMapping("/choices/{id}")
-    public ResponseEntity<Void> deleteChoice(@PathVariable Integer id) {
+    public ResponseEntity<QbankResponse<Void>> deleteChoice(@PathVariable Integer id) {
         adminService.deleteChoice(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(QbankResponse.ok(null));
     }
 
     // ── 세션 / 채점 ───────────────────────────────────────────
 
     @GetMapping("/sessions")
-    public ResponseEntity<List<SessionResponse>> getSessions(
+    public ResponseEntity<QbankResponse<List<SessionResponse>>> getSessions(
             @RequestParam(required = false) Integer paperId,
             @RequestParam(required = false) String examineeName) {
-        return ResponseEntity.ok(adminService.findAllSessions(paperId, examineeName));
+        return ResponseEntity.ok(QbankResponse.ok(adminService.findAllSessions(paperId, examineeName)));
     }
 
     @GetMapping("/sessions/{id}/answers")
-    public ResponseEntity<List<AnswerSheetResponse>> getAnswers(@PathVariable Integer id) {
-        return ResponseEntity.ok(adminService.findAnswersBySession(id));
+    public ResponseEntity<QbankResponse<List<AnswerDetailResponse>>> getAnswers(@PathVariable Integer id) {
+        return ResponseEntity.ok(QbankResponse.ok(adminService.findAnswersBySession(id)));
     }
 
     @PostMapping("/sessions/{id}/grade")
-    public ResponseEntity<Void> grade(@PathVariable Integer id,
-                                       @RequestBody GradeRequest req) {
+    public ResponseEntity<QbankResponse<Void>> grade(@PathVariable Integer id,
+                                                      @RequestBody GradeRequest req) {
         adminService.grade(id, req);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(QbankResponse.ok(null));
     }
 }

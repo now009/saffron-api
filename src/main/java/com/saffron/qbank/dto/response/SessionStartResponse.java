@@ -8,8 +8,8 @@ import java.util.List;
 @Getter
 @Builder
 public class SessionStartResponse {
-    private Integer sessionId;
-    private String title;
-    private Integer timeLimitMin;
+    private Integer id;
+    private String examineeName;
+    private Integer examPaperId;
     private List<QuestionExamResponse> questions;
 }

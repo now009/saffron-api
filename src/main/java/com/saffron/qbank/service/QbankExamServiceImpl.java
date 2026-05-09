@@ -66,9 +66,9 @@ public class QbankExamServiceImpl implements QbankExamService {
             .collect(Collectors.toList());
 
         return SessionStartResponse.builder()
-            .sessionId(session.getId())
-            .title(paper.getTitle())
-            .timeLimitMin(paper.getTimeLimitMin())
+            .id(session.getId())
+            .examineeName(session.getExamineeName())
+            .examPaperId(paper.getId())
             .questions(questionResponses)
             .build();
     }

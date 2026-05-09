@@ -52,6 +52,8 @@ public class SecurityConfig {
             http
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/actuator/health", "/portal/main", "/main").permitAll()
+                    .requestMatchers("/api/qbank/exam/**").permitAll()
+                    .requestMatchers("/api/qbank/admin/**").authenticated()
                     .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

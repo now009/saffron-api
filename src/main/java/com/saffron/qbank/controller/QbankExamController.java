@@ -1,5 +1,6 @@
 package com.saffron.qbank.controller;
 
+import com.saffron.qbank.common.QbankResponse;
 import com.saffron.qbank.dto.request.SessionStartRequest;
 import com.saffron.qbank.dto.request.SubmitRequest;
 import com.saffron.qbank.dto.response.*;
@@ -19,31 +20,31 @@ public class QbankExamController {
     private final QbankExamService examService;
 
     @GetMapping("/types")
-    public ResponseEntity<List<ExamTypeResponse>> getTypes() {
-        return ResponseEntity.ok(examService.findActiveTypes());
+    public ResponseEntity<QbankResponse<List<ExamTypeResponse>>> getTypes() {
+        return ResponseEntity.ok(QbankResponse.ok(examService.findActiveTypes()));
     }
 
     @GetMapping("/subjects")
-    public ResponseEntity<List<ExamSubjectResponse>> getSubjects() {
-        return ResponseEntity.ok(examService.findActiveSubjects());
+    public ResponseEntity<QbankResponse<List<ExamSubjectResponse>>> getSubjects() {
+        return ResponseEntity.ok(QbankResponse.ok(examService.findActiveSubjects()));
     }
 
     @GetMapping("/papers")
-    public ResponseEntity<List<ExamPaperResponse>> getPapers(
+    public ResponseEntity<QbankResponse<List<ExamPaperResponse>>> getPapers(
             @RequestParam(required = false) Integer typeId,
             @RequestParam(required = false) Integer subjectId) {
-        return ResponseEntity.ok(examService.findActivePapers(typeId, subjectId));
+        return ResponseEntity.ok(QbankResponse.ok(examService.findActivePapers(typeId, subjectId)));
     }
 
     @PostMapping("/sessions")
-    public ResponseEntity<SessionStartResponse> startSession(@RequestBody @Valid SessionStartRequest req) {
-        return ResponseEntity.ok(examService.startSession(req));
+    public ResponseEntity<QbankResponse<SessionStartResponse>> startSession(@RequestBody @Valid SessionStartRequest req) {
+        return ResponseEntity.ok(QbankResponse.ok(examService.startSession(req)));
     }
 
     @PostMapping("/sessions/{id}/submit")
-    public ResponseEntity<Void> submitAnswers(@PathVariable Integer id,
-                                               @RequestBody @Valid SubmitRequest req) {
+    public ResponseEntity<QbankResponse<Void>> submitAnswers(@PathVariable Integer id,
+                                                              @RequestBody @Valid SubmitRequest req) {
         examService.submitAnswers(id, req);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(QbankResponse.ok(null));
     }
 }
