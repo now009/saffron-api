@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.qbank.mapper.QuestionMapper">
+
+    <resultMap id="QuestionResultMap" type="com.saffron.qbank.domain.Question">
+        <id     property="id"           column="id"/>
+        <result property="examPaperId"  column="exam_paper_id"/>
+        <result property="seq"          column="seq"/>
+        <result property="qType"        column="q_type"/>
+        <result property="questionText" column="question_text"/>
+        <result property="imageUrl"     column="image_url"/>
+        <result property="score"        column="score"/>
+        <result property="createdAt"    column="created_at"/>
+    </resultMap>
+
+    <select id="selectByPaperId" resultMap="QuestionResultMap">
+        SELECT id, exam_paper_id, seq, q_type, question_text, image_url, score, created_at
+        FROM question
+        WHERE exam_paper_id = #{paperId}
+        ORDER BY seq
+    </select>
+
+    <select id="selectById" resultMap="QuestionResultMap">
+        SELECT id, exam_paper_id, seq, q_type, question_text, image_url, score, created_at
+        FROM question
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.saffron.qbank.domain.Question"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question (exam_paper_id, seq, q_type, question_text, image_url, score)
+        VALUES (#{examPaperId}, #{seq}, #{qType}, #{questionText}, #{imageUrl}, #{score})
+    </insert>
+
+    <update id="update" parameterType="com.saffron.qbank.domain.Question">
+        UPDATE question
+        SET seq           = #{seq},
+            q_type        = #{qType},
+            question_text = #{questionText},
+            image_url     = #{imageUrl},
+            score         = #{score}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM question WHERE id = #{id}
+    </delete>
+
+</mapper>

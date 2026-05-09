@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.qbank.mapper.ExamSubjectMapper">
+
+    <resultMap id="ExamSubjectResultMap" type="com.saffron.qbank.domain.ExamSubject">
+        <id     property="id"        column="id"/>
+        <result property="name"      column="name"/>
+        <result property="grade"     column="grade"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="ExamSubjectResultMap">
+        SELECT id, name, grade, created_at
+        FROM exam_subject
+        ORDER BY id
+    </select>
+
+    <select id="selectById" resultMap="ExamSubjectResultMap">
+        SELECT id, name, grade, created_at
+        FROM exam_subject
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.saffron.qbank.domain.ExamSubject"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO exam_subject (name, grade)
+        VALUES (#{name}, #{grade})
+    </insert>
+
+    <update id="update" parameterType="com.saffron.qbank.domain.ExamSubject">
+        UPDATE exam_subject
+        SET name  = #{name},
+            grade = #{grade}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM exam_subject WHERE id = #{id}
+    </delete>
+
+</mapper>

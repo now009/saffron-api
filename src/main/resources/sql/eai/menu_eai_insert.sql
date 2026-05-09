@@ -12,7 +12,7 @@ GET /eai/rest-configs?interfaceId=
 GET /eai/soap-configs?interfaceId=
 
 delete from program_info where programUrl like '%/eai%';
--- ① program_info: EAI 페이지 프로그램 등록
+-- ① program_info: EAI 페이지 프로그램 등록치
 INSERT INTO program_info (programId, programName, programUrl, useYn, sortOrder) VALUES
 ('PGM020', 'EAI 대시보드',        '/eai',            'Y', 1),
 ('PGM021', 'EAI 인터페이스 관리',  '/eai/interfaces', 'Y', 2),

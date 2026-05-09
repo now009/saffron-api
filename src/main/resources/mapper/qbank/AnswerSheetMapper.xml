@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.qbank.mapper.AnswerSheetMapper">
+
+    <resultMap id="AnswerSheetResultMap" type="com.saffron.qbank.domain.AnswerSheet">
+        <id     property="id"             column="id"/>
+        <result property="sessionId"      column="session_id"/>
+        <result property="questionId"     column="question_id"/>
+        <result property="answerText"     column="answer_text"/>
+        <result property="selectedChoice" column="selected_choice"/>
+        <result property="isCorrect"      column="is_correct"/>
+        <result property="gradedAt"       column="graded_at"/>
+    </resultMap>
+
+    <select id="selectBySessionId" resultMap="AnswerSheetResultMap">
+        SELECT id, session_id, question_id, answer_text, selected_choice, is_correct, graded_at
+        FROM answer_sheet
+        WHERE session_id = #{sessionId}
+        ORDER BY question_id
+    </select>
+
+    <select id="selectBySessionAndQuestion" resultMap="AnswerSheetResultMap">
+        SELECT id, session_id, question_id, answer_text, selected_choice, is_correct, graded_at
+        FROM answer_sheet
+        WHERE session_id  = #{sessionId}
+          AND question_id = #{questionId}
+    </select>
+
+    <insert id="insert" parameterType="com.saffron.qbank.domain.AnswerSheet"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO answer_sheet (session_id, question_id, answer_text, selected_choice)
+        VALUES (#{sessionId}, #{questionId}, #{answerText}, #{selectedChoice})
+    </insert>
+
+    <update id="updateGrade">
+        UPDATE answer_sheet
+        SET is_correct = #{isCorrect},
+            graded_at  = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

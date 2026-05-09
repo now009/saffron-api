@@ -497,3 +497,69 @@ User아이콘 대신 사용자명을 표시해줘
 - 이후 모든 API 요청 시 Header에 자동으로 토큰 포함
   Authorization: Bearer {access_token}
 - 토큰 없거나 만료 시 /login으로 redirect
+
+--------------------------------------------------
+## 문제은행(Question Bank) 모듈 - com.saffron.qbank
+
+패키지: com.saffron.qbank
+prefix: /api/qbank
+
+### 패키지 구조
+```
+com.saffron.qbank/
+├── domain/       ExamType, ExamSubject, ExamPaper, Question, QuestionChoice, ExamSession, AnswerSheet
+├── dto/
+│   ├── request/  ExamTypeRequest, ExamSubjectRequest, ExamPaperRequest, QuestionRequest,
+│   │             QuestionChoiceRequest, SessionStartRequest, SubmitRequest, GradeRequest
+│   └── response/ ExamTypeResponse, ExamSubjectResponse, ExamPaperResponse,
+│                 QuestionAdminResponse, QuestionExamResponse,
+│                 ChoiceAdminResponse, ChoiceExamResponse,
+│                 SessionStartResponse, SessionResponse, AnswerSheetResponse
+├── mapper/       ExamTypeMapper, ExamSubjectMapper, ExamPaperMapper, QuestionMapper,
+│                 QuestionChoiceMapper, ExamSessionMapper, AnswerSheetMapper
+├── service/      QbankAdminService(Impl), QbankExamService(Impl)
+└── controller/   QbankAdminController, QbankExamController
+```
+mapper xml: src/main/resources/mapper/qbank/
+
+### 관리자 API (/api/qbank/admin)
+| Method | URL | 설명 |
+|--------|-----|------|
+| GET    | /exam-types                    | 시험종류 목록 |
+| POST   | /exam-types                    | 시험종류 등록 |
+| PUT    | /exam-types/{id}               | 시험종류 수정 |
+| DELETE | /exam-types/{id}               | 시험종류 삭제 |
+| GET    | /exam-subjects                 | 시험대상 목록 |
+| POST   | /exam-subjects                 | 시험대상 등록 |
+| PUT    | /exam-subjects/{id}            | 시험대상 수정 |
+| DELETE | /exam-subjects/{id}            | 시험대상 삭제 |
+| GET    | /papers                        | 시험지 목록 |
+| GET    | /papers/{id}                   | 시험지 단건 |
+| POST   | /papers                        | 시험지 생성 |
+| PUT    | /papers/{id}                   | 시험지 수정 |
+| DELETE | /papers/{id}                   | 시험지 삭제 |
+| GET    | /papers/{paperId}/questions    | 문항 목록(보기포함) |
+| POST   | /papers/{paperId}/questions    | 문항 등록 |
+| PUT    | /questions/{id}                | 문항 수정 |
+| DELETE | /questions/{id}                | 문항 삭제 |
+| POST   | /questions/{id}/choices        | 보기 등록 |
+| PUT    | /choices/{id}                  | 보기 수정 |
+| DELETE | /choices/{id}                  | 보기 삭제 |
+| GET    | /sessions?paperId=&examineeName= | 응시 세션 목록 |
+| GET    | /sessions/{id}/answers         | 답안지 조회 |
+| POST   | /sessions/{id}/grade           | 채점(자동+수동) |
+
+### 응시자 API (/api/qbank/exam)
+| Method | URL | 설명 |
+|--------|-----|------|
+| GET    | /types                   | 시험종류 목록 |
+| GET    | /subjects                | 시험대상 목록 |
+| GET    | /papers?typeId=&subjectId= | 활성 시험지 조회 |
+| POST   | /sessions                | 응시 시작 (sessionId + 문항+보기 반환, is_correct 제외) |
+| POST   | /sessions/{id}/submit    | 답안 제출 |
+
+### 채점 로직
+- autoGrade=true: single/multi 선택지를 question_choice.is_correct로 자동 채점
+  - multi: 정답 set과 선택 set이 완전 일치해야 정답
+- manualGrades: subjective 문항 수동 채점 { questionId, isCorrect }
+- 채점 후 exam_session.total_score 합산 업데이트

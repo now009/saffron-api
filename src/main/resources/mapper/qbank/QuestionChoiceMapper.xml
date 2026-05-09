@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saffron.qbank.mapper.QuestionChoiceMapper">
+
+    <resultMap id="ChoiceResultMap" type="com.saffron.qbank.domain.QuestionChoice">
+        <id     property="id"          column="id"/>
+        <result property="questionId"  column="question_id"/>
+        <result property="seq"         column="seq"/>
+        <result property="choiceText"  column="choice_text"/>
+        <result property="imageUrl"    column="image_url"/>
+        <result property="isCorrect"   column="is_correct"/>
+    </resultMap>
+
+    <select id="selectByQuestionId" resultMap="ChoiceResultMap">
+        SELECT id, question_id, seq, choice_text, image_url, is_correct
+        FROM question_choice
+        WHERE question_id = #{questionId}
+        ORDER BY seq
+    </select>
+
+    <select id="selectById" resultMap="ChoiceResultMap">
+        SELECT id, question_id, seq, choice_text, image_url, is_correct
+        FROM question_choice
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectCorrectChoiceIds" resultType="java.lang.Integer">
+        SELECT id
+        FROM question_choice
+        WHERE question_id = #{questionId}
+          AND is_correct = 1
+    </select>
+
+    <select id="countCorrectChoices" resultType="int">
+        SELECT COUNT(*)
+        FROM question_choice
+        WHERE question_id = #{questionId}
+          AND is_correct = 1
+    </select>
+
+    <insert id="insert" parameterType="com.saffron.qbank.domain.QuestionChoice"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question_choice (question_id, seq, choice_text, image_url, is_correct)
+        VALUES (#{questionId}, #{seq}, #{choiceText}, #{imageUrl}, #{isCorrect})
+    </insert>
+
+    <update id="update" parameterType="com.saffron.qbank.domain.QuestionChoice">
+        UPDATE question_choice
+        SET seq         = #{seq},
+            choice_text = #{choiceText},
+            image_url   = #{imageUrl},
+            is_correct  = #{isCorrect}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM question_choice WHERE id = #{id}
+    </delete>
+
+</mapper>
