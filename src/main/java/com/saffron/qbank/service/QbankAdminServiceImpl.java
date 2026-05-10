@@ -1,5 +1,6 @@
 package com.saffron.qbank.service;
 
+import com.saffron.qbank.config.QbankImageStore;
 import com.saffron.qbank.domain.*;
 import com.saffron.qbank.dto.request.*;
 import com.saffron.qbank.dto.response.*;
@@ -23,6 +24,7 @@ public class QbankAdminServiceImpl implements QbankAdminService {
     private final QuestionChoiceMapper questionChoiceMapper;
     private final ExamSessionMapper examSessionMapper;
     private final AnswerSheetMapper answerSheetMapper;
+    private final QbankImageStore imageStore;
 
     // ── 시험종류 ──────────────────────────────────────────────
 
@@ -155,17 +157,20 @@ public class QbankAdminServiceImpl implements QbankAdminService {
     @Override
     @Transactional
     public QuestionAdminResponse createQuestion(Integer paperId, QuestionRequest req) {
+        String imageFileName = req.getImageFileName();
         Question question = Question.builder()
             .examPaperId(paperId)
             .seq(req.getSeq())
             .qType(req.getQType())
             .questionText(req.getQuestionText())
-            .imageUrl(req.getImageUrl())
+            .imageFileName(imageFileName)
+            .imageUrl(imageStore.toFilePath(imageFileName))
             .score(req.getScore() != null ? req.getScore() : 1)
             .build();
         questionMapper.insert(question);
-        question.setChoices(questionChoiceMapper.selectByQuestionId(question.getId()));
-        return new QuestionAdminResponse(question);
+        Question saved = questionMapper.selectById(question.getId());
+        saved.setChoices(questionChoiceMapper.selectByQuestionId(saved.getId()));
+        return new QuestionAdminResponse(saved);
     }
 
     @Override
@@ -175,8 +180,11 @@ public class QbankAdminServiceImpl implements QbankAdminService {
         question.setSeq(req.getSeq());
         question.setQType(req.getQType());
         question.setQuestionText(req.getQuestionText());
-        question.setImageUrl(req.getImageUrl());
         question.setScore(req.getScore() != null ? req.getScore() : 1);
+        if (req.getImageFileName() != null) {
+            question.setImageFileName(req.getImageFileName());
+            question.setImageUrl(imageStore.toFilePath(req.getImageFileName()));
+        }
         questionMapper.update(question);
         question.setChoices(questionChoiceMapper.selectByQuestionId(id));
         return new QuestionAdminResponse(question);

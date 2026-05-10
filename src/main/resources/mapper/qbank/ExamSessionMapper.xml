@@ -5,48 +5,48 @@
 <mapper namespace="com.saffron.qbank.mapper.ExamSessionMapper">
 
     <resultMap id="ExamSessionResultMap" type="com.saffron.qbank.domain.ExamSession">
-        <id     property="id"            column="id"/>
-        <result property="examPaperId"   column="exam_paper_id"/>
-        <result property="examineeName"  column="examinee_name"/>
-        <result property="examineeNo"    column="examinee_no"/>
-        <result property="startedAt"     column="started_at"/>
-        <result property="submittedAt"   column="submitted_at"/>
-        <result property="totalScore"    column="total_score"/>
+        <id     property="id"           column="id"/>
+        <result property="examPaperId"  column="examPaperId"/>
+        <result property="examineeName" column="examineeName"/>
+        <result property="examineeNo"   column="examineeNo"/>
+        <result property="startedAt"    column="startedAt"/>
+        <result property="submittedAt"  column="submittedAt"/>
+        <result property="totalScore"   column="totalScore"/>
     </resultMap>
 
     <select id="selectAll" resultMap="ExamSessionResultMap">
-        SELECT id, exam_paper_id, examinee_name, examinee_no, started_at, submitted_at, total_score
-        FROM exam_session
+        SELECT id, examPaperId, examineeName, examineeNo, startedAt, submittedAt, totalScore
+        FROM qbank_exam_session
         <where>
-            <if test="paperId != null">AND exam_paper_id = #{paperId}</if>
+            <if test="paperId != null">AND examPaperId = #{paperId}</if>
             <if test="examineeName != null and examineeName != ''">
-                AND examinee_name LIKE CONCAT('%', #{examineeName}, '%')
+                AND examineeName LIKE CONCAT('%', #{examineeName}, '%')
             </if>
         </where>
-        ORDER BY started_at DESC
+        ORDER BY startedAt DESC
     </select>
 
     <select id="selectById" resultMap="ExamSessionResultMap">
-        SELECT id, exam_paper_id, examinee_name, examinee_no, started_at, submitted_at, total_score
-        FROM exam_session
+        SELECT id, examPaperId, examineeName, examineeNo, startedAt, submittedAt, totalScore
+        FROM qbank_exam_session
         WHERE id = #{id}
     </select>
 
     <insert id="insert" parameterType="com.saffron.qbank.domain.ExamSession"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO exam_session (exam_paper_id, examinee_name, examinee_no)
+        INSERT INTO qbank_exam_session (examPaperId, examineeName, examineeNo)
         VALUES (#{examPaperId}, #{examineeName}, #{examineeNo})
     </insert>
 
     <update id="updateSubmitted">
-        UPDATE exam_session
-        SET submitted_at = NOW()
+        UPDATE qbank_exam_session
+        SET submittedAt = NOW()
         WHERE id = #{id}
     </update>
 
     <update id="updateTotalScore">
-        UPDATE exam_session
-        SET total_score = #{totalScore}
+        UPDATE qbank_exam_session
+        SET totalScore = #{totalScore}
         WHERE id = #{id}
     </update>
 

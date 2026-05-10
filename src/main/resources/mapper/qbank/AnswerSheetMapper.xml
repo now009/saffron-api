@@ -6,63 +6,63 @@
 
     <resultMap id="AnswerSheetResultMap" type="com.saffron.qbank.domain.AnswerSheet">
         <id     property="id"             column="id"/>
-        <result property="sessionId"      column="session_id"/>
-        <result property="questionId"     column="question_id"/>
-        <result property="answerText"     column="answer_text"/>
-        <result property="selectedChoice" column="selected_choice"/>
-        <result property="isCorrect"      column="is_correct"/>
-        <result property="gradedAt"       column="graded_at"/>
+        <result property="sessionId"      column="sessionId"/>
+        <result property="questionId"     column="questionId"/>
+        <result property="answerText"     column="answerText"/>
+        <result property="selectedChoice" column="selectedChoice"/>
+        <result property="isCorrect"      column="isCorrect"/>
+        <result property="gradedAt"       column="gradedAt"/>
     </resultMap>
 
     <select id="selectBySessionId" resultMap="AnswerSheetResultMap">
-        SELECT id, session_id, question_id, answer_text, selected_choice, is_correct, graded_at
-        FROM answer_sheet
-        WHERE session_id = #{sessionId}
-        ORDER BY question_id
+        SELECT id, sessionId, questionId, answerText, selectedChoice, isCorrect, gradedAt
+        FROM qbank_answer_sheet
+        WHERE sessionId = #{sessionId}
+        ORDER BY questionId
     </select>
 
     <select id="selectBySessionAndQuestion" resultMap="AnswerSheetResultMap">
-        SELECT id, session_id, question_id, answer_text, selected_choice, is_correct, graded_at
-        FROM answer_sheet
-        WHERE session_id  = #{sessionId}
-          AND question_id = #{questionId}
+        SELECT id, sessionId, questionId, answerText, selectedChoice, isCorrect, gradedAt
+        FROM qbank_answer_sheet
+        WHERE sessionId  = #{sessionId}
+          AND questionId = #{questionId}
     </select>
 
     <resultMap id="AnswerDetailResultMap" type="com.saffron.qbank.dto.response.AnswerDetailResponse">
-        <result property="questionId"          column="question_id"/>
-        <result property="seq"                 column="seq"/>
-        <result property="qType"               column="q_type"/>
-        <result property="questionText"        column="question_text"/>
-        <result property="selectedChoiceText"  column="selected_choice_text"/>
-        <result property="answerText"          column="answer_text"/>
-        <result property="isCorrect"           column="is_correct"/>
+        <result property="questionId"         column="questionId"/>
+        <result property="seq"                column="seq"/>
+        <result property="qType"              column="qType"/>
+        <result property="questionText"       column="questionText"/>
+        <result property="selectedChoiceText" column="selectedChoiceText"/>
+        <result property="answerText"         column="answerText"/>
+        <result property="isCorrect"          column="isCorrect"/>
     </resultMap>
 
     <select id="selectDetailBySessionId" resultMap="AnswerDetailResultMap">
-        SELECT a.question_id,
+        SELECT a.questionId,
                q.seq,
-               q.q_type,
-               q.question_text,
-               qc.choice_text AS selected_choice_text,
-               a.answer_text,
-               a.is_correct
-        FROM answer_sheet a
-        JOIN question q ON a.question_id = q.id
-        LEFT JOIN question_choice qc ON a.selected_choice = qc.id
-        WHERE a.session_id = #{sessionId}
+               q.qType,
+               q.questionText,
+               qc.choiceText AS selectedChoiceText,
+               a.answerText,
+               a.isCorrect
+        FROM qbank_answer_sheet a
+        JOIN qbank_question q ON a.questionId = q.id
+        LEFT JOIN qbank_question_choice qc ON a.selectedChoice = qc.id
+        WHERE a.sessionId = #{sessionId}
         ORDER BY q.seq
     </select>
 
     <insert id="insert" parameterType="com.saffron.qbank.domain.AnswerSheet"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO answer_sheet (session_id, question_id, answer_text, selected_choice)
+        INSERT INTO qbank_answer_sheet (sessionId, questionId, answerText, selectedChoice)
         VALUES (#{sessionId}, #{questionId}, #{answerText}, #{selectedChoice})
     </insert>
 
     <update id="updateGrade">
-        UPDATE answer_sheet
-        SET is_correct = #{isCorrect},
-            graded_at  = NOW()
+        UPDATE qbank_answer_sheet
+        SET isCorrect = #{isCorrect},
+            gradedAt  = NOW()
         WHERE id = #{id}
     </update>
 

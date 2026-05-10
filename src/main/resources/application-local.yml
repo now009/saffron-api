@@ -40,3 +40,11 @@ board:
 xml-store:
   meta-path: C:/xmlStore/meta
   data-path: C:/xmlStore/data
+
+kafka:
+  enabled: false
+  bootstrap-servers: localhost:9092
+
+qbank:
+  image-dir: C:/temp/qbank/images
+  image-path: /qbank-images

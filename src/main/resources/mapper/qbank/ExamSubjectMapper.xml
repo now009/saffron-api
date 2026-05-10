@@ -8,36 +8,36 @@
         <id     property="id"        column="id"/>
         <result property="name"      column="name"/>
         <result property="grade"     column="grade"/>
-        <result property="createdAt" column="created_at"/>
+        <result property="createdAt" column="createdAt"/>
     </resultMap>
 
     <select id="selectAll" resultMap="ExamSubjectResultMap">
-        SELECT id, name, grade, created_at
-        FROM exam_subject
+        SELECT id, name, grade, createdAt
+        FROM qbank_exam_subject
         ORDER BY id
     </select>
 
     <select id="selectById" resultMap="ExamSubjectResultMap">
-        SELECT id, name, grade, created_at
-        FROM exam_subject
+        SELECT id, name, grade, createdAt
+        FROM qbank_exam_subject
         WHERE id = #{id}
     </select>
 
     <insert id="insert" parameterType="com.saffron.qbank.domain.ExamSubject"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO exam_subject (name, grade)
+        INSERT INTO qbank_exam_subject (name, grade)
         VALUES (#{name}, #{grade})
     </insert>
 
     <update id="update" parameterType="com.saffron.qbank.domain.ExamSubject">
-        UPDATE exam_subject
+        UPDATE qbank_exam_subject
         SET name  = #{name},
             grade = #{grade}
         WHERE id = #{id}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM exam_subject WHERE id = #{id}
+        DELETE FROM qbank_exam_subject WHERE id = #{id}
     </delete>
 
 </mapper>

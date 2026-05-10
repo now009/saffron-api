@@ -1,6 +1,7 @@
 package com.saffron.qbank.controller;
 
 import com.saffron.qbank.common.QbankResponse;
+import com.saffron.qbank.config.QbankImageStore;
 import com.saffron.qbank.dto.request.*;
 import com.saffron.qbank.dto.response.*;
 import com.saffron.qbank.service.QbankAdminService;
@@ -8,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 
@@ -17,6 +20,20 @@ import java.util.List;
 public class QbankAdminController {
 
     private final QbankAdminService adminService;
+    private final QbankImageStore imageStore;
+
+    // ── 이미지 업로드 ─────────────────────────────────────────
+
+    @PostMapping("/images")
+    public ResponseEntity<QbankResponse<ImageUploadResponse>> uploadImage(
+            MultipartHttpServletRequest request) {
+        MultipartFile file = request.getFileMap().values().stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("업로드된 파일이 없습니다."));
+        QbankImageStore.SaveResult result = imageStore.saveMultipart(file);
+        return ResponseEntity.ok(QbankResponse.ok(
+                new ImageUploadResponse(result.fileName(), result.imageUrl())));
+    }
 
     // ── 시험종류 ──────────────────────────────────────────────
 

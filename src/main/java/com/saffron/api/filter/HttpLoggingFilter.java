@@ -35,6 +35,21 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
 
+        // multipart 요청은 body stream을 읽지 않고 통과 (읽으면 Spring multipart resolver가 재사용 불가)
+        String contentType = request.getContentType();
+        if (contentType != null && contentType.startsWith("multipart/")) {
+            logRequest(request, null);
+            ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
+            long start = System.currentTimeMillis();
+            try {
+                chain.doFilter(request, wrappedResponse);
+            } finally {
+                logResponse(wrappedResponse, System.currentTimeMillis() - start);
+                wrappedResponse.copyBodyToResponse();
+            }
+            return;
+        }
+
         // body 를 byte[] 로 미리 읽어둔다 (ContentCachingRequestWrapper 미사용)
         byte[] requestBody = StreamUtils.copyToByteArray(request.getInputStream());
         CachedBodyRequest wrappedRequest = new CachedBodyRequest(request, requestBody);
@@ -78,8 +93,14 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         String query = request.getQueryString();
         String contentType = request.getContentType();
         String fullUri = (query == null) ? uri : uri + "?" + query;
-        String bodyStr = formatBody(body, contentType);
 
+        if (body == null) {
+            // multipart 등 body를 읽지 않은 경우
+            log.info(">>> REQ  {} {}  [{}]", method, fullUri, contentType);
+            return;
+        }
+
+        String bodyStr = formatBody(body, contentType);
         if (bodyStr.isEmpty()) {
             log.info(">>> REQ  {} {}  [{}]", method, fullUri, contentType);
         } else {

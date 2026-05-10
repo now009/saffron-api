@@ -4,7 +4,7 @@ import com.saffron.eai.common.EaiMessage;
 import com.saffron.eai.common.EaiResponse;
 import com.saffron.eai.dto.request.InterfaceCreateRequest;
 import com.saffron.eai.dto.response.InterfaceResponse;
-import com.saffron.eai.kafka.EaiMessageProducer;
+import com.saffron.eai.kafka.EaiMessagePublisher;
 import com.saffron.eai.service.EaiInterfaceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ import java.util.UUID;
 public class EaiInterfaceController {
 
     private final EaiInterfaceService interfaceService;
-    private final EaiMessageProducer producer;
+    private final EaiMessagePublisher producer;
 
     @GetMapping
     public ResponseEntity<List<InterfaceResponse>> list(

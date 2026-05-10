@@ -32,3 +32,16 @@ logging:
 
 board:
   filePath: ${BOARD_FILE_PATH:C:/temp/board/file}
+
+kafka:
+  enabled: ${KAFKA_ENABLED:false}
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  consumer:
+    group-id: ${KAFKA_CONSUMER_GROUP_ID:saffron-api}
+    topic: ${KAFKA_CONSUMER_TOPIC:saffron-topic}
+  producer:
+    topic: ${KAFKA_PRODUCER_TOPIC:saffron-topic}
+
+qbank:
+  image-dir: ${QBANK_IMAGE_DIR:C:/qbank/images}
+  image-path: ${QBANK_IMAGE_PATH:/qbank-images}

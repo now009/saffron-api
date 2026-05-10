@@ -11,6 +11,7 @@ public class Question {
     private Integer seq;
     private String qType;
     private String questionText;
+    private String imageFileName;
     private String imageUrl;
     private Integer score;
     private LocalDateTime createdAt;

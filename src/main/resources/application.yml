@@ -25,6 +25,23 @@ logging:
     log-status-check: false # 폴링 헬스체크 로그 여부
     before-security: false  # true → Security 앞(401/403 도 로깅, dev), false → Security 뒤(운영)
 
+# ─── Kafka ───────────────────────────────────────────────
+# true로 변경 시 Kafka 브로커 연결 및 consume/produce 활성화
+kafka:
+  enabled: false
+  bootstrap-servers: localhost:9092
+  consumer:
+    group-id: saffron-api
+    topic: saffron-topic
+  producer:
+    topic: saffron-topic
+
+# ─── Qbank ───────────────────────────────────────────────
+# 문항 이미지 저장 폴더 (프로파일별 오버라이드 가능)
+qbank:
+  image-dir: C:/temp/qbank/images
+  image-path: /qbank-images
+
 # ─── XML Store ───────────────────────────────────────────
 # 메타/데이터 XML 저장 폴더 (프로파일별 오버라이드 가능)
 xml-store:

@@ -5,58 +5,58 @@
 <mapper namespace="com.saffron.qbank.mapper.QuestionChoiceMapper">
 
     <resultMap id="ChoiceResultMap" type="com.saffron.qbank.domain.QuestionChoice">
-        <id     property="id"          column="id"/>
-        <result property="questionId"  column="question_id"/>
-        <result property="seq"         column="seq"/>
-        <result property="choiceText"  column="choice_text"/>
-        <result property="imageUrl"    column="image_url"/>
-        <result property="isCorrect"   column="is_correct"/>
+        <id     property="id"         column="id"/>
+        <result property="questionId" column="questionId"/>
+        <result property="seq"        column="seq"/>
+        <result property="choiceText" column="choiceText"/>
+        <result property="imageUrl"   column="imageUrl"/>
+        <result property="isCorrect"  column="isCorrect"/>
     </resultMap>
 
     <select id="selectByQuestionId" resultMap="ChoiceResultMap">
-        SELECT id, question_id, seq, choice_text, image_url, is_correct
-        FROM question_choice
-        WHERE question_id = #{questionId}
+        SELECT id, questionId, seq, choiceText, imageUrl, isCorrect
+        FROM qbank_question_choice
+        WHERE questionId = #{questionId}
         ORDER BY seq
     </select>
 
     <select id="selectById" resultMap="ChoiceResultMap">
-        SELECT id, question_id, seq, choice_text, image_url, is_correct
-        FROM question_choice
+        SELECT id, questionId, seq, choiceText, imageUrl, isCorrect
+        FROM qbank_question_choice
         WHERE id = #{id}
     </select>
 
     <select id="selectCorrectChoiceIds" resultType="java.lang.Integer">
         SELECT id
-        FROM question_choice
-        WHERE question_id = #{questionId}
-          AND is_correct = 1
+        FROM qbank_question_choice
+        WHERE questionId = #{questionId}
+          AND isCorrect = 1
     </select>
 
     <select id="countCorrectChoices" resultType="int">
         SELECT COUNT(*)
-        FROM question_choice
-        WHERE question_id = #{questionId}
-          AND is_correct = 1
+        FROM qbank_question_choice
+        WHERE questionId = #{questionId}
+          AND isCorrect = 1
     </select>
 
     <insert id="insert" parameterType="com.saffron.qbank.domain.QuestionChoice"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO question_choice (question_id, seq, choice_text, image_url, is_correct)
+        INSERT INTO qbank_question_choice (questionId, seq, choiceText, imageUrl, isCorrect)
         VALUES (#{questionId}, #{seq}, #{choiceText}, #{imageUrl}, #{isCorrect})
     </insert>
 
     <update id="update" parameterType="com.saffron.qbank.domain.QuestionChoice">
-        UPDATE question_choice
-        SET seq         = #{seq},
-            choice_text = #{choiceText},
-            image_url   = #{imageUrl},
-            is_correct  = #{isCorrect}
+        UPDATE qbank_question_choice
+        SET seq        = #{seq},
+            choiceText = #{choiceText},
+            imageUrl   = #{imageUrl},
+            isCorrect  = #{isCorrect}
         WHERE id = #{id}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM question_choice WHERE id = #{id}
+        DELETE FROM qbank_question_choice WHERE id = #{id}
     </delete>
 
 </mapper>

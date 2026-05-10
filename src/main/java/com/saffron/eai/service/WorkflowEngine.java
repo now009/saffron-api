@@ -6,12 +6,12 @@ import com.saffron.eai.common.EaiMessage;
 import com.saffron.eai.common.TransientException;
 import com.saffron.eai.domain.EaiAdapterConfig;
 import com.saffron.eai.domain.EaiInterfaceDef;
+import com.saffron.eai.kafka.EaiMessagePublisher;
 import com.saffron.eai.mapper.EaiMessageHistoryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -30,7 +30,7 @@ public class WorkflowEngine {
     private final MessageValidator validator;
     private final EaiInterfaceService interfaceService;
     private final EaiMessageHistoryMapper historyRepo;
-    private final KafkaTemplate<String, EaiMessage> kafkaTemplate;
+    private final EaiMessagePublisher publisher;
     private final AlertService alertService;
 
     @Retryable(
@@ -51,7 +51,7 @@ public class WorkflowEngine {
         // 2. 유효성 검사
         ValidationResult validation = validator.validate(message, def.getValidationRules());
         if (!validation.isValid()) {
-            kafkaTemplate.send("eai.interface.dlq", message);
+            publisher.publishDlq(message);
             alertService.sendValidationAlert(message, validation.getErrors());
             return;
         }
@@ -77,7 +77,7 @@ public class WorkflowEngine {
     @Recover
     public void onMaxRetryExceeded(Exception e, EaiMessage message) {
         log.error("[Workflow] 최대 재시도 초과 → DLQ 발행: {}", message.getInterfaceId(), e);
-        kafkaTemplate.send("eai.interface.dlq", message);
+        publisher.publishDlq(message);
         alertService.sendRetryExhaustedAlert(message, e);
     }
 

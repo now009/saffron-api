@@ -7,37 +7,37 @@
     <resultMap id="ExamTypeResultMap" type="com.saffron.qbank.domain.ExamType">
         <id     property="id"        column="id"/>
         <result property="name"      column="name"/>
-        <result property="isSurvey"  column="is_survey"/>
-        <result property="createdAt" column="created_at"/>
+        <result property="isSurvey"  column="isSurvey"/>
+        <result property="createdAt" column="createdAt"/>
     </resultMap>
 
     <select id="selectAll" resultMap="ExamTypeResultMap">
-        SELECT id, name, is_survey, created_at
-        FROM exam_type
+        SELECT id, name, isSurvey, createdAt
+        FROM qbank_exam_type
         ORDER BY id
     </select>
 
     <select id="selectById" resultMap="ExamTypeResultMap">
-        SELECT id, name, is_survey, created_at
-        FROM exam_type
+        SELECT id, name, isSurvey, createdAt
+        FROM qbank_exam_type
         WHERE id = #{id}
     </select>
 
     <insert id="insert" parameterType="com.saffron.qbank.domain.ExamType"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO exam_type (name, is_survey)
+        INSERT INTO qbank_exam_type (name, isSurvey)
         VALUES (#{name}, #{isSurvey})
     </insert>
 
     <update id="update" parameterType="com.saffron.qbank.domain.ExamType">
-        UPDATE exam_type
-        SET name      = #{name},
-            is_survey = #{isSurvey}
+        UPDATE qbank_exam_type
+        SET name     = #{name},
+            isSurvey = #{isSurvey}
         WHERE id = #{id}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM exam_type WHERE id = #{id}
+        DELETE FROM qbank_exam_type WHERE id = #{id}
     </delete>
 
 </mapper>

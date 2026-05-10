@@ -5,50 +5,50 @@
 <mapper namespace="com.saffron.qbank.mapper.ExamPaperMapper">
 
     <resultMap id="ExamPaperResultMap" type="com.saffron.qbank.domain.ExamPaper">
-        <id     property="id"             column="id"/>
-        <result property="examTypeId"     column="exam_type_id"/>
-        <result property="examSubjectId"  column="exam_subject_id"/>
-        <result property="title"          column="title"/>
-        <result property="timeLimitMin"   column="time_limit_min"/>
-        <result property="isActive"       column="is_active"/>
-        <result property="createdAt"      column="created_at"/>
+        <id     property="id"            column="id"/>
+        <result property="examTypeId"    column="examTypeId"/>
+        <result property="examSubjectId" column="examSubjectId"/>
+        <result property="title"         column="title"/>
+        <result property="timeLimitMin"  column="timeLimitMin"/>
+        <result property="isActive"      column="isActive"/>
+        <result property="createdAt"     column="createdAt"/>
     </resultMap>
 
     <select id="selectAll" resultMap="ExamPaperResultMap">
-        SELECT id, exam_type_id, exam_subject_id, title, time_limit_min, is_active, created_at
-        FROM exam_paper
+        SELECT id, examTypeId, examSubjectId, title, timeLimitMin, isActive, createdAt
+        FROM qbank_exam_paper
         <where>
-            <if test="typeId != null">AND exam_type_id = #{typeId}</if>
-            <if test="subjectId != null">AND exam_subject_id = #{subjectId}</if>
-            <if test="isActive != null">AND is_active = #{isActive}</if>
+            <if test="typeId != null">AND examTypeId = #{typeId}</if>
+            <if test="subjectId != null">AND examSubjectId = #{subjectId}</if>
+            <if test="isActive != null">AND isActive = #{isActive}</if>
         </where>
         ORDER BY id
     </select>
 
     <select id="selectById" resultMap="ExamPaperResultMap">
-        SELECT id, exam_type_id, exam_subject_id, title, time_limit_min, is_active, created_at
-        FROM exam_paper
+        SELECT id, examTypeId, examSubjectId, title, timeLimitMin, isActive, createdAt
+        FROM qbank_exam_paper
         WHERE id = #{id}
     </select>
 
     <insert id="insert" parameterType="com.saffron.qbank.domain.ExamPaper"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO exam_paper (exam_type_id, exam_subject_id, title, time_limit_min, is_active)
+        INSERT INTO qbank_exam_paper (examTypeId, examSubjectId, title, timeLimitMin, isActive)
         VALUES (#{examTypeId}, #{examSubjectId}, #{title}, #{timeLimitMin}, #{isActive})
     </insert>
 
     <update id="update" parameterType="com.saffron.qbank.domain.ExamPaper">
-        UPDATE exam_paper
-        SET exam_type_id    = #{examTypeId},
-            exam_subject_id = #{examSubjectId},
-            title           = #{title},
-            time_limit_min  = #{timeLimitMin},
-            is_active       = #{isActive}
+        UPDATE qbank_exam_paper
+        SET examTypeId    = #{examTypeId},
+            examSubjectId = #{examSubjectId},
+            title         = #{title},
+            timeLimitMin  = #{timeLimitMin},
+            isActive      = #{isActive}
         WHERE id = #{id}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM exam_paper WHERE id = #{id}
+        DELETE FROM qbank_exam_paper WHERE id = #{id}
     </delete>
 
 </mapper>

@@ -7,8 +7,8 @@ import com.saffron.eai.service.AlertService;
 import com.saffron.eai.service.WorkflowEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -18,17 +18,18 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "kafka.enabled", havingValue = "true")
 public class EaiMessageConsumer {
 
     private final WorkflowEngine workflowEngine;
-    private final KafkaTemplate<String, EaiMessage> kafkaTemplate;
+    private final EaiMessagePublisher publisher;
     private final AlertService alertService;
     private final EaiMessageHistoryMapper historyRepo;
 
     @KafkaListener(
             topics = "eai.interface.request",
             groupId = "eai-workflow-engine",
-            containerFactory = "kafkaListenerContainerFactory"
+            containerFactory = "eaiKafkaListenerContainerFactory"
     )
     public void consume(@Payload EaiMessage message,
                         @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
@@ -40,7 +41,7 @@ public class EaiMessageConsumer {
             workflowEngine.execute(message);
             ack.acknowledge();
         } catch (NonRetryableException e) {
-            kafkaTemplate.send("eai.interface.dlq", message);
+            publisher.publishDlq(message);
             ack.acknowledge();
         } catch (Exception e) {
             log.error("[Consumer] 처리 실패, 재시도 예정: {}", e.getMessage());
@@ -48,7 +49,8 @@ public class EaiMessageConsumer {
         }
     }
 
-    @KafkaListener(topics = "eai.interface.dlq", groupId = "eai-dlq-processor")
+    @KafkaListener(topics = "eai.interface.dlq", groupId = "eai-dlq-processor",
+            containerFactory = "eaiKafkaListenerContainerFactory")
     public void consumeDlq(@Payload EaiMessage message, Acknowledgment ack) {
         log.warn("[DLQ] 수신 interfaceId={}", message.getInterfaceId());
         alertService.sendDlqAlert(message);
